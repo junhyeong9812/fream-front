@@ -1,0 +1,153 @@
+.find_email_form_container{
+    width: 400px;
+    margin: auto;
+    padding-top: 60px;
+    padding-bottom: 160px;
+    min-height: calc(100vh - 340px);
+}
+
+/* 이메일 찾기 성공 */
+/* 제목 */
+.find_email_form_success_title_content{
+    font-size: 24px;
+    border-bottom: 2px solid #000;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: -3px;
+    padding-top: 40px;
+    padding-bottom: 41px;
+}
+
+/* 이메일 정보 */
+.find_email_form_success_info_content{
+    padding-top: 30px;
+    text-align: center;
+}
+.find_email_form_success_info_text{
+    font-size: 12px;
+    color: rgba(34, 34, 34, 0.5);
+}
+.find_email_form_success_info_email{
+    font-size: 18px;
+    font-weight: 700;
+    padding-top: 8px;
+}
+
+/* 비밀번호 찾기 및 로그인 버튼 */
+.find_email_form_success_btn_content{
+    padding-top: 56px;
+    display: flex;
+}
+.find_email_form_success_password_btn{
+    width: 396px;
+    height: 52px;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #d3d3d3;
+    border-radius: 12px;
+    background-color: #fff;
+    color: rgba(34, 34, 34, 0.8);
+    letter-spacing: -2px;
+    cursor: pointer;
+}
+.find_email_form_success_login_btn{
+    width: 396px;
+    height: 52px;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 8px;
+    border: 1px solid #d3d3d3;
+    border-radius: 12px;
+    background-color: #222;
+    color: #fff;
+    letter-spacing: -1px;
+    cursor: pointer;
+}
+
+
+
+/* 이메일 찾기 */
+/* 제목 */
+.find_email_form_title_content{
+    font-size: 32px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 41px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: -3px;
+}
+
+/* 공지 */
+.find_email_form_notice_content{
+    font-size: 14px;
+    padding-top: 40px;
+    padding-bottom: 30px;
+    letter-spacing: -2px;
+}
+
+/* 입력 */
+.find_email_form_input_content{
+    padding-top: 10px;
+    padding-bottom: 14px;
+}
+.find_email_form_input_title_content{
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -1px;
+}
+.find_email_form_input{
+    font-size: 15px;
+    line-height: 22px;
+    border: none;
+    outline: none;
+    width: 400px;
+    padding: 8px 0;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ebebeb;
+}
+.find_email_form_input::placeholder{
+    font-size: 13px;
+    color: rgba(34, 34, 34, 0.4);
+}
+.find_email_form_input:focus{
+    border-bottom: 2px solid black;
+}
+.find_email_form_input:focus::placeholder{
+    opacity: 0;
+}
+
+/* 버튼 */
+.find_email_form_btn_content{
+    margin-top: 44px;
+    width: 400px;
+    height: 52px;
+    font-size: 16px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: -1px;
+    font-weight: 700;
+    background-color: #222;
+    color: #fff;
+    cursor: pointer;
+}
+.find_email_form_btn_none_content{
+    margin-top: 44px;
+    width: 400px;
+    height: 52px;
+    font-size: 16px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: -1px;
+    font-weight: 400;
+    background-color: rgba(34, 34, 34, 0.2);
+    color: #fff;
+}

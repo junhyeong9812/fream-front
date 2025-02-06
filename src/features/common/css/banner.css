@@ -1,0 +1,56 @@
+.home_banner_container{
+    position: relative;
+    width: 100%;
+    height: 480px;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    overflow: hidden;
+}
+
+/* 왼쪽 화살표 */
+.home_banner_left_arrow_content{
+    position: absolute;
+    left: 0;
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+/* 이미지 */
+.home_banner_content{
+    width: 1280px;
+    height: auto;
+    object-fit: cover;
+}    
+
+/* 오른쪽 화살표    */
+.home_banner_right_arrow_content{
+    position: absolute;
+    right: 0;
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+/* 점 */
+.home_banner_pagination_content{
+    width: 200px;
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.home_banner_pagination{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}

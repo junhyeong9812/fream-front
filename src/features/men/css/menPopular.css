@@ -1,0 +1,11 @@
+.men_popular_container{
+    width: 1200px;
+    margin: 40px auto 40px auto;
+}
+.men_popular_title{
+    color: #000;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+}

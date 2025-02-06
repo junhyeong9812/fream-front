@@ -1,0 +1,13 @@
+.luxury_transaction_container{
+    width: 1200px;
+    padding-top: 40px;
+    margin: auto auto 40px auto;
+    border-top: 1px solid rgba(127, 127, 127, 0.1);
+}
+.luxury_transaction_title{
+    color: #000;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+}

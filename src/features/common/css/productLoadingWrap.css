@@ -1,0 +1,27 @@
+.recommend_wrap_container{
+    width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 8px;
+    row-gap: 28px;
+}
+.recommend_wrap_loading_content{
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.recommend_wrap_loading{
+    width: 40px;
+    height: 40px;
+    border: 2px solid white; /* 배경색 */
+    border-top: 2px solid rgba(127, 127, 127, 0.4); /* 회전하는 색 */
+    border-radius: 50%;
+    animation: spin 1s linear infinite; /* spin 애니메이션 */
+}
+/* 회전 애니메이션 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,81 @@
+.product_container{
+    position: relative;
+    cursor: pointer;
+}
+.product_transaction{
+    width: 100px;
+    text-align: right;
+    position: absolute;
+    font-size: 12px;
+    line-height: 20px;
+    top: 10px;
+    left: 122px;
+    letter-spacing: -0.5px;
+}
+.product_bookmark{
+    position: absolute;
+    font-size: 25px;
+    top: 200px;
+    left: 205px;
+    cursor: pointer;
+}
+.product_img{
+    width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.product_content{
+    padding: 9px 4px 0;
+}
+.product_brand{
+    color: #222;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 17px;
+}
+.product_name{
+    color: #222;
+    font-size: 13px;
+    line-height: 16px;
+    margin-bottom: 2px;
+}
+.product_tag_content{
+    display: flex;
+    margin-top: 6px;
+    gap: 4px;   
+}
+.product_tag_coupon{
+    width: 25px;
+    height: 20px;
+    color: rgb(130, 139, 157);
+    background-color: rgb(244, 244, 244);
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.product_tag_earn{
+    width: 25px;
+    height: 20px;
+    color: rgb(130, 139, 157);
+    background-color: rgb(244, 244, 244);
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.product_price{
+    color: #222;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 17px;
+    letter-spacing: -0.4px;
+    margin-top: 12px;
+}
+.product_text{
+    color: rgb(167, 167, 167);
+    font-size: 11px;
+    line-height: 13px;
+    margin-top: 4px;
+    letter-spacing: -0.5px;
+}

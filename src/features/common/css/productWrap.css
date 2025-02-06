@@ -1,0 +1,22 @@
+.product_wrap_container{
+    width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 8px;
+    row-gap: 28px;
+}
+.product_wrap_btn_content{
+    width: 97px;
+    height: 42px;
+    color: rgba(34, 34, 34, 0.8);
+    border: 1px solid #d3d3d3;
+    border-radius: 10px;
+    margin: 20px auto auto auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+}

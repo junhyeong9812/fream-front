@@ -1,0 +1,19 @@
+.women_sienne_container{
+    width: 1200px;
+    margin: auto;
+    padding-top: 40px;
+    padding-bottom: 56px;
+    border-bottom: 1px solid rgba(127,127,127,0.1);
+}
+.women_sienne_title{
+    color: #000;
+    font-size: 19px;
+    font-weight: 700;
+}
+.women_sienne_serve_title{
+    color: rgba(34, 34, 34, 0.5);
+    font-size: 16px;
+    margin-top: 2px;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+}

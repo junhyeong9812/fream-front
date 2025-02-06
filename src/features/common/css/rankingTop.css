@@ -1,0 +1,62 @@
+.ranking_top_container{
+    width: 1200px;
+    margin: auto;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: center;
+}
+.ranking_top_see_content{
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.ranking_top_buy_content{
+    width: 100px;
+    margin-left: 28px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.ranking_top_brand_content{
+    width: 100px;
+    margin-left: 28px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.ranking_top_img_content{
+    width: 65px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(244, 244, 244);
+    border-radius: 50%;
+}
+.ranking_top_img_content.active{
+    border: 2px solid rgb(34,34,34);
+}
+.ranking_top_img{
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+}
+.ranking_top_text{
+    font-size: 12px;
+    letter-spacing: -1px;
+}
+.ranking_top_text.active{
+    font-weight: 700;
+}   

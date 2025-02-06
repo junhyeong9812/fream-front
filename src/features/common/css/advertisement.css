@@ -1,0 +1,10 @@
+.advertisement_container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.advertisement_content{
+    width: 1280px;
+    height: 480px;
+}
