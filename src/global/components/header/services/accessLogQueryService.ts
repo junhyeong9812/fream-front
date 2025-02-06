@@ -1,5 +1,4 @@
 import apiClient from "src/global/services/ApiClient";
-import api from "src/global/services/axios";
 import { DailyAccessCountDto } from "src/global/types/accessLog";
 
 /**

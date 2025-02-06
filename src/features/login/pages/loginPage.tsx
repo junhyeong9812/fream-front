@@ -118,6 +118,7 @@ const LoginPage: React.FC = () => {
             }}
             className="login_form_logo"
             src={`${process.env.PUBLIC_URL}/img/kream-login-logo.png`}
+            alt=""
           ></img>
         </div>
         <div className="login_form_email_input_container">

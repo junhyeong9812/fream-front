@@ -1,10 +1,6 @@
 import apiClient from "src/global/services/ApiClient";
 import { AxiosResponse } from "axios";
-import {
-  FAQPageResponse,
-  FAQResponseDto,
-  faqCategoryMapping,
-} from "../types/supportTypes";
+import { FAQPageResponse, FAQResponseDto } from "../types/supportTypes";
 
 // FAQService 인터페이스 정의
 interface FAQService {

@@ -7,12 +7,12 @@ const PageContainer = styled.div`
   padding: 0 20px;
 `;
 
-const PageHeader = styled.div`
-  display: flex;
-  border-bottom: 3px solid #222;
-  padding-bottom: 16px;
-  margin-bottom: 40px;
-`;
+// const PageHeader = styled.div`
+//   display: flex;
+//   border-bottom: 3px solid #222;
+//   padding-bottom: 16px;
+//   margin-bottom: 40px;
+// `;
 
 const Title = styled.h3`
   font-size: 24px;

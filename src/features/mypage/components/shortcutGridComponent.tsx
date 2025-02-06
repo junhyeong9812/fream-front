@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { FiUser, FiShoppingBag, FiSmartphone, FiGift } from "react-icons/fi"; // 리액트 아이콘 가져오기
+import { FiShoppingBag, FiSmartphone } from "react-icons/fi"; // 리액트 아이콘 가져오기
 import { GoPeople } from "react-icons/go";
 import { RiCoupon3Line } from "react-icons/ri";
 import { TbHexagonLetterS } from "react-icons/tb";
@@ -78,8 +78,18 @@ const ShortcutGridComponent: React.FC = () => {
       badge: false,
       url: "/seller-grade",
     },
-    { icon: <TbCircleLetterP size={24} />, name: "0P", badge: false, url: "/points" },
-    { icon: <RiCoupon3Line size={24} />, name: "쿠폰 30", badge: true, url: "/coupons" },
+    {
+      icon: <TbCircleLetterP size={24} />,
+      name: "0P",
+      badge: false,
+      url: "/points",
+    },
+    {
+      icon: <RiCoupon3Line size={24} />,
+      name: "쿠폰 30",
+      badge: true,
+      url: "/coupons",
+    },
     {
       icon: <FiSmartphone size={24} />,
       name: "내 폰 시세",

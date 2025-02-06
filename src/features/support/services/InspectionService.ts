@@ -3,8 +3,6 @@ import { AxiosResponse } from "axios";
 import {
   InspectionPageResponse,
   InspectionResponseDto,
-  PageResponse,
-  inspectionCategoryMapping,
 } from "../types/supportTypes";
 
 // InspectionService 인터페이스 정의 및 구현

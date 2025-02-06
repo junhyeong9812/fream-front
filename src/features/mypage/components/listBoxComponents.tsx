@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-interface TabCountProps {
-  isTotal?: boolean;
-}
+
 
 // 여백 스타일
 const Spacer = styled.div`

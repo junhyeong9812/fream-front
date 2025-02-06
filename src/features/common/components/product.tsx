@@ -18,6 +18,7 @@ const Product: React.FC<productProps> = ({ product }) => {
         style={{ backgroundColor: product.backgroundcolor }}
         className="product_img"
         src={product.img}
+        alt=""
       />
       <div className="product_content">
         <div className="product_brand">{product.brand}</div>

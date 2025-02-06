@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import inspectionService from "../services/InspectionService";
-import { InspectionPageResponse } from "../types/supportTypes";
 import { inspectionDummyData } from "../services/dummyData";
 
 // 스타일 정의

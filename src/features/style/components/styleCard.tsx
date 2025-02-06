@@ -1,4 +1,4 @@
-const StyleCard: React.FC<{
+export const StyleCard: React.FC<{
   item: { image: string; name: string; likes: number; description: string };
 }> = ({ item }) => {
   return (

@@ -137,19 +137,3 @@ export const accessoriesCategories = [
   "스카프",
   "지갑",
 ];
-
-export default {
-  kicksCategories,
-  followingCategories,
-  exploreCategories,
-  rankingCategories,
-  trendCategories,
-  winterHotCategories,
-  sneakersCategories,
-  luxuryCategories,
-  clothingCategories,
-  bagsCategories,
-  celebrityStyleCategories,
-  collectiblesCategories,
-  accessoriesCategories,
-};
