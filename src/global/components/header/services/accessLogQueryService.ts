@@ -1,3 +1,4 @@
+import apiClient from "src/global/services/ApiClient";
 import api from "src/global/services/axios";
 import { DailyAccessCountDto } from "src/global/types/accessLog";
 
@@ -6,7 +7,7 @@ import { DailyAccessCountDto } from "src/global/types/accessLog";
  */
 export async function fetchTodayAccessCount(): Promise<number> {
   try {
-    const response = await api.get<number>("/access-log/queries/today");
+    const response = await apiClient.get<number>("/access-log/queries/today");
     return response.data;
   } catch (err) {
     console.error("Failed to fetch today's access count:", err);
@@ -19,7 +20,7 @@ export async function fetchTodayAccessCount(): Promise<number> {
  */
 export async function fetchWeekAccessCount(): Promise<DailyAccessCountDto[]> {
   try {
-    const response = await api.get<DailyAccessCountDto[]>(
+    const response = await apiClient.get<DailyAccessCountDto[]>(
       "/access-log/queries/week"
     );
     return response.data;

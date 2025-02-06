@@ -1,4 +1,4 @@
-import apiClient from "src/services/ApiClient";
+import apiClient from "src/global/services/ApiClient";
 import { AxiosResponse } from "axios";
 import {
   InspectionPageResponse,
