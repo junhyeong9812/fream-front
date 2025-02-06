@@ -1,11 +1,12 @@
 import axios from "axios";
+import apiClient from "src/global/services/ApiClient";
 
 export const fetchFindEmailData = async (phone: string) => {
   console.log("Fetching FindEmail Data...");
   console.log(phone);
   
   try {
-    const response = await axios.post('http://3.34.123.19:8080/api/users/find-email', {
+    const response = await apiClient.post('/users/find-email', {
       phoneNumber: phone,
     });
     

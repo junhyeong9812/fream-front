@@ -1,6 +1,16 @@
-import axios from "axios";
+import apiClient from "src/global/services/ApiClient";
 
-export const fetchJoinData = async (email: string, password: string, shoeSize: string, code:string, isOver14:boolean, termsAgreement:boolean, privacyAgreement:boolean, optionalPrivacyAgreement:boolean, adConsent:boolean) => {
+export const fetchJoinData = async (
+  email: string,
+  password: string,
+  shoeSize: string,
+  code: string,
+  isOver14: boolean,
+  termsAgreement: boolean,
+  privacyAgreement: boolean,
+  optionalPrivacyAgreement: boolean,
+  adConsent: boolean
+) => {
   console.log("Fetching Join Data...");
   console.log(email);
   console.log(password);
@@ -16,16 +26,16 @@ export const fetchJoinData = async (email: string, password: string, shoeSize: s
   // return "no";
 
   try {
-    const response = await axios.post('http://3.34.123.19:8080/api/users/register', {
+    const response = await apiClient.post("/users/register", {
       email: email,
       password: password,
       phoneNumber: "01011112222",
-      shoeSize: "SIZE_"+shoeSize,
+      shoeSize: "SIZE_" + shoeSize,
       isOver14: isOver14,
       termsAgreement: termsAgreement,
       privacyAgreement: privacyAgreement,
       optionalPrivacyAgreement: optionalPrivacyAgreement,
-      adConsent: adConsent
+      adConsent: adConsent,
     });
 
     console.log(response.data); // API 응답 처리
@@ -34,5 +44,4 @@ export const fetchJoinData = async (email: string, password: string, shoeSize: s
     console.error("Error fetching join data with Axios:", error);
     return "no";
   }
-
 };

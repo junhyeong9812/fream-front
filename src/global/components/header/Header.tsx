@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FiSearch,
   FiShoppingBag,
@@ -13,11 +13,14 @@ import "./Header.css";
 import { WeatherDataDto } from "src/global/types/weather";
 import { fetchCurrentWeather } from "./services/weatherService";
 import { fetchTodayAccessCount } from "./services/accessLogQueryService";
+import { AuthContext } from "src/global/context/AuthContext";
+import { logoutService } from "./services/logoutService";
 
 const Header: React.FC = () => {
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
-
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
   // 날씨 & 접속자수 상태
   const [currentWeather, setCurrentWeather] = useState<WeatherDataDto | null>(
     null
@@ -48,6 +51,23 @@ const Header: React.FC = () => {
 
     loadData();
   }, []);
+  const handleLogout = async () => {
+    try {
+      // 1) 백엔드 /auth/logout 호출 -> 쿠키 무효화
+      await logoutService();
+
+      // 2) 로컬스토리지에서 "IsLoggedIn" 제거
+      localStorage.removeItem("IsLoggedIn");
+
+      // 3) AuthContext false로
+      setIsLoggedIn(false);
+
+      alert("로그아웃되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 오류:", error);
+    }
+  };
 
   return (
     <>
@@ -88,7 +108,13 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/login">로그인</Link>
+                  {isLoggedIn ? (
+                    <button onClick={handleLogout}>로그아웃</button>
+                  ) : (
+                    <>
+                      <Link to="/login">로그인</Link>
+                    </>
+                  )}
                 </li>
               </ul>
             </div>

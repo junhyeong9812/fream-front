@@ -1,4 +1,5 @@
 import axios from "axios";
+import apiClient from "src/global/services/ApiClient";
 
 export const fetchFindPasswordData = async (phone: string, email: string) => {
   console.log("Fetching FindPassword Data...");
@@ -6,16 +7,15 @@ export const fetchFindPasswordData = async (phone: string, email: string) => {
   console.log(email);
 
   try {
-    const response = await axios.post('http://3.34.123.19:8080/api/users/reset-password-sandEmail', {
+    const response = await apiClient.post("/users/reset-password-sandEmail", {
       email: email,
-      phoneNumber: phone
+      phoneNumber: phone,
     });
-    
+
     console.log(response.data); // API 응답 처리
     return response.data;
   } catch (error) {
     console.error("Error fetching find password data with Axios:", error);
     return "no";
   }
-
 };

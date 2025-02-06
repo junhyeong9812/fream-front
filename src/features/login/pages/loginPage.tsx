@@ -1,13 +1,15 @@
 import "../css/loginPage.css";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SiNaver } from "react-icons/si";
 import { FaApple } from "react-icons/fa";
 import { LoginData } from "../types/loginTypes";
 import { fetchLoginData } from "../services/loginService";
+import { AuthContext } from "src/global/context/AuthContext";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useContext(AuthContext); // ← 로그인 성공 시 Context 갱신
 
   const [loginData, setLoginData] = useState<LoginData>({
     email: "",
@@ -95,16 +97,23 @@ const LoginPage: React.FC = () => {
 
   const handleLoginFetch = async () => {
     const result = await fetchLoginData(loginData.email, loginData.password);
-    console.log("로그인 결과 : ", result.token);
     if (result !== "no") {
-      localStorage.setItem("userToken", result.token);
-      console.log("로그인 토큰값 : ", localStorage.getItem("userToken"));
-      navigate("/");
+      // 로그인 성공 시
+      const now = Date.now();
+      const expire = now + 30 * 60 * 1000; // 30분 후 (ms)
+
+      const loginData = {
+        value: "true",
+        expire,
+      };
+      localStorage.setItem("IsLoggedIn", JSON.stringify(loginData));
+
+      setIsLoggedIn(true);
       alert("로그인 성공");
-    }
-    if (result === "no") {
-      navigate("/login");
+      navigate("/");
+    } else {
       alert("로그인 실패");
+      navigate("/login");
     }
   };
 

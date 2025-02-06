@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { UserAccessLogDto } from "./global/types/accessLog";
 import { sendAccessLog } from "./global/services/accessLogService";
 import AppRoutes from "./routers/AppRouters";
+import { AuthProvider } from "./global/context/AuthContext";
 
 // App 전체 컨테이너
 const AppContainer = styled.div`
@@ -42,13 +43,15 @@ function App() {
     sendAccessLog(logData);
   }, []);
   return (
-    <AppContainer>
-      <Header /> {/* AppContainer 내부에 위치 */}
-      <ContentWrapper $headerHeight={headerHeight}>
-        <AppRoutes />
-      </ContentWrapper>
-      <Footer />
-    </AppContainer>
+    <AuthProvider>
+      <AppContainer>
+        <Header /> {/* AppContainer 내부에 위치 */}
+        <ContentWrapper $headerHeight={headerHeight}>
+          <AppRoutes />
+        </ContentWrapper>
+        <Footer />
+      </AppContainer>
+    </AuthProvider>
   );
 }
 
