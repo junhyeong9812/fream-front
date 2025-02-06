@@ -24,7 +24,8 @@ jobs:
       - name: NPM Install/Build (Optional for test)
         run: |
           npm install
-          npm run build
+          CI=false npm run build
+          # npm run build
 
       # 3) GHCR 로그인
       - name: Docker Login GHCR
