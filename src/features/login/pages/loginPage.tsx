@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
 
   const [loginData, setLoginData] = useState<LoginData>({
     email: "user1@example.com",
-    password: "password123",
+    password: "password123!",
   });
 
   useEffect(() => {
