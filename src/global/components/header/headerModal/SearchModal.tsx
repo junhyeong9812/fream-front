@@ -2,12 +2,14 @@
 
 import React, { useState } from "react";
 import "./SearchModal.css";
+import { searchAutoComplete } from "../services/searchAutoComplete";
 
 interface SearchModalProps {
   closeModal: () => void;
 }
 
 const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
+  const [searchValue, setSearchValue] = useState("");
   const [recentSearches, setRecentSearches] = useState(["아이템 포켓몬"]);
   const recommendedSearches = [
     "스테이지 파이터",
@@ -31,9 +33,34 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
   const handleTagClick = (tag: string) => {
     console.log("Search:", tag);
   };
-
+  // (4) 최근 검색어 삭제
   const handleDeleteTag = (tag: string) => {
     setRecentSearches(recentSearches.filter((item) => item !== tag));
+  };
+
+  // 자동완성 결과 목록
+  const [autoCompleteList, setAutoCompleteList] = useState<string[]>([]);
+
+  // 입력 변경 시
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    // 입력이 비어 있으면 자동완성 목록 초기화
+    if (!value.trim()) {
+      setAutoCompleteList([]);
+      return;
+    }
+
+    // (2) 별도 함수 호출
+    const results = await searchAutoComplete(value);
+    setAutoCompleteList(results);
+  };
+
+  // 자동완성 아이템 클릭 시
+  const handleAutoCompleteClick = (item: string) => {
+    setSearchValue(item);
+    setAutoCompleteList([]);
   };
 
   return (
@@ -42,11 +69,29 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
         <input
           className="search-input"
           placeholder="브랜드, 상품, 프로필, 태그 등"
+          value={searchValue}
+          onChange={handleInputChange}
         />
         <button className="close-button" onClick={closeModal}>
           ✖
         </button>
       </div>
+
+      {/* (5) 자동완성 리스트 */}
+      {autoCompleteList.length > 0 && (
+        <div className="autocomplete-container">
+          {autoCompleteList.map((item, index) => (
+            <div
+              key={index}
+              className="autocomplete-item"
+              onClick={() => handleAutoCompleteClick(item)}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+      )}
+      {/* (기존 섹션) 최근 검색어 */}
       <div className="section">
         <h3>
           최근 검색어{" "}
@@ -61,6 +106,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
           ))}
         </div>
       </div>
+      {/* 추천 검색어 */}
       <div className="section">
         <h3>추천 검색어</h3>
         <div className="tag-container">

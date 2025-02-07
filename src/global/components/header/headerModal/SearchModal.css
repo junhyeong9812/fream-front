@@ -1,5 +1,6 @@
-/* global/header/headerModal/SearchModal.css */
-
+/* =========================================
+   1) 전체화면 모달을 위한 기본 스타일
+   ========================================= */
 .full-screen-modal {
   position: fixed;
   top: 0;
@@ -104,4 +105,27 @@
   font-size: 12px;
   color: red;
   margin-left: 5px;
+}
+/* =========================================
+   2) 자동완성 박스 스타일 (추가 부분)
+   ========================================= */
+.autocomplete-container {
+  position: absolute;
+  top: 60px; /* 인풋 박스 아래쪽에 맞춰 위치 조절 */
+  left: 20px; /* 모달 내 padding만큼 */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  width: calc(100% - 40px);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.autocomplete-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.autocomplete-item:hover {
+  background-color: #f2f2f2;
 }
