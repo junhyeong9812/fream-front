@@ -12,8 +12,8 @@ const LoginPage: React.FC = () => {
   const { setIsLoggedIn } = useContext(AuthContext); // ← 로그인 성공 시 Context 갱신
 
   const [loginData, setLoginData] = useState<LoginData>({
-    email: "",
-    password: "",
+    email: "user1@example.com",
+    password: "password123",
   });
 
   useEffect(() => {
@@ -144,6 +144,7 @@ const LoginPage: React.FC = () => {
                 ? "login_form_email_input_warn"
                 : "login_form_email_input_none_warn"
             }`}
+            value={loginData.email}
             onChange={handleEmailChange}
             type="text"
             placeholder="예) kream@kream.co.kr"
@@ -171,6 +172,7 @@ const LoginPage: React.FC = () => {
                 ? "login_form_password_input_warn"
                 : "login_form_password_input_none_warn"
             }`}
+            value={loginData.password}
             onChange={handlePasswordChange}
             type="password"
             maxLength={16}
