@@ -325,7 +325,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
       setProductList(discoverySomethingData);
     } else {
       console.log("정상적으로 데이터 들어옴");
-      // setProductList(productData);
+      setProductList(productData);
     }
   }
   // discoveryPdp
@@ -336,7 +336,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
       setProductList(discoveryPdpData);
     } else {
       console.log("정상적으로 데이터 들어옴");
-      // setProductList(productData);
+      setProductList(productData);
     }
   }
   // discoveryMellow
@@ -347,7 +347,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
       setProductList(discoveryMellowData);
     } else {
       console.log("정상적으로 데이터 들어옴");
-      // setProductList(productData);
+      setProductList(productData);
     }
   }
   // discoveryRoughneck
@@ -358,7 +358,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
       setProductList(discoveryRoughneckData);
     } else {
       console.log("정상적으로 데이터 들어옴");
-      // setProductList(productData);
+      setProductList(productData);
     }
   }
 
