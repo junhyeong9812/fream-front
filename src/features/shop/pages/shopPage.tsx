@@ -765,20 +765,29 @@ const ShopPage: React.FC = () => {
   // 데이터를 백엔드에서 받아오는 함수
   const fetchImageData = async () => {
     try {
-      const response = await fetch("주소"); // 백엔드 API URL로 변경
+      const response = await fetch("https://www.pinjun.xyz/api/api/products");
       if (!response.ok) {
         throw new Error("fetchImageData에서 발생");
       }
 
-      const data: ImageData[] = await response.json(); // JSON 데이터를 배열 형태로 파싱
+      const data = await response.json();
       console.log("확인데이터:", data); // 데이터 확인용 로그
-      setImageList(data); // 상태 업데이트
+
+  // 백엔드 데이터 변환
+  const formattedData: ImageData[] = data.map((item: any) => ({
+    id: item.id,
+    imgUrl: item.thumbnailImageUrl, 
+    brandName: "", 
+    productName: item.name,
+    productPrice: `${item.releasePrice}원`,
+  }));
+      setImageList(data);
     } catch (error) {
       console.error("fetchImageData data에서 발생", error);
     }
   };
 
-  // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
+  // // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
   useEffect(() => {
     fetchImageData();
   }, []);
@@ -1090,7 +1099,7 @@ const ShopPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="img_info price">
-                      <span className="infoPrice">{image.productPrice}원</span>
+                      <span className="infoPrice">{image.productPrice}</span>
                       <span className="translated_name">즉시 구매가</span>
                     </div>
                     <div className="action_icon">

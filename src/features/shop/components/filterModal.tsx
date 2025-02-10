@@ -59,6 +59,44 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose }) => {
   const groupedItems = groupItems(items);
   const groupKeys = Object.keys(groupedItems); // 그룹 키 목록
 
+  //색 출력 코드
+  const colors = [
+    { name: "블랙", rgb: "rgb(0, 0, 0)" },
+    { name: "그레이", rgb: "rgb(204, 204, 204)" },
+    { name: "화이트", rgb: "rgb(255, 255, 255)" },
+    { name: "아이보리", rgb: "rgb(244, 238, 221)" },
+    { name: "베이지", rgb: "rgb(230, 194, 129)" },
+    { name: "브라운", rgb:  "rgb(102, 50, 3)" },
+    { name: "카키", rgb: "rgb(143, 120, 75)" },
+    { name: "그린", rgb: "rgb(0, 128, 0)" },
+    { name: "라이트그린", rgb: "rgb(144, 238, 144)" },
+    { name: "민트", rgb: "rgb(114, 213, 192)" },
+    { name: "네이비", rgb: "rgb(0, 0, 128)" },
+    { name: "블루", rgb: "rgb(43, 50, 243)" },
+    { name: "스카이블루", rgb: "rgb(135, 206, 235)" },
+    { name: "퍼플", rgb: "rgb(128, 0, 128)" },
+    { name: "핑크", rgb: "rgb(255, 192, 203)" },
+    { name: "레드", rgb: "rgb(255, 0, 0)" },
+    { name: "오렌지", rgb: "rgb(255, 165, 0)" },
+    { name: "옐로우", rgb: "rgb(255, 255, 0)" },
+    { name: "실버", img: "/shopcolorimg/silver.png" },
+    { name: "골드", img: "/shopcolorimg/gold.png" },
+    { name: "믹스", img: "/shopcolorimg/mixColor.png" },
+  ];
+
+  //할인 모달버튼 
+  const filters = [
+    {
+      title: "혜택",
+      options: ["무료배송", "할인", "정가이하"],
+    },
+    {
+      title: "할인율",
+      options: ["30% 이하", "30%~50%", "50% 이상"],
+    },
+  ];
+  
+
   return (
     <ModalOverlay onClick={onClose}>
       <ModalWrapper onClick={(e) => e.stopPropagation()}>
@@ -186,202 +224,21 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose }) => {
                     style={{ cursor: "pointer" }}
                   />
                 </div>
-                {/* 색 다시 넣고, 50% 적용해야 함 */}
                 {colorOpen && (
                   <div className="filter-options">
                     <div className="section-content color">
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(0, 0, 0)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>블랙</p>
+                      {colors.map((color, index) => (
+                        <div className="filter-shortcut" key={index}>
+                          {color.img ? (
+                            <img src={color.img} alt={color.name} className="color-box image-style" />
+                            ) : (
+                              <div className="color-box" style={{ backgroundColor: color.rgb }}></div>
+                            )}
+                            <div className="title-color">
+                              <p>{color.name}</p>
+                            </div>
                         </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(204, 204, 204)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>그레이</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>화이트</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(244, 238, 221)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>아이보리</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(230, 194, 129)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>베이지</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(102, 50, 3)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>브라운</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(143, 120, 75)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>카키</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(0, 128, 0)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>그린</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(144, 238, 144)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>라이트그린</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(114, 213, 192)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>민트</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(0, 0, 128)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>네이비</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(43, 50, 243)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>블루</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(135, 206, 235)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>스카이블루</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(128, 0, 128)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>퍼플</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(255, 192, 203)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>핑크</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(255, 0, 0)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>레드</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(255, 165, 0)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>오렌지</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <div
-                          className="contents"
-                          style={{ backgroundColor: "rgb(255, 255, 0)" }}
-                        ></div>
-                        <div className="title-color">
-                          <p>옐로우</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <img
-                          src="/shopcolorimg/silver.png"
-                          alt="믹스"
-                          className="image-style"
-                        />{" "}
-                        <div className="title-color">
-                          <p>실버</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <img
-                          src="/shopcolorimg/gold.png"
-                          alt="믹스"
-                          className="image-style"
-                        />{" "}
-                        <div className="title-color">
-                          <p>골드</p>
-                        </div>
-                      </div>
-                      <div className="filter-shortcut">
-                        <img
-                          src="/shopcolorimg/mixColor.png"
-                          alt="믹스"
-                          className="image-style"
-                        />
-                        <div className="title-color">
-                          <p>믹스</p>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -402,57 +259,26 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose }) => {
                     style={{ cursor: "pointer" }}
                   />
                 </div>
-
                 {discountOpen && (
                   <div className="filter-options">
-                    <div className="subhead">
-                      <p className="subheading">혜택</p>
-                      <button className="btn_multiple">모두 선택</button>
-                    </div>
-                    <div className="section-content">
-                      <label className="bubble">
-                        <input type="checkbox" />
-                        <div>
-                          <button className="filter_button">무료배송</button>
+                    {filters.map((filter, index) => (
+                      <div key={index}>
+                        <div className="subhead">
+                          <p className="subheading">{filter.title}</p>
+                          <button className="btn_multiple">모두 선택</button>
                         </div>
-                      </label>
-                      <label className="bubble">
-                        <input type="checkbox" />
-                        <div>
-                          <button className="filter_button">할인</button>
+                        <div className="section-content">
+                          {filter.options.map((option, idx) => (
+                            <label className="bubble" key={idx}>
+                              <input type="checkbox" />
+                              <div>
+                                <button className="filter_button">{option}</button>
+                              </div>
+                            </label>
+                          ))}
                         </div>
-                      </label>
-                      <label className="bubble">
-                        <input type="checkbox" />
-                        <div>
-                          <button className="filter_button">정가이하</button>
-                        </div>
-                      </label>
-                    </div>
-                    <div className="subhead">
-                      <p className="subheading">할인율</p>
-                      <button className="btn_multiple">모두 선택</button>
-                    </div>
-                    <div className="section-content">
-                      <label className="bubble">
-                        <input type="checkbox" />
-                        <div>
-                          <button className="filter_button">30% 이하</button>
-                        </div>
-                      </label>
-                      <label className="bubble">
-                        <input type="checkbox" />
-                        <div>
-                          <button className="filter_button">30%~50%</button>
-                        </div>
-                      </label>
-                      <label className="bubble">
-                        <input type="checkbox" />
-                        <div>
-                          <button className="filter_button">50% 이상</button>
-                        </div>
-                      </label>
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
@@ -868,8 +694,6 @@ const ModalContent = styled.div`
       padding: 16px;
       border-radius: 50%;
       border: 1px solid rgba(0, 0, 0, 0.04);
-      width: 40px;
-      height: 40px;
     }
 
     .filter-shortcut {
@@ -889,9 +713,15 @@ const ModalContent = styled.div`
       color: rgb(34, 34, 34, 0.8);
       font-size: 12px;
     }
+    .color-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
     .image-style {
       width: 40px;
       height: 40px;
+      object-fit: cover;
       border-radius: 50%;
       border: 1px solid rgba(0, 0, 0, 0.04);
     }
