@@ -9,7 +9,6 @@ import {
   faArrowUp,
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
-
 // 리액트 아이콘
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import FilterModal from "../components/filterModal";
@@ -22,6 +21,7 @@ const ShopContainer = styled.div`
   width: 1200px;
   margin: 0 auto;
 `;
+
 // FilterButton에 사용할 타입 정의
 interface FilterButtonProps {
   isClicked: boolean;
@@ -755,10 +755,17 @@ const ShopPage: React.FC = () => {
   //이미지 데이터 get 코드
   type ImageData = {
     id: number;
-    imgUrl: string;
+    name: string;
+    englishName: string;
     brandName: string;
-    productName: string;
-    productPrice: string;
+    releasePrice: number;
+    thumbnailImageUrl: string;
+    price: number;
+    colorName: string;
+    colorId: number;
+    interestCount: number;
+    styleCount: number;
+    tradeCount: number;
   };
 
   const [imageList, setImageList] = useState<ImageData[]>([]);
@@ -1083,8 +1090,11 @@ const ShopPage: React.FC = () => {
                 <SearchResult>
                   <ImageGrid>
                     <ImageWrapper>
-                      <img src={image.imgUrl} alt={`sample-${image.id}`} />
-                      <OverlayText>거래 12.3만</OverlayText>
+                      <img
+                        src={image.thumbnailImageUrl}
+                        alt={`sample-${image.id}`}
+                      />
+                      <OverlayText>거래 {image.tradeCount}</OverlayText>
                     </ImageWrapper>
                   </ImageGrid>
 
@@ -1092,14 +1102,16 @@ const ShopPage: React.FC = () => {
                     <div className="imgTitle">
                       <span className="brandName">{image.brandName}</span>
                       <div className="img_info">
-                        <span className="name">{image.productName}</span>
+                        <span className="name">{image.name}</span>
                         <span className="translated_name">
-                          {image.productName}
+                          {image.englishName}
                         </span>
                       </div>
                     </div>
                     <div className="img_info price">
-                      <span className="infoPrice">{image.productPrice}</span>
+                      <span className="infoPrice">
+                        {image.price.toLocaleString()}원
+                      </span>
                       <span className="translated_name">즉시 구매가</span>
                     </div>
                     <div className="action_icon">
