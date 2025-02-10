@@ -61,14 +61,20 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
 
   // form submit 핸들러 추가 (엔터키 처리)
   const handleSearchSubmit = (e: React.FormEvent) => {
+    console.log("Submit event triggered"); // 추가
     e.preventDefault();
     const trimmedValue = searchValue.trim();
 
+    console.log("Trimmed value:", trimmedValue); // 추가
+
     if (trimmedValue) {
-      // 검색어가 있는 경우만 키워드 파라미터 추가
+      console.log(
+        "Attempting navigation to:",
+        `/shop?keyword=${encodeURIComponent(trimmedValue)}`
+      ); // 추가
       navigate(`/shop?keyword=${encodeURIComponent(trimmedValue)}`);
     } else {
-      // 검색어가 없으면 그냥 shop 페이지로 이동
+      console.log("Attempting navigation to /shop"); // 추가
       navigate("/shop");
     }
     closeModal();
@@ -90,7 +96,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
             value={searchValue}
             onChange={handleInputChange}
           />
-          <button className="close-button" onClick={closeModal}>
+          <button type="button" className="close-button" onClick={closeModal}>
             ✖
           </button>
         </form>
