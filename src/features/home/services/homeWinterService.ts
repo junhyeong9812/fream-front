@@ -1,4 +1,3 @@
-import axios from "axios";
 import apiClient from "src/global/services/ApiClient";
 
 export const fetchWinterData = async () => {
