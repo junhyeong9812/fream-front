@@ -788,7 +788,7 @@ const ShopPage: React.FC = () => {
       //   productName: item.name,
       //   productPrice: `${item.releasePrice}원`,
       // }));
-      //     setImageList(formattedData);
+      setImageList(data);
     } catch (error) {
       console.error("fetchImageData 에러:", error);
     }
