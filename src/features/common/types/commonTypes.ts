@@ -1,3 +1,5 @@
+import { ShortcutItems } from "../../home/types/homeTypes";
+import { AdvertisementImg } from "../../home/types/homeTypes";
 // homeTop
 export interface TopProps {
   select: string;
@@ -13,9 +15,9 @@ export interface BannerItems {
 }
 
 // shortcut
-import { ShortcutItems } from "../../home/types/homeTypes";
+
 export interface ShortcutItemWrapProps {
-  shortcutList : ShortcutItems[];
+  shortcutList: ShortcutItems[];
 }
 export interface ShortcutItemProps {
   shortcut: {
@@ -25,9 +27,9 @@ export interface ShortcutItemProps {
 }
 
 // 광고
-import { AdvertisementImg } from "../../home/types/homeTypes";
+
 export interface AdvertisementProps {
-  advertisement: AdvertisementImg; 
+  advertisement: AdvertisementImg;
 }
 
 // product
@@ -54,7 +56,7 @@ export interface productLoadingProps {
   select: string;
 }
 
-// ranking 
+// ranking
 export interface rankingTopProps {
   select: string;
 }
@@ -65,7 +67,7 @@ export interface rankingInfo {
   transaction: string;
   img: string;
   backgroundcolor: string;
-  polarity: boolean; 
+  polarity: boolean;
   porarityNum: string;
   name: string;
   price: string;
