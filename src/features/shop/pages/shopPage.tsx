@@ -780,15 +780,15 @@ const ShopPage: React.FC = () => {
       }
       console.log("확인데이터:", data); // 데이터 확인용 로그
 
-  // 백엔드 데이터 변환
-  const formattedData: ImageData[] = data.map((item: any) => ({
-    id: item.id,
-    imgUrl: item.thumbnailImageUrl, 
-    brandName: "", 
-    productName: item.name,
-    productPrice: `${item.releasePrice}원`,
-  }));
-      setImageList(formattedData);
+      // 백엔드 데이터 변환
+      // const formattedData: ImageData[] = data.map((item: any) => ({
+      //   id: item.id,
+      //   imgUrl: item.thumbnailImageUrl,
+      //   brandName: "",
+      //   productName: item.name,
+      //   productPrice: `${item.releasePrice}원`,
+      // }));
+      //     setImageList(formattedData);
     } catch (error) {
       console.error("fetchImageData 에러:", error);
     }
