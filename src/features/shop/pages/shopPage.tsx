@@ -14,6 +14,7 @@ import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import FilterModal from "../components/filterModal";
 import PopularModal from "../components/popularityModal";
 import { fetchShopData } from "../services/shopService";
+import { useSearchParams } from "react-router-dom";
 
 // 최상위 컨테이너
 const ShopContainer = styled.div`
@@ -609,6 +610,7 @@ const PopularityButtonWrapper = styled.div`
 // display: inline-block; /* 버튼 크기에 맞춰 wrapping */
 
 const ShopPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
   // 모달 열림 여부
   const [open, setOpen] = useState(false);
 
@@ -771,23 +773,13 @@ const ShopPage: React.FC = () => {
   const [imageList, setImageList] = useState<ImageData[]>([]);
 
   // 데이터를 백엔드에서 받아오는 함수
-  const fetchImageData = async () => {
+  const fetchImageData = async (keyword?: string) => {
     try {
-      const data = await fetchShopData(); // API
+      const data = await fetchShopData(keyword);
       if (data === "no") {
         console.error("데이터 가져오기 실패");
         return;
       }
-      console.log("확인데이터:", data); // 데이터 확인용 로그
-
-      // 백엔드 데이터 변환
-      // const formattedData: ImageData[] = data.map((item: any) => ({
-      //   id: item.id,
-      //   imgUrl: item.thumbnailImageUrl,
-      //   brandName: "",
-      //   productName: item.name,
-      //   productPrice: `${item.releasePrice}원`,
-      // }));
       setImageList(data);
     } catch (error) {
       console.error("fetchImageData 에러:", error);
@@ -796,8 +788,9 @@ const ShopPage: React.FC = () => {
 
   // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
   useEffect(() => {
-    fetchImageData();
-  }, []);
+    const keyword = searchParams.get("keyword");
+    fetchImageData(keyword || undefined);
+  }, [searchParams]); // searchParams가 변경될 때마다 실행
 
   return (
     <>

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import "./SearchModal.css";
 import { searchAutoComplete } from "../services/searchAutoComplete";
+import { useNavigate } from "react-router-dom";
 
 interface SearchModalProps {
   closeModal: () => void;
@@ -10,6 +11,7 @@ interface SearchModalProps {
 
 const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
   const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
   const [recentSearches, setRecentSearches] = useState(["아이템 포켓몬"]);
   const recommendedSearches = [
     "스테이지 파이터",
@@ -57,6 +59,21 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
     setAutoCompleteList(results);
   };
 
+  // form submit 핸들러 추가 (엔터키 처리)
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedValue = searchValue.trim();
+
+    if (trimmedValue) {
+      // 검색어가 있는 경우만 키워드 파라미터 추가
+      navigate(`/shop?keyword=${encodeURIComponent(trimmedValue)}`);
+    } else {
+      // 검색어가 없으면 그냥 shop 페이지로 이동
+      navigate("/shop");
+    }
+    closeModal();
+  };
+
   // 자동완성 아이템 클릭 시
   const handleAutoCompleteClick = (item: string) => {
     setSearchValue(item);
@@ -66,15 +83,17 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
   return (
     <div className="full-screen-modal">
       <div className="search-header">
-        <input
-          className="search-input"
-          placeholder="브랜드, 상품, 프로필, 태그 등"
-          value={searchValue}
-          onChange={handleInputChange}
-        />
-        <button className="close-button" onClick={closeModal}>
-          ✖
-        </button>
+        <form onSubmit={handleSearchSubmit}>
+          <input
+            className="search-input"
+            placeholder="브랜드, 상품, 프로필, 태그 등"
+            value={searchValue}
+            onChange={handleInputChange}
+          />
+          <button className="close-button" onClick={closeModal}>
+            ✖
+          </button>
+        </form>
       </div>
 
       {/* (5) 자동완성 리스트 */}
