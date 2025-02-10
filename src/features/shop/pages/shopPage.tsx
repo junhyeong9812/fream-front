@@ -14,6 +14,7 @@ import {
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import FilterModal from "../components/filterModal";
 import PopularModal from "../components/popularityModal";
+import { fetchShopData } from "../services/shopService";
 
 // 최상위 컨테이너
 const ShopContainer = styled.div`
@@ -765,25 +766,14 @@ const ShopPage: React.FC = () => {
   // 데이터를 백엔드에서 받아오는 함수
   const fetchImageData = async () => {
     try {
-      const response = await fetch("https://www.pinjun.xyz/api/api/products");
-      if (!response.ok) {
-        throw new Error("fetchImageData에서 발생");
+      const data = await fetchShopData(); // 새로운 API 클라이언트 사용
+      if (data === "no") {
+        console.error("데이터 가져오기 실패");
+        return;
       }
-
-      const data = await response.json();
-      console.log("확인데이터:", data); // 데이터 확인용 로그
-
-  // 백엔드 데이터 변환
-  const formattedData: ImageData[] = data.map((item: any) => ({
-    id: item.id,
-    imgUrl: item.thumbnailImageUrl, 
-    brandName: "", 
-    productName: item.name,
-    productPrice: `${item.releasePrice}원`,
-  }));
       setImageList(data);
     } catch (error) {
-      console.error("fetchImageData data에서 발생", error);
+      console.error("fetchImageData 에러:", error);
     }
   };
 
