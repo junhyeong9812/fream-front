@@ -62,7 +62,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
   // form submit 핸들러 추가 (엔터키 처리)
   const handleSearchSubmit = (e: React.FormEvent) => {
     console.log("Submit event triggered"); // 추가
-    e.preventDefault();
+    // e.preventDefault();
     const trimmedValue = searchValue.trim();
 
     console.log("Trimmed value:", trimmedValue); // 추가
