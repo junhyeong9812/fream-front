@@ -781,13 +781,13 @@ const ShopPage: React.FC = () => {
     productName: item.name,
     productPrice: `${item.releasePrice}원`,
   }));
-      setImageList(data);
+      setImageList(formattedData);
     } catch (error) {
       console.error("fetchImageData data에서 발생", error);
     }
   };
 
-  // // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
+  // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
   useEffect(() => {
     fetchImageData();
   }, []);
