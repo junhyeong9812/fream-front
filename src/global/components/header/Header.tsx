@@ -165,15 +165,12 @@ const Header: React.FC = () => {
                   <Link to="/favorites">관심</Link>
                 </li>
                 <li>
-                  <button
-                    className="link-button"
-                    onClick={toggleNotificationModal}
-                  >
+                  <Link to="#" onClick={() => setNotificationModalOpen(true)}>
                     알림
                     {hasUnread && (
                       <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
                     )}
-                  </button>
+                  </Link>
                 </li>
                 <li>
                   {isLoggedIn ? (
