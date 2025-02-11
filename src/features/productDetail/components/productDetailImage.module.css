@@ -19,9 +19,6 @@
   grid-template-columns: repeat(7, 62.85px);
   gap: 20px;
 }
-.customCarousel .carousel-item {
-  width: 100%;
-}
 
 .mainImage {
   width: 560px;
@@ -55,8 +52,10 @@
 }
 .customCarousel .carousel-item {
   display: none; /* 기본적으로 모든 아이템 숨김 */
+  width: 100%;
 }
 
 .customCarousel .carousel-item.active {
   display: block; /* 활성화된 아이템만 보이도록 */
+  width: 100%;
 }
