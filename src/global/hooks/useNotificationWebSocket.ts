@@ -1,9 +1,8 @@
-
-import { useState, useEffect, useCallback } from 'react';
-import SockJS from 'sockjs-client';
-import { Client } from '@stomp/stompjs';
-import apiClient from '../services/ApiClient';
-import { NotificationDTO } from '../types/notification';
+import { useState, useEffect, useCallback } from "react";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
+import apiClient from "../services/ApiClient";
+import { NotificationDTO } from "../types/notification";
 
 export const useWebSocket = () => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
@@ -13,39 +12,50 @@ export const useWebSocket = () => {
   // 초기 알림 데이터 로드
   const loadInitialNotifications = useCallback(async () => {
     try {
-      const response = await apiClient.get('/notifications/filter/type/read-status', {
-        params: {
-          type: 'ALL',
-          isRead: false,
-          page: 0,
-          size: 20
+      const response = await apiClient.get(
+        "/notifications/filter/type/read-status",
+        {
+          params: {
+            type: "ALL",
+            isRead: false,
+            page: 0,
+            size: 20,
+          },
         }
-      });
+      );
       setNotifications(response.data);
-      setHasUnread(response.data.some((notif: NotificationDTO) => !notif.isRead));
+      setHasUnread(
+        response.data.some((notif: NotificationDTO) => !notif.isRead)
+      );
     } catch (error) {
-      console.error('알림 로드 실패:', error);
+      console.error("알림 로드 실패:", error);
     }
   }, []);
 
   const connect = useCallback(() => {
     const client = new Client({
-      webSocketFactory: () => new SockJS('https://www.pinjun.xyz/api/ws'),
+      webSocketFactory: () =>
+        new SockJS("https://www.pinjun.xyz/api/ws", null, {
+          // SockJS 옵션 추가: 불필요한 전송 방식 제한
+          transports: ["websocket"],
+          protocols: [],
+        }),
+      //   webSocketFactory: () => new SockJS('https://www.pinjun.xyz/api/ws'),
       onConnect: () => {
-        console.log('WebSocket 연결됨');
-        client.subscribe('/queue/notifications', (message) => {
+        console.log("WebSocket 연결됨");
+        client.subscribe("/queue/notifications", (message) => {
           const newNotification: NotificationDTO = JSON.parse(message.body);
-          setNotifications(prev => [newNotification, ...prev]);
+          setNotifications((prev) => [newNotification, ...prev]);
           setHasUnread(true);
         });
         loadInitialNotifications();
       },
       onDisconnect: () => {
-        console.log('WebSocket 연결 해제됨');
+        console.log("WebSocket 연결 해제됨");
       },
-      reconnectDelay: 5000,
+      reconnectDelay: 10000,
       heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000
+      heartbeatOutgoing: 4000,
     });
 
     client.activate();
@@ -59,23 +69,29 @@ export const useWebSocket = () => {
     }
   }, [stompClient]);
 
-  const markAsRead = useCallback(async (notificationId: number) => {
-    try {
-      await apiClient.post(`/notifications/${notificationId}/read`);
-      setNotifications(prev =>
-        prev.map(notification =>
-          notification.id === notificationId
-            ? { ...notification, isRead: true }
-            : notification
-        )
-      );
-      setHasUnread(notifications.some(notification => 
-        !notification.isRead && notification.id !== notificationId
-      ));
-    } catch (error) {
-      console.error('알림 읽음 처리 실패:', error);
-    }
-  }, [notifications]);
+  const markAsRead = useCallback(
+    async (notificationId: number) => {
+      try {
+        await apiClient.post(`/notifications/${notificationId}/read`);
+        setNotifications((prev) =>
+          prev.map((notification) =>
+            notification.id === notificationId
+              ? { ...notification, isRead: true }
+              : notification
+          )
+        );
+        setHasUnread(
+          notifications.some(
+            (notification) =>
+              !notification.isRead && notification.id !== notificationId
+          )
+        );
+      } catch (error) {
+        console.error("알림 읽음 처리 실패:", error);
+      }
+    },
+    [notifications]
+  );
 
   useEffect(() => {
     return () => {
@@ -88,6 +104,6 @@ export const useWebSocket = () => {
     hasUnread,
     connect,
     disconnect,
-    markAsRead
+    markAsRead,
   };
 };
