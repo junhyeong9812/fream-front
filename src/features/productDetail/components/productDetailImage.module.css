@@ -54,3 +54,10 @@
   opacity: 1;
   filter: invert(1);
 }
+.customCarousel .carousel-item {
+  display: none; /* 기본적으로 모든 아이템 숨김 */
+}
+
+.customCarousel .carousel-item.active {
+  display: block; /* 활성화된 아이템만 보이도록 */
+}
