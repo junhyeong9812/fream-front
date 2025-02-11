@@ -39,6 +39,7 @@ export const useWebSocket = () => {
           // SockJS 옵션 추가: 불필요한 전송 방식 제한
           transports: ["websocket"],
           protocols: [],
+          withCredentials: true, // 쿠키 포함
         }),
       //   webSocketFactory: () => new SockJS('https://www.pinjun.xyz/api/ws'),
       onConnect: () => {
