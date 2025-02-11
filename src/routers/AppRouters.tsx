@@ -57,7 +57,7 @@ import FindEmail from "../features/login/pages/findEmailPage";
 import FindPassword from "../features/login/pages/findPasswordPage";
 import Shop from "../pages/Shop";
 import ProtectedRoute from "./ProtectedRoute";
-import ProductDetailPage from "@features/productDetail/pages/ProductdetailPage";
+import ProductDetailPage from "../features/productDetail/pages/ProductdetailPage";
 
 // 스타일드 컴포넌트로 Wrapping
 const AppRoutesContainer = styled.div`
