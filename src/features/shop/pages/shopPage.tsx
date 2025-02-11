@@ -754,8 +754,19 @@ const ShopPage: React.FC = () => {
   //이미지 데이터 get 코드
   type ImageData = {
     id: number;
-    imgUrl: string;
+    name: string;
+    englishName: string;
     brandName: string;
+    releasePrice: number;
+    thumbnailImageUrl: string;
+    price: number;
+    colorName:string;
+    colorId: number;
+    interestCount: number;
+    styleCount: number;
+    tradeCount: number;
+
+    imgUrl: string;
     productName: string;
     productPrice: string;
   };
