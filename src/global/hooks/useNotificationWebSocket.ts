@@ -45,7 +45,7 @@ export const useWebSocket = () => {
   const connect = useCallback(() => {
     const client = new Client({
       webSocketFactory: () =>
-        new SockJS("https://www.pinjun.xyz/api/ws", null, {
+        new SockJS("/api/ws", null, {
           withCredentials: true,
         }),
       onConnect: async () => {
