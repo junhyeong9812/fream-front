@@ -9,11 +9,12 @@ import {
   faArrowUp,
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
-
 // 리액트 아이콘
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import FilterModal from "../components/filterModal";
 import PopularModal from "../components/popularityModal";
+import { fetchShopData } from "../services/shopService";
+import { useSearchParams } from "react-router-dom";
 
 // 최상위 컨테이너
 const ShopContainer = styled.div`
@@ -21,6 +22,7 @@ const ShopContainer = styled.div`
   width: 1200px;
   margin: 0 auto;
 `;
+
 // FilterButton에 사용할 타입 정의
 interface FilterButtonProps {
   isClicked: boolean;
@@ -608,6 +610,7 @@ const PopularityButtonWrapper = styled.div`
 // display: inline-block; /* 버튼 크기에 맞춰 wrapping */
 
 const ShopPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
   // 모달 열림 여부
   const [open, setOpen] = useState(false);
 
@@ -765,43 +768,33 @@ const ShopPage: React.FC = () => {
     interestCount: number;
     styleCount: number;
     tradeCount: number;
-
     imgUrl: string;
     productName: string;
     productPrice: string;
+
   };
 
   const [imageList, setImageList] = useState<ImageData[]>([]);
 
   // 데이터를 백엔드에서 받아오는 함수
-  const fetchImageData = async () => {
+  const fetchImageData = async (keyword?: string) => {
     try {
-      const response = await fetch("https://www.pinjun.xyz/api/api/products");
-      if (!response.ok) {
-        throw new Error("fetchImageData에서 발생");
+      const data = await fetchShopData(keyword);
+      if (data === "no") {
+        console.error("데이터 가져오기 실패");
+        return;
       }
-
-      const data = await response.json();
-      console.log("확인데이터:", data); // 데이터 확인용 로그
-
-  // 백엔드 데이터 변환
-  const formattedData: ImageData[] = data.map((item: any) => ({
-    id: item.id,
-    imgUrl: item.thumbnailImageUrl, 
-    brandName: "", 
-    productName: item.name,
-    productPrice: `${item.releasePrice}원`,
-  }));
-      setImageList(formattedData);
+      setImageList(data);
     } catch (error) {
-      console.error("fetchImageData data에서 발생", error);
+      console.error("fetchImageData 에러:", error);
     }
   };
 
   // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
   useEffect(() => {
-    fetchImageData();
-  }, []);
+    const keyword = searchParams.get("keyword");
+    fetchImageData(keyword || undefined);
+  }, [searchParams]); // searchParams가 변경될 때마다 실행
 
   return (
     <>
@@ -1094,8 +1087,11 @@ const ShopPage: React.FC = () => {
                 <SearchResult>
                   <ImageGrid>
                     <ImageWrapper>
-                      <img src={image.imgUrl} alt={`sample-${image.id}`} />
-                      <OverlayText>거래 12.3만</OverlayText>
+                      <img
+                        src={image.thumbnailImageUrl}
+                        alt={`sample-${image.id}`}
+                      />
+                      <OverlayText>거래 {image.tradeCount}</OverlayText>
                     </ImageWrapper>
                   </ImageGrid>
 
@@ -1103,14 +1099,16 @@ const ShopPage: React.FC = () => {
                     <div className="imgTitle">
                       <span className="brandName">{image.brandName}</span>
                       <div className="img_info">
-                        <span className="name">{image.productName}</span>
+                        <span className="name">{image.name}</span>
                         <span className="translated_name">
-                          {image.productName}
+                          {image.englishName}
                         </span>
                       </div>
                     </div>
                     <div className="img_info price">
-                      <span className="infoPrice">{image.productPrice}</span>
+                      <span className="infoPrice">
+                        {image.price.toLocaleString()}원
+                      </span>
                       <span className="translated_name">즉시 구매가</span>
                     </div>
                     <div className="action_icon">
