@@ -8,6 +8,7 @@ export const useWebSocket = () => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null); // ✅ 사용자 이메일 상태 추가
 
   // 초기 알림 데이터 로드
   const loadInitialNotifications = useCallback(async () => {
@@ -15,12 +16,7 @@ export const useWebSocket = () => {
       const response = await apiClient.get(
         "/notifications/filter/type/read-status",
         {
-          params: {
-            type: "ALL",
-            isRead: false,
-            page: 0,
-            size: 20,
-          },
+          params: { type: "ALL", isRead: false, page: 0, size: 20 },
         }
       );
       setNotifications(response.data);
@@ -32,6 +28,20 @@ export const useWebSocket = () => {
     }
   }, []);
 
+  // 사용자 이메일 가져오기 (WebSocket 연결 후)
+  const fetchUserEmail = useCallback(async () => {
+    try {
+      const response = await apiClient.get("/api/user/email", {
+        withCredentials: true,
+      });
+      setUserEmail(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("사용자 이메일 가져오기 실패:", error);
+      return null;
+    }
+  }, []);
+
   const connect = useCallback(() => {
     const client = new Client({
       webSocketFactory: () =>
@@ -39,9 +49,14 @@ export const useWebSocket = () => {
           transports: ["websocket"],
           withCredentials: true,
         }),
-      onConnect: () => {
+      onConnect: async () => {
         console.log("WebSocket 연결됨");
-        setupWebSocketSubscriptions(client);
+
+        // ✅ WebSocket 연결 후 사용자 이메일 가져오기
+        const email = await fetchUserEmail();
+        if (email) {
+          setupWebSocketSubscriptions(client, email);
+        }
       },
       onDisconnect: () => {
         console.log("WebSocket 연결 해제됨");
@@ -53,13 +68,13 @@ export const useWebSocket = () => {
 
     client.activate();
     setStompClient(client);
-  }, []);
+  }, [fetchUserEmail]);
 
-  // 구독 및 초기 데이터 로드 별도 함수
+  // ✅ 이메일을 기반으로 개별 알림 구독 설정
   const setupWebSocketSubscriptions = useCallback(
-    (client: Client) => {
-      // 알림 구독
-      client.subscribe("/queue/notifications", (message) => {
+    (client: Client, email: string) => {
+      // 사용자 개별 알림 채널 구독
+      client.subscribe(`/user/${email}/queue/notifications`, (message) => {
         const newNotification: NotificationDTO = JSON.parse(message.body);
         setNotifications((prev) => [newNotification, ...prev]);
         setHasUnread(true);
