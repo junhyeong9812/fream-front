@@ -155,3 +155,12 @@
 .no-data-container p {
   margin: 4px 0;
 }
+
+.notification-item.unread {
+  background-color: #f0f6ff; /* 연한 파란색 배경 */
+  font-weight: bold;
+}
+
+.notification-item.unread p {
+  color: #2c6ac7; /* 진한 파란색 텍스트 */
+}

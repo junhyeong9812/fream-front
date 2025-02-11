@@ -32,13 +32,14 @@ const ProductDetailImage = ({
       <div className={styles.detailImgContainer}>
         <Carousel
           interval={null}
-          className={styles.customCarousel}
           controls={true}
           indicators={false}
           wrap={true}
+          slide={false} // 이 옵션이 중요합니다
+          className={styles.customCarousel}
         >
           {allImages.map((img, i) => (
-            <Carousel.Item key={i}>
+            <Carousel.Item key={i} className={styles.carouselItem}>
               <img
                 src={img}
                 alt={`Product view ${i + 1}`}

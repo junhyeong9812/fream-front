@@ -15,11 +15,15 @@ import { fetchCurrentWeather } from "./services/weatherService";
 import { fetchTodayAccessCount } from "./services/accessLogQueryService";
 import { AuthContext } from "src/global/context/AuthContext";
 import { logoutService } from "./services/logoutService";
+import { useWebSocket } from "src/global/hooks/useNotificationWebSocket";
 
 const Header: React.FC = () => {
+  const { notifications, hasUnread, connect, disconnect, markAsRead } =
+    useWebSocket();
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+
   const navigate = useNavigate();
   // 날씨 & 접속자수 상태
   const [currentWeather, setCurrentWeather] = useState<WeatherDataDto | null>(
@@ -29,6 +33,14 @@ const Header: React.FC = () => {
 
   // (예시) 현재 날짜(YYYY-MM-DD) 표시용
   const [currentDateString, setCurrentDateString] = useState<string>("");
+  useEffect(() => {
+    if (isLoggedIn) {
+      connect();
+    }
+    return () => {
+      disconnect();
+    };
+  }, [isLoggedIn, connect, disconnect]);
 
   useEffect(() => {
     // 컴포넌트 마운트 시, 날씨 & 오늘 접속자 조회 + 날짜 세팅
@@ -105,6 +117,9 @@ const Header: React.FC = () => {
                 <li>
                   <Link to="#" onClick={() => setNotificationModalOpen(true)}>
                     알림
+                    {hasUnread && (
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                    )}
                   </Link>
                 </li>
                 <li>
@@ -206,7 +221,11 @@ const Header: React.FC = () => {
 
       {/* 알림 모달 */}
       {isNotificationModalOpen && (
-        <NotificationModal closeModal={() => setNotificationModalOpen(false)} />
+        <NotificationModal
+          closeModal={() => setNotificationModalOpen(false)}
+          notifications={notifications}
+          onNotificationClick={markAsRead}
+        />
       )}
       {/* 검색 모달 */}
       {isSearchModalOpen && (

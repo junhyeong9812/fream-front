@@ -7,6 +7,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@stomp/stompjs": "^7.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.5.2",
@@ -16,6 +17,7 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cra-template-typescript": "1.2.0",
+    "lucide-react": "^0.475.0",
     "query-string": "^9.1.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
@@ -24,6 +26,7 @@
     "react-modal": "^3.16.3",
     "react-router-dom": "^7.0.2",
     "react-scripts": "5.0.1",
+    "sockjs-client": "^1.6.1",
     "styled-components": "^6.1.13",
     "web-vitals": "^4.2.4"
   },
