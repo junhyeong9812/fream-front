@@ -58,12 +58,16 @@ export const useWebSocket = () => {
           setupWebSocketSubscriptions(client, email);
         }
       },
+      onStompError: (frame) => {
+        console.error("WebSocket 연결 오류:", frame.headers["message"]);
+        console.error("오류 상세:", frame.body);
+      },
       onDisconnect: () => {
         console.log("WebSocket 연결 해제됨");
       },
       reconnectDelay: 10000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+      heartbeatIncoming: 0, //4000,
+      heartbeatOutgoing: 0, //4000,
     });
 
     client.activate();
