@@ -46,7 +46,6 @@ export const useWebSocket = () => {
     const client = new Client({
       webSocketFactory: () =>
         new SockJS("https://www.pinjun.xyz/api/ws", null, {
-          transports: ["websocket"],
           withCredentials: true,
         }),
       onConnect: async () => {
@@ -61,6 +60,9 @@ export const useWebSocket = () => {
       onStompError: (frame) => {
         console.error("WebSocket 연결 오류:", frame.headers["message"]);
         console.error("오류 상세:", frame.body);
+      },
+      debug: (str) => {
+        console.log("WebSocket 디버그:", str);
       },
       onDisconnect: () => {
         console.log("WebSocket 연결 해제됨");
