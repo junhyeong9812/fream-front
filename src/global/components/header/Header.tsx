@@ -174,7 +174,12 @@ const Header: React.FC = () => {
                 </li>
                 <li>
                   {isLoggedIn ? (
-                    <button onClick={handleLogout}>로그아웃</button>
+                    <button
+                      className="link-style-button"
+                      onClick={handleLogout}
+                    >
+                      로그아웃
+                    </button>
                   ) : (
                     <Link to="/login">로그인</Link>
                   )}
