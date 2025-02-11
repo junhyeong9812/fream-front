@@ -30,7 +30,13 @@ const ProductDetailImage = ({
   return (
     <div className={styles.detailImgForm}>
       <div className={styles.detailImgContainer}>
-        <Carousel interval={null} className={styles.customCarousel}>
+        <Carousel
+          interval={null}
+          className={styles.customCarousel}
+          controls={true}
+          indicators={false}
+          wrap={true}
+        >
           {allImages.map((img, i) => (
             <Carousel.Item key={i}>
               <img
