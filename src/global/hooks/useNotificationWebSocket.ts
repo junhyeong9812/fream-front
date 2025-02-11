@@ -36,20 +36,12 @@ export const useWebSocket = () => {
     const client = new Client({
       webSocketFactory: () =>
         new SockJS("https://www.pinjun.xyz/api/ws", null, {
-          // SockJS 옵션 추가: 불필요한 전송 방식 제한
           transports: ["websocket"],
-          protocols: [],
-          withCredentials: true, // 쿠키 포함
+          withCredentials: true,
         }),
-      //   webSocketFactory: () => new SockJS('https://www.pinjun.xyz/api/ws'),
       onConnect: () => {
         console.log("WebSocket 연결됨");
-        client.subscribe("/queue/notifications", (message) => {
-          const newNotification: NotificationDTO = JSON.parse(message.body);
-          setNotifications((prev) => [newNotification, ...prev]);
-          setHasUnread(true);
-        });
-        loadInitialNotifications();
+        setupWebSocketSubscriptions(client);
       },
       onDisconnect: () => {
         console.log("WebSocket 연결 해제됨");
@@ -61,7 +53,23 @@ export const useWebSocket = () => {
 
     client.activate();
     setStompClient(client);
-  }, [loadInitialNotifications]);
+  }, []);
+
+  // 구독 및 초기 데이터 로드 별도 함수
+  const setupWebSocketSubscriptions = useCallback(
+    (client: Client) => {
+      // 알림 구독
+      client.subscribe("/queue/notifications", (message) => {
+        const newNotification: NotificationDTO = JSON.parse(message.body);
+        setNotifications((prev) => [newNotification, ...prev]);
+        setHasUnread(true);
+      });
+
+      // 초기 알림 로드
+      loadInitialNotifications();
+    },
+    [loadInitialNotifications]
+  );
 
   const disconnect = useCallback(() => {
     if (stompClient) {
