@@ -57,6 +57,7 @@ import FindEmail from "../features/login/pages/findEmailPage";
 import FindPassword from "../features/login/pages/findPasswordPage";
 import Shop from "../pages/Shop";
 import ProtectedRoute from "./ProtectedRoute";
+import ProductDetailPage from "../features/productDetail/pages/ProductdetailPage";
 
 // 스타일드 컴포넌트로 Wrapping
 const AppRoutesContainer = styled.div`
@@ -92,10 +93,14 @@ const AppRoutes: React.FC = () => {
         </Route>
         <Route path="/cart" element={<Cart />} />
         {/* 메인 마이페이지 */}
-        <Route path="/my" element={
-                <ProtectedRoute>
-                    <My />
-                </ProtectedRoute>}>
+        <Route
+          path="/my"
+          element={
+            <ProtectedRoute>
+              <My />
+            </ProtectedRoute>
+          }
+        >
           {/* 하위 라우트 설정 */}
           <Route path="" element={<MyHomePage />} />
           <Route path="purchase" element={<Purchase />} />
@@ -133,6 +138,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/exhibition" element={<MainExhibition />} />
         <Route path="/men" element={<MainMen />} />
         <Route path="/women" element={<MainWomen />} />
+        <Route path="/products/:id" element={<ProductDetailPage />} />
         {/* 추가 페이지를 여기에 추가 */}
         {/* footerPage */}
         <Route path="/info" element={<InfoPage />} />

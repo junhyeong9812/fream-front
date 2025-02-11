@@ -1,0 +1,40 @@
+.detailRoot {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background-color: white;
+}
+
+.detailMainContainer {
+  height: 1800px;
+  width: 1200px;
+  margin: auto;
+  margin-top: 120px;
+  text-align: center;
+  display: flex;
+}
+
+.detailSecondContainer {
+  width: 1200px;
+  margin: 40px auto auto auto;
+}
+
+.detailThirdContainer {
+  width: 1200px;
+  margin: 30px auto auto auto;
+}
+
+.detailFourthContainer {
+  width: 1200px;
+  margin: 30px auto auto auto;
+}
+
+.detailDivider {
+  height: 1800px;
+  width: 1px;
+  margin-left: 40px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.detailSpacer {
+  height: 50px;
+}

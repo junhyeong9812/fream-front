@@ -1,0 +1,61 @@
+/* productDetailImage.module.css */
+.detailImgForm {
+  width: 560px;
+}
+
+.detailImgContainer {
+  width: 560px;
+  position: sticky;
+  top: 130px;
+  margin-bottom: 25px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.detailImgInfo {
+  margin-top: 20px;
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(7, 62.85px);
+  gap: 20px;
+}
+
+.mainImage {
+  width: 560px;
+  height: 560px;
+  object-fit: cover;
+  background-color: #f4f4f4;
+}
+
+.colorThumbnail {
+  width: 62.85px;
+  height: 62.85px;
+  background-color: #f4f4f4;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.colorThumbnail:hover {
+  opacity: 0.8;
+}
+
+.customCarousel :global(.carousel-control-prev-icon),
+.customCarousel :global(.carousel-control-next-icon) {
+  width: 30px;
+  height: 30px;
+}
+
+.customCarousel :global(.carousel-control-prev),
+.customCarousel :global(.carousel-control-next) {
+  opacity: 1;
+  filter: invert(1);
+}
+.customCarousel .carousel-item {
+  display: none; /* 기본적으로 모든 아이템 숨김 */
+  width: 100%;
+}
+
+.customCarousel .carousel-item.active {
+  display: block; /* 활성화된 아이템만 보이도록 */
+  width: 100%;
+}

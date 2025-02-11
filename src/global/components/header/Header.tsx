@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiSearch,
@@ -15,67 +21,122 @@ import { fetchCurrentWeather } from "./services/weatherService";
 import { fetchTodayAccessCount } from "./services/accessLogQueryService";
 import { AuthContext } from "src/global/context/AuthContext";
 import { logoutService } from "./services/logoutService";
+import { useWebSocket } from "src/global/hooks/useNotificationWebSocket";
 
 const Header: React.FC = () => {
+  // WebSocket 훅
+  const { notifications, hasUnread, connect, disconnect, markAsRead } =
+    useWebSocket();
+
+  // 모달 상태
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
+
+  // 인증 컨텍스트
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
-  // 날씨 & 접속자수 상태
+
+  // 데이터 상태
   const [currentWeather, setCurrentWeather] = useState<WeatherDataDto | null>(
     null
   );
   const [todayAccessCount, setTodayAccessCount] = useState<number>(0);
-
-  // (예시) 현재 날짜(YYYY-MM-DD) 표시용
   const [currentDateString, setCurrentDateString] = useState<string>("");
 
+  // 컴포넌트 마운트 상태 추적
+  const isMounted = useRef(true);
+
+  // WebSocket 연결 관리
   useEffect(() => {
-    // 컴포넌트 마운트 시, 날씨 & 오늘 접속자 조회 + 날짜 세팅
-    async function loadData() {
-      const weather = await fetchCurrentWeather();
-      if (weather) {
-        setCurrentWeather(weather);
+    let isSubscribed = true;
+
+    const handleWebSocketConnection = async () => {
+      if (isLoggedIn && isSubscribed) {
+        try {
+          await connect();
+        } catch (error) {
+          console.error("WebSocket 연결 실패:", error);
+        }
       }
+    };
 
-      const count = await fetchTodayAccessCount();
-      setTodayAccessCount(count);
+    handleWebSocketConnection();
 
-      // 오늘 날짜 예: 2025-02-01
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      setCurrentDateString(`${year}-${month}-${day}`);
-    }
+    return () => {
+      isSubscribed = false;
+      disconnect();
+    };
+  }, [isLoggedIn]);
+
+  // 날씨와 접속자 수 데이터 로딩
+  useEffect(() => {
+    const loadData = async () => {
+      if (!isMounted.current) return;
+
+      try {
+        const [weather, count] = await Promise.all([
+          fetchCurrentWeather(),
+          fetchTodayAccessCount(),
+        ]);
+
+        if (!isMounted.current) return;
+
+        if (weather) {
+          setCurrentWeather(weather);
+        }
+        setTodayAccessCount(count);
+
+        // 날짜 설정
+        const now = new Date();
+        const formattedDate = [
+          now.getFullYear(),
+          String(now.getMonth() + 1).padStart(2, "0"),
+          String(now.getDate()).padStart(2, "0"),
+        ].join("-");
+
+        setCurrentDateString(formattedDate);
+      } catch (error) {
+        console.error("데이터 로딩 실패:", error);
+      }
+    };
 
     loadData();
+
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
-  const handleLogout = async () => {
+
+  // 모달 토글 핸들러
+  const toggleNotificationModal = useCallback(() => {
+    setNotificationModalOpen((prev) => !prev);
+  }, []);
+
+  const toggleSearchModal = useCallback(() => {
+    setSearchModalOpen((prev) => !prev);
+  }, []);
+
+  // 로그아웃 핸들러
+  const handleLogout = useCallback(async () => {
     try {
-      // 1) 백엔드 /auth/logout 호출 -> 쿠키 무효화
+      disconnect(); // WebSocket 연결 먼저 해제
       await logoutService();
-
-      // 2) 로컬스토리지에서 "IsLoggedIn" 제거
       localStorage.removeItem("IsLoggedIn");
-
-      // 3) AuthContext false로
       setIsLoggedIn(false);
-
       alert("로그아웃되었습니다.");
       navigate("/");
     } catch (error) {
       console.error("로그아웃 오류:", error);
+      alert("로그아웃 처리 중 오류가 발생했습니다.");
     }
-  };
+  }, [disconnect, setIsLoggedIn, navigate]);
 
   return (
     <>
       {/* 데스크탑 헤더 전체 영역 */}
       <div className="header-all-container">
-        {/* 데스크탑 헤더 */}
         <header className="header-container">
-          {/* --- 상단 섹션: 날짜 / 오늘 접속자 VS top-nav --- */}
+          {/* 상단 섹션: 날짜 / 오늘 접속자 VS top-nav */}
           <div className="header-top-section">
             <div className="left-info">
               <div className="date-info">오늘 날짜: {currentDateString}</div>
@@ -90,6 +151,7 @@ const Header: React.FC = () => {
                 </div>
               )}
             </div>
+
             {/* top-nav 우측 정렬 */}
             <div className="top-nav">
               <ul>
@@ -105,15 +167,21 @@ const Header: React.FC = () => {
                 <li>
                   <Link to="#" onClick={() => setNotificationModalOpen(true)}>
                     알림
+                    {hasUnread && (
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                    )}
                   </Link>
                 </li>
                 <li>
                   {isLoggedIn ? (
-                    <button onClick={handleLogout}>로그아웃</button>
+                    <button
+                      className="link-style-button"
+                      onClick={handleLogout}
+                    >
+                      로그아웃
+                    </button>
                   ) : (
-                    <>
-                      <Link to="/login">로그인</Link>
-                    </>
+                    <Link to="/login">로그인</Link>
                   )}
                 </li>
               </ul>
@@ -136,10 +204,7 @@ const Header: React.FC = () => {
                   <Link to="/shop">SHOP</Link>
                 </li>
                 <li>
-                  <button
-                    className="icon"
-                    onClick={() => setSearchModalOpen(true)}
-                  >
+                  <button className="icon" onClick={toggleSearchModal}>
                     <FiSearch />
                   </button>
                 </li>
@@ -163,7 +228,7 @@ const Header: React.FC = () => {
             alt="Mobile Logo"
           />
         </Link>
-        <button className="icon" onClick={() => setNotificationModalOpen(true)}>
+        <button className="icon" onClick={toggleNotificationModal}>
           <FiShoppingBag />
         </button>
       </header>
@@ -204,11 +269,14 @@ const Header: React.FC = () => {
         </ul>
       </nav>
 
-      {/* 알림 모달 */}
+      {/* 모달 */}
       {isNotificationModalOpen && (
-        <NotificationModal closeModal={() => setNotificationModalOpen(false)} />
+        <NotificationModal
+          closeModal={() => setNotificationModalOpen(false)}
+          notifications={notifications}
+          onNotificationClick={markAsRead}
+        />
       )}
-      {/* 검색 모달 */}
       {isSearchModalOpen && (
         <SearchModal closeModal={() => setSearchModalOpen(false)} />
       )}
