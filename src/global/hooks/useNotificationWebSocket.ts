@@ -1,14 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import apiClient from "../services/ApiClient";
 import { NotificationDTO } from "../types/notification";
 
 export const useWebSocket = () => {
-  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const stompClientRef = useRef<Client | null>(null);
   const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null); // ✅ 사용자 이메일 상태 추가
+  const emailRef = useRef<string | null>(null);
+  const isConnectingRef = useRef(false);
 
   // 초기 알림 데이터 로드
   const loadInitialNotifications = useCallback(async () => {
@@ -28,13 +29,13 @@ export const useWebSocket = () => {
     }
   }, []);
 
-  // 사용자 이메일 가져오기 (WebSocket 연결 후)
+  // 사용자 이메일 가져오기
   const fetchUserEmail = useCallback(async () => {
     try {
       const response = await apiClient.get("/api/user/email", {
         withCredentials: true,
       });
-      setUserEmail(response.data);
+      emailRef.current = response.data;
       return response.data;
     } catch (error) {
       console.error("사용자 이메일 가져오기 실패:", error);
@@ -42,7 +43,27 @@ export const useWebSocket = () => {
     }
   }, []);
 
-  const connect = useCallback(() => {
+  // WebSocket 구독 설정
+  const setupWebSocketSubscriptions = useCallback(
+    (client: Client, email: string) => {
+      client.subscribe(`/user/${email}/queue/notifications`, (message) => {
+        const newNotification: NotificationDTO = JSON.parse(message.body);
+        setNotifications((prev) => [newNotification, ...prev]);
+        setHasUnread(true);
+      });
+      loadInitialNotifications();
+    },
+    [loadInitialNotifications]
+  );
+
+  const connect = useCallback(async () => {
+    // 이미 연결 중이거나 연결된 상태면 중복 연결 방지
+    if (isConnectingRef.current || stompClientRef.current?.active) {
+      return;
+    }
+
+    isConnectingRef.current = true;
+
     const client = new Client({
       webSocketFactory: () =>
         new SockJS("/api/ws", null, {
@@ -50,54 +71,40 @@ export const useWebSocket = () => {
         }),
       onConnect: async () => {
         console.log("WebSocket 연결됨");
-
-        // ✅ WebSocket 연결 후 사용자 이메일 가져오기
-        const email = await fetchUserEmail();
+        const email = emailRef.current || (await fetchUserEmail());
         if (email) {
           setupWebSocketSubscriptions(client, email);
         }
+        isConnectingRef.current = false;
       },
       onStompError: (frame) => {
-        console.error("WebSocket 연결 오류:", frame.headers["message"]);
-        console.error("오류 상세:", frame.body);
+        console.error("STOMP 오류:", frame.headers["message"], frame.body);
+        isConnectingRef.current = false;
       },
-      debug: (str) => {
-        console.log("WebSocket 디버그:", str);
+      onWebSocketError: (event) => {
+        console.error("WebSocket 오류:", event);
+        isConnectingRef.current = false;
       },
       onDisconnect: () => {
         console.log("WebSocket 연결 해제됨");
+        isConnectingRef.current = false;
       },
-      reconnectDelay: 10000,
-      heartbeatIncoming: 0, //4000,
-      heartbeatOutgoing: 0, //4000,
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
     });
 
+    stompClientRef.current = client;
     client.activate();
-    setStompClient(client);
-  }, [fetchUserEmail]);
-
-  // ✅ 이메일을 기반으로 개별 알림 구독 설정
-  const setupWebSocketSubscriptions = useCallback(
-    (client: Client, email: string) => {
-      // 사용자 개별 알림 채널 구독
-      client.subscribe(`/user/${email}/queue/notifications`, (message) => {
-        const newNotification: NotificationDTO = JSON.parse(message.body);
-        setNotifications((prev) => [newNotification, ...prev]);
-        setHasUnread(true);
-      });
-
-      // 초기 알림 로드
-      loadInitialNotifications();
-    },
-    [loadInitialNotifications]
-  );
+  }, [fetchUserEmail, setupWebSocketSubscriptions]);
 
   const disconnect = useCallback(() => {
-    if (stompClient) {
-      stompClient.deactivate();
-      setStompClient(null);
+    if (stompClientRef.current) {
+      stompClientRef.current.deactivate();
+      stompClientRef.current = null;
     }
-  }, [stompClient]);
+    isConnectingRef.current = false;
+  }, []);
 
   const markAsRead = useCallback(
     async (notificationId: number) => {
@@ -110,7 +117,7 @@ export const useWebSocket = () => {
               : notification
           )
         );
-        setHasUnread(
+        setHasUnread((prev) =>
           notifications.some(
             (notification) =>
               !notification.isRead && notification.id !== notificationId
@@ -123,6 +130,7 @@ export const useWebSocket = () => {
     [notifications]
   );
 
+  // cleanup effect
   useEffect(() => {
     return () => {
       disconnect();
