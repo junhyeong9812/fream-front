@@ -34,7 +34,18 @@ const ProductDetailPage = () => {
       try {
         setIsLoading(true);
         const data = await getProductDetail(id, colorName);
-        setProductDetail(data);
+        // setProductDetail(data);
+        // 🟢 현재 선택된 colorName과 API 응답의 colorName이 일치하는 썸네일 찾기
+        const selectedImage =
+          data.colorName === colorName
+            ? data.thumbnailImageUrl // 현재 선택한 색상의 썸네일
+            : data.otherColors.find((color) => color.colorName === colorName)
+                ?.thumbnailImageUrl || data.thumbnailImageUrl;
+
+        setProductDetail({
+          ...data,
+          thumbnailImageUrl: selectedImage, // ✅ 올바른 이미지가 첫 번째로 보이게 설정
+        });
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to fetch product details"
