@@ -14,7 +14,7 @@ import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import FilterModal from "../components/filterModal";
 import PopularModal from "../components/popularityModal";
 import { fetchShopData } from "../services/shopService";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // 최상위 컨테이너
 const ShopContainer = styled.div`
@@ -610,6 +610,7 @@ const PopularityButtonWrapper = styled.div`
 // display: inline-block; /* 버튼 크기에 맞춰 wrapping */
 
 const ShopPage: React.FC = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   // 모달 열림 여부
   const [open, setOpen] = useState(false);
@@ -792,6 +793,9 @@ const ShopPage: React.FC = () => {
     fetchImageData(keyword || undefined);
   }, [searchParams]); // searchParams가 변경될 때마다 실행
 
+  const handleProductClick = (productId: number, colorName: string) => {
+    navigate(`/products/${productId}?color=${colorName}`);
+  };
   return (
     <>
       <ShopContainer onClick={handleGlobalClick}>
@@ -1079,7 +1083,11 @@ const ShopPage: React.FC = () => {
 
           <SearchContent>
             {imageList.map((image) => (
-              <ShopMainContent key={image.id}>
+              <ShopMainContent
+                key={image.id}
+                onClick={() => handleProductClick(image.id, image.colorName)}
+                style={{ cursor: "pointer" }}
+              >
                 <SearchResult>
                   <ImageGrid>
                     <ImageWrapper>

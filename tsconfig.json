@@ -1,53 +1,51 @@
 {
   "compilerOptions": {
     /* Language and Environment */
-    "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ] /* Include library declarations for modern JavaScript and DOM. */,
-    "jsx": "react-jsx" /* Use the React 17+ JSX transform. */,
+    "target": "es2016",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
 
     /* Modules */
-    "module": "esnext" /* Use ESNext modules. */,
-    "moduleResolution": "node" /* Resolve modules using Node.js module resolution. */,
-    "baseUrl": "./" /* Base directory for resolving paths. */,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "baseUrl": "./",
     "paths": {
-      /* Optionally, configure path aliases. */
       "@components/*": ["src/components/*"],
       "@features/*": ["src/features/*"],
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"]
     },
-    "resolveJsonModule": true /* Allow importing .json files. */,
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for CommonJS modules. */,
-    "allowSyntheticDefaultImports": true /* Allow default imports from modules without default exports. */,
-    "forceConsistentCasingInFileNames": true /* Ensure consistent casing in file imports. */,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
 
     /* Type Checking */
-    "strict": true /* Enable all strict type-checking options. */,
-    "noImplicitAny": true /* Raise error on expressions with 'any' type. */,
-    "strictNullChecks": true /* Enable strict null checks. */,
-    "strictFunctionTypes": true /* Enable strict checking of function types. */,
-    "strictBindCallApply": true /* Check bind, call, and apply argument types. */,
-    "strictPropertyInitialization": true /* Ensure class properties are initialized. */,
-    "noImplicitThis": true /* Raise error on 'this' with 'any' type. */,
-    "useUnknownInCatchVariables": false /* Use 'any' instead of 'unknown' in catch variables. */,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": false,
 
     /* JavaScript Support */
-    "allowJs": true /* Allow JavaScript files to be included in the project. */,
-    "checkJs": false /* Disable error reporting in JavaScript files. */,
+    "allowJs": true,
+    "checkJs": false,
 
     /* Emit */
-    "sourceMap": true /* Emit source map files for debugging. */,
-    "outDir": "./dist" /* Specify output directory for compiled files. */,
-    "skipLibCheck": true /* Skip type checking of declaration files. */
+    "sourceMap": true,
+    "outDir": "./dist",
+    "skipLibCheck": true,
+
+    /* CSS Modules Support */
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ]
   },
-  "include": ["src"] /* Include all files in the 'src' directory. */,
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist"
-  ] /* Exclude unnecessary files and folders. */
+  "include": ["src", "src/**/*.ts", "src/**/*.tsx", "src/**/*.css"],
+  "exclude": ["node_modules", "build", "dist"]
 }
