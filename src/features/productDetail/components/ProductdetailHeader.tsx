@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
 import styles from "./productdetailHeader.module.css";
+import HeaderBuyModal from "./modals/HeaderBuyModal";
+import HeaderSellModal from "./modals/HeaderSellModal";
+import { ProductDetailResponse } from "@features/productDetail/services/productDetailServices";
 
 interface ProductDetailHeaderProps {
-  detail_main_image: string[];
-  main_info_shoes: {
-    gender: string;
-    nameEng: string;
-    nameKor: string;
-  };
+  product: ProductDetailResponse;
   final_size: string;
   setFinal_Size: (size: string) => void;
 }
 
 const ProductDetailHeader = ({
-  detail_main_image,
-  main_info_shoes,
+  product,
   final_size,
   setFinal_Size,
 }: ProductDetailHeaderProps) => {
@@ -33,9 +30,9 @@ const ProductDetailHeader = ({
   }, []);
 
   const formatGender = (gender: string) => {
-    if (gender === "MAN") {
+    if (product.brandName === "MAN") {
       return "";
-    } else if (gender === "WOMAN") {
+    } else if (product.brandName === "WOMAN") {
       return "(W)";
     } else {
       return "";
@@ -52,7 +49,7 @@ const ProductDetailHeader = ({
         <div style={{ width: "660px", display: "flex" }}>
           <div>
             <img
-              src={detail_main_image[0]}
+              src={product.thumbnailImageUrl}
               style={{
                 width: "65px",
                 height: "65px",
@@ -65,17 +62,26 @@ const ProductDetailHeader = ({
           </div>
           <div style={{ marginLeft: "8px", marginTop: "12px" }}>
             <div style={{ fontSize: "18px" }}>
-              {formatGender(main_info_shoes.gender)}
-              {main_info_shoes.nameEng}
+              {formatGender(product.brandName)}
+              {product.englishName}
             </div>
             <div style={{ fontSize: "14px", color: "rgba(0,0,0,0.5)" }}>
-              {formatGender(main_info_shoes.gender)}
-              {main_info_shoes.nameKor}
+              {formatGender(product.brandName)}
+              {product.name}
             </div>
           </div>
         </div>
         <div style={{ width: "540px", display: "flex", marginTop: "14px" }}>
-          {/* 필요한 추가 컴포넌트 헤더바이모달 /헤더바이셀은 추가 필요*/}
+          <HeaderBuyModal
+            product={product}
+            final_size={final_size}
+            setFinal_Size={setFinal_Size}
+          />
+          <HeaderSellModal
+            product={product}
+            final_size={final_size}
+            setFinal_Size={setFinal_Size}
+          />
         </div>
       </div>
     </div>
