@@ -620,7 +620,7 @@ const ShopPage: React.FC = () => {
     sizes: [],
     brands: [],
   });
-  
+
   // 모달 열림 여부
   const [open, setOpen] = useState(false);
 
@@ -749,7 +749,6 @@ const ShopPage: React.FC = () => {
   //인기순 버튼의 모달창
   const [buttonListModal, setButtonListModal] = useState(false);
 
-
   const handlePopularityOpenModal = () => setButtonListModal(true);
   const handlePopularityCloseModal = () => setButtonListModal(false);
 
@@ -762,7 +761,7 @@ const ShopPage: React.FC = () => {
     releasePrice: number;
     thumbnailImageUrl: string;
     price: number;
-    colorName:string;
+    colorName: string;
     colorId: number;
     interestCount: number;
     styleCount: number;
@@ -770,7 +769,6 @@ const ShopPage: React.FC = () => {
     imgUrl: string;
     productName: string;
     productPrice: string;
-
   };
 
   const [imageList, setImageList] = useState<ImageData[]>([]);
@@ -785,39 +783,41 @@ const ShopPage: React.FC = () => {
         console.error("데이터 가져오기 실패");
         return;
       }
-  
+
       // 데이터 포맷 변환
-      const formattedData: ImageData[] = data.map((item: any) => ({
-        id: item.id,
-        imgUrl: item.thumbnailImageUrl, 
-        brandName: "", 
-        productName: item.name,
-        productPrice: `${item.releasePrice}원`,
-      }));
-  
-      setImageList(formattedData); // 포맷된 데이터 설정
+      // const formattedData: ImageData[] = data.map((item: any) => ({
+      //   id: item.id,
+      //   imgUrl: item.thumbnailImageUrl,
+      //   brandName: "",
+      //   productName: item.name,
+      //   productPrice: `${item.releasePrice}원`,
+      // }));
+
+      setImageList(data); // 포맷된 데이터 설정
     } catch (error) {
       console.error("fetchImageData에서 발생", error);
     }
   };
 
-
   // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
   useEffect(() => {
     const keyword = searchParams.get("keyword");
     const categories = searchParams.getAll("category");
-    fetchImageData(keyword || undefined, categories.length > 0 ? categories : undefined);
+    fetchImageData(
+      keyword || undefined,
+      categories.length > 0 ? categories : undefined
+    );
   }, [searchParams]);
 
   // useEffect(() => {
-  //   fetchImageData(); 
+  //   fetchImageData();
   // }, []);
   //   const keyword = searchParams.get("keyword"); // 검색어 가져오기
   //   const categories = searchParams.getAll("category"); // 여러 개의 카테고리 필터 가져오기
-  
+
   //   fetchImageData(keyword || undefined, categories.length > 0 ? categories : undefined);
   // }, [searchParams]); // URL 파라미터가 변경될 때마다 실행
-  
+
   // const [products, setProducts] = useState([]); // 상품 목록 상태
   // const [modalFilters, setModalFilters] = useState({
   //   keyword: "",
@@ -828,7 +828,7 @@ const ShopPage: React.FC = () => {
   //   sizes: [],
   //   brands: [],
   // });
-  // //필터적용버튼 
+  // //필터적용버튼
   const handleViewProducts = () => {
     fetchShopData(
       searchParams.get("keyword") || undefined,
@@ -1183,7 +1183,11 @@ const ShopPage: React.FC = () => {
         </ContentContainer>
       </ShopContainer>
       {/* 모달 컴포넌트: open 상태이면 출력 */}
-      <FilterModal open={isModalOpen} onClose={handleCloseModal} onApplyFilters={handleViewProducts} />
+      <FilterModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        onApplyFilters={handleViewProducts}
+      />
     </>
   );
 };
