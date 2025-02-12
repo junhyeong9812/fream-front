@@ -17,7 +17,8 @@
   width: 480px;
   height: 700px;
   border-radius: 20px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalHeader {
@@ -26,48 +27,55 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .modalTitle {
   font-size: 20px;
   font-weight: bold;
-  margin: 20px 0;
 }
 
 .closeButton {
   position: absolute;
   right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 60px;
+  width: 40px;
+  height: 40px;
   border: none;
   background-color: white;
-  border-radius: 20px;
-  font-size: 30px;
-  font-weight: lighter;
+  border-radius: 50%;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.5);
 }
 
 .productInfo {
   display: flex;
-  padding: 0 30px;
-  margin-bottom: 20px;
+  padding: 20px 30px;
+  gap: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .productImage {
+  width: 120px;
   height: 120px;
   background-color: #f4f4f4;
+  object-fit: cover;
 }
 
 .productDetails {
-  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: left;
 }
 
 .productId {
   font-weight: bold;
   margin-bottom: 5px;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .productName {
@@ -80,15 +88,19 @@
 }
 
 .sizeGridContainer {
-  padding: 0 30px;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px 30px;
+}
+
+.sizeGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-bottom: 20px;
 }
 
 .sizeButton {
-  width: 133px;
+  width: 100%;
   height: 58px;
   border-radius: 10px;
   background-color: white;
@@ -114,18 +126,22 @@
 .priceText {
   font-size: 12px;
   font-weight: bold;
-  color: #41b979; /* 판매 모달용 초록색 */
+  color: #41b979;
 }
 
 .sellButton {
-  width: 420px;
+  width: calc(100% - 60px);
   height: 65px;
-  margin: 10px auto;
-  display: block;
+  margin: 20px 30px;
   background-color: black;
   color: white;
   font-weight: bold;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+}
+
+.sellButton:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
 }

@@ -65,12 +65,7 @@ const ProductDetailPage = () => {
   return (
     <>
       <ProductDetailHeader
-        detail_main_image={[productDetail.thumbnailImageUrl]}
-        main_info_shoes={{
-          gender: "MAN", // 백엔드 응답에 gender 필드 추가 필요
-          nameEng: productDetail.englishName,
-          nameKor: productDetail.name,
-        }}
+        product={productDetail}
         final_size={selectedSize}
         setFinal_Size={setSelectedSize}
       />

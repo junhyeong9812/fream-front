@@ -59,25 +59,38 @@ export const BuyModal = ({
             <p className={styles.productKorName}>{product.name}</p>
           </div>
         </div>
-        <div className={styles.sizeGrid}>
-          {product.sizes.map((size) => (
-            <button
-              key={size.size}
-              className={`${styles.sizeButton} ${
-                selectedSize === size.size ? styles.selected : ""
-              }`}
-              onClick={() => handleBuy(size.size)}
-            >
-              <span className={styles.sizeText}>{size.size}</span>
-              <span className={styles.priceText}>
-                {new Intl.NumberFormat("ko-KR").format(
-                  getSizePurchasePrice(size.size)
-                )}
-                원
-              </span>
-            </button>
-          ))}
+        <div className={styles.sizeGridContainer}>
+          <div className={styles.sizeGrid}>
+            {product.sizes.map((size) => (
+              <button
+                key={size.size}
+                className={`${styles.sizeButton} ${
+                  selectedSize === size.size ? styles.selected : ""
+                }`}
+                onClick={() => handleBuy(size.size)}
+              >
+                <span className={styles.sizeText}>{size.size}</span>
+                <span className={styles.priceText}>
+                  {new Intl.NumberFormat("ko-KR").format(
+                    getSizePurchasePrice(size.size)
+                  )}
+                  원
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
+        <button
+          className={styles.buyButton}
+          onClick={() => selectedSize && handleBuy(selectedSize)}
+          disabled={!selectedSize}
+        >
+          {selectedSize
+            ? `${new Intl.NumberFormat("ko-KR").format(
+                getSizePurchasePrice(selectedSize)
+              )}원 구매하기`
+            : "사이즈를 선택해주세요"}
+        </button>
       </div>
     </div>
   );
