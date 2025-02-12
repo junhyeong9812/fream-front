@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
-import { fetchShopData } from 'src/features/shop/services/shopService';
+import { fetchShopData } from "src/features/shop/services/shopService";
 
 const url = new URL(window.location.href);
 const searchParams = new URLSearchParams(url.search);
@@ -48,7 +48,11 @@ const initialFilters: ModalFilters = {
   brands: [],
 };
 
-const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters }) => {
+const FilterModal: React.FC<FilterModalProps> = ({
+  open,
+  onClose,
+  onApplyFilters,
+}) => {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [genderOpen, setGenderOpen] = useState(false);
   const [colorOpen, setColorOpen] = useState(false);
@@ -57,11 +61,12 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
   const [collectionOpen, setCollectionOpen] = useState(false);
   const [sizeOpen, setSizeOpen] = useState(false);
   const [priceOpen, setPriceOpen] = useState(false);
-  const [modalFilters, setModalFilters] = useState<ModalFilters>(initialFilters);
+  const [modalFilters, setModalFilters] =
+    useState<ModalFilters>(initialFilters);
   const [imageList, setImageList] = useState<Product[]>([]);
 
   if (!open) return null; // open이 false면 null 리턴
-  
+
   //브랜드 목록 테스트용
   const items = [
     "& Other Stories",
@@ -109,7 +114,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
     { name: "화이트", rgb: "rgb(255, 255, 255)" },
     { name: "아이보리", rgb: "rgb(244, 238, 221)" },
     { name: "베이지", rgb: "rgb(230, 194, 129)" },
-    { name: "브라운", rgb:  "rgb(102, 50, 3)" },
+    { name: "브라운", rgb: "rgb(102, 50, 3)" },
     { name: "카키", rgb: "rgb(143, 120, 75)" },
     { name: "그린", rgb: "rgb(0, 128, 0)" },
     { name: "라이트그린", rgb: "rgb(144, 238, 144)" },
@@ -127,7 +132,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
     { name: "믹스", img: "/shopcolorimg/mixColor.png" },
   ];
 
-  //할인 모달버튼 
+  //할인 모달버튼
   const filters = [
     {
       title: "혜택",
@@ -153,80 +158,79 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
   const shoeSizes = ["70", "80", "90", "110"];
   const apparelSizes = ["XXS", "XS", "S", "M", "L", "XL"];
 
-    // 카테고리 필터 선택
-    const handleCategoryClick = (category: string) => {
-      setModalFilters((prev) => ({
-          ...prev,
-          categories: prev.categories.includes(category)
-              ? prev.categories.filter((c) => c !== category)
-              : [...prev.categories, category],
-      }));
-    };
+  // 카테고리 필터 선택
+  const handleCategoryClick = (category: string) => {
+    setModalFilters((prev) => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter((c) => c !== category)
+        : [...prev.categories, category],
+    }));
+  };
 
-    // 성별 필터 선택
-    const handleGenderClick = (gender: string) => {
-      setModalFilters((prev) => ({
-          ...prev,
-          gender: prev.gender === gender ? null : gender, // 같은 걸 누르면 해제
-      }));
-    };
+  // 성별 필터 선택
+  const handleGenderClick = (gender: string) => {
+    setModalFilters((prev) => ({
+      ...prev,
+      gender: prev.gender === gender ? null : gender, // 같은 걸 누르면 해제
+    }));
+  };
 
-    // 색상 필터 선택
-    const handleColorClick = (color: string) => {
-      setModalFilters((prev) => ({
-          ...prev,
-          colors: prev.colors.includes(color)
-              ? prev.colors.filter((c) => c !== color)
-              : [...prev.colors, color],
-      }));
-    };
+  // 색상 필터 선택
+  const handleColorClick = (color: string) => {
+    setModalFilters((prev) => ({
+      ...prev,
+      colors: prev.colors.includes(color)
+        ? prev.colors.filter((c) => c !== color)
+        : [...prev.colors, color],
+    }));
+  };
 
-    // 가격대 필터 선택
-    const handlePriceClick = (price: string) => {
-      setModalFilters((prev) => ({
-          ...prev,
-          priceRange: prev.priceRange === price ? null : price, // 같은 걸 누르면 해제
-      }));
-    };
+  // 가격대 필터 선택
+  const handlePriceClick = (price: string) => {
+    setModalFilters((prev) => ({
+      ...prev,
+      priceRange: prev.priceRange === price ? null : price, // 같은 걸 누르면 해제
+    }));
+  };
 
-    // 사이즈 필터 선택
-    const handleSizeClick = (size: string) => {
-      setModalFilters((prev) => ({
-          ...prev,
-          sizes: prev.sizes.includes(size)
-              ? prev.sizes.filter((s) => s !== size)
-              : [...prev.sizes, size],
-      }));
-    };
+  // 사이즈 필터 선택
+  const handleSizeClick = (size: string) => {
+    setModalFilters((prev) => ({
+      ...prev,
+      sizes: prev.sizes.includes(size)
+        ? prev.sizes.filter((s) => s !== size)
+        : [...prev.sizes, size],
+    }));
+  };
 
-    // 브랜드 필터 선택
-    const handleBrandClick = (brand: string) => {
-      setModalFilters((prev) => ({
-          ...prev,
-          brands: prev.brands.includes(brand)
-              ? prev.brands.filter((b) => b !== brand)
-              : [...prev.brands, brand],
-      }));
-    };
-
+  // 브랜드 필터 선택
+  const handleBrandClick = (brand: string) => {
+    setModalFilters((prev) => ({
+      ...prev,
+      brands: prev.brands.includes(brand)
+        ? prev.brands.filter((b) => b !== brand)
+        : [...prev.brands, brand],
+    }));
+  };
 
   const handleViewProducts = async () => {
     try {
       const data = await fetchShopData(
-        searchParams.get("keyword") || undefined,
-        modalFilters.categories,
-        modalFilters.gender,
-        modalFilters.colors,
-        modalFilters.priceRange,
-        modalFilters.sizes,
-        modalFilters.brands
+        searchParams.get("keyword") || undefined
+        // modalFilters.categories,
+        // modalFilters.gender,
+        // modalFilters.colors,
+        // modalFilters.priceRange,
+        // modalFilters.sizes,
+        // modalFilters.brands
       );
-  
+
       if (data.length === 0) {
         console.error("데이터 가져오기 실패");
         return;
       }
-  
+
       setImageList(data); // 백엔드에서 받은 데이터를 상태에 저장
     } catch (error) {
       console.error("handleViewProducts 에러:", error);
@@ -235,8 +239,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
   //초기화버튼
   const handleResetFilters = () => {
     setModalFilters(initialFilters); // 초기값으로 리셋
-};
-
+  };
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -277,7 +280,10 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
                     </div>
                     <div className="section-content">
                       <label className="bubble">
-                        <input type="checkbox" onClick={() => handleCategoryClick("스니커즈")}/>
+                        <input
+                          type="checkbox"
+                          onClick={() => handleCategoryClick("스니커즈")}
+                        />
                         <div>
                           <button className="filter_button">스니커즈</button>
                         </div>
@@ -285,7 +291,12 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
                       <label className="bubble">
                         <input type="checkbox" />
                         <div>
-                          <button className="filter_button" onClick={() => handleCategoryClick("샌들/슬리퍼")}>샌들/슬리퍼</button>
+                          <button
+                            className="filter_button"
+                            onClick={() => handleCategoryClick("샌들/슬리퍼")}
+                          >
+                            샌들/슬리퍼
+                          </button>
                         </div>
                       </label>
                     </div>
@@ -330,19 +341,31 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
                     <p className="subheading">성별</p>
                     <div className="section-content">
                       <label className="bubble">
-                        <input type="radio" name="gender" onClick={() => handleGenderClick ("남성")}/>
+                        <input
+                          type="radio"
+                          name="gender"
+                          onClick={() => handleGenderClick("남성")}
+                        />
                         <div>
                           <button className="filter_button">남성</button>
                         </div>
                       </label>
                       <label className="bubble">
-                        <input type="radio" name="gender" onClick={() => handleGenderClick ("여성")}/>
+                        <input
+                          type="radio"
+                          name="gender"
+                          onClick={() => handleGenderClick("여성")}
+                        />
                         <div>
                           <button className="filter_button">여성</button>
                         </div>
                       </label>
                       <label className="bubble">
-                        <input type="radio" name="gender" onClick={() => handleGenderClick ("키즈")} />
+                        <input
+                          type="radio"
+                          name="gender"
+                          onClick={() => handleGenderClick("키즈")}
+                        />
                         <div>
                           <button className="filter_button">키즈</button>
                         </div>
@@ -371,13 +394,20 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
                       {colors.map((color, index) => (
                         <div className="filter-shortcut" key={index}>
                           {color.img ? (
-                            <img src={color.img} alt={color.name} className="color-box image-style" />
-                            ) : (
-                              <div className="color-box" style={{ backgroundColor: color.rgb }}></div>
-                            )}
-                            <div className="title-color">
-                              <p>{color.name}</p>
-                            </div>
+                            <img
+                              src={color.img}
+                              alt={color.name}
+                              className="color-box image-style"
+                            />
+                          ) : (
+                            <div
+                              className="color-box"
+                              style={{ backgroundColor: color.rgb }}
+                            ></div>
+                          )}
+                          <div className="title-color">
+                            <p>{color.name}</p>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -413,7 +443,9 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
                             <label className="bubble" key={idx}>
                               <input type="checkbox" />
                               <div>
-                                <button className="filter_button">{option}</button>
+                                <button className="filter_button">
+                                  {option}
+                                </button>
                               </div>
                             </label>
                           ))}
@@ -577,7 +609,9 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
                             onChange={() => handlePriceClick(range.value)}
                           />
                           <div>
-                            <button className="filter_button">{range.label}</button>
+                            <button className="filter_button">
+                              {range.label}
+                            </button>
                           </div>
                         </label>
                       ))}
@@ -588,8 +622,12 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
             </ModalContent>
 
             <ModalFooter>
-              <button className="btn_reset" onClick={handleResetFilters}>초기화</button>
-              <button className="btn_submit" onClick={handleViewProducts}>상품보기</button>
+              <button className="btn_reset" onClick={handleResetFilters}>
+                초기화
+              </button>
+              <button className="btn_submit" onClick={handleViewProducts}>
+                상품보기
+              </button>
             </ModalFooter>
           </ModalInner>
         </ModalContainer>
