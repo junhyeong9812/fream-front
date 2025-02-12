@@ -1,0 +1,159 @@
+.detailInfoForm {
+  width: 599px;
+  height: 1800px;
+}
+
+.detailInfo {
+  margin-left: 40px;
+  width: 560px;
+  height: 560px;
+}
+
+.priceContainer {
+  text-align: left;
+}
+
+.priceLabel {
+  font-size: 15px;
+  height: 2px;
+  color: rgb(34, 34, 34);
+}
+
+.priceValue {
+  font-size: 30px;
+  height: 24px;
+  color: rgb(34, 34, 34);
+  font-weight: bold;
+}
+
+.titleContainer {
+  text-align: left;
+  margin-top: 40px;
+}
+
+.titleEng {
+  font-size: 20px;
+  margin-bottom: 0;
+}
+
+.titleKor {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.productInfo {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 90px 27.5px 90px 27.5px 90px 27.5px 90px 27.5px 90px;
+  grid-template-rows: 70px;
+}
+
+.infoItem {
+  text-align: left;
+}
+
+.infoLabel {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+}
+
+.infoValue {
+  text-align: left;
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.actionButtons {
+  margin-top: 20px;
+  display: flex;
+}
+
+.interestButton {
+  width: 560px;
+  height: 70px;
+  margin-top: 15px;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.chartContainer {
+  position: relative;
+  margin-top: 40px;
+}
+
+.chartLoginPrompt {
+  position: relative;
+  height: 300px;
+}
+
+.chartLoginPrompt > div:first-child {
+  opacity: 0.1;
+}
+
+.chartOverlay {
+  width: 300px;
+  height: 140px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  margin-top: -250px;
+  background-color: white;
+  z-index: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.chartOverlay p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.chartOverlay button {
+  width: 80px;
+  height: 40px;
+  border-radius: 10px;
+  color: white;
+  background-color: black;
+  border: none;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+/* Additional benefit sections styling */
+.benefitSection {
+  margin-top: 60px;
+}
+
+.benefitTitle {
+  text-align: left;
+  font-weight: bold;
+}
+
+.benefitItem {
+  display: flex;
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+.benefitLabel {
+  font-weight: lighter;
+  color: rgba(0, 0, 0, 0.5);
+  width: 70px;
+  text-align: left;
+}
+
+.benefitValue {
+  font-weight: bold;
+}

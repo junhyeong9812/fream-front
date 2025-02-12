@@ -809,25 +809,6 @@ const ShopPage: React.FC = () => {
     );
   }, [searchParams]);
 
-  // useEffect(() => {
-  //   fetchImageData();
-  // }, []);
-  //   const keyword = searchParams.get("keyword"); // 검색어 가져오기
-  //   const categories = searchParams.getAll("category"); // 여러 개의 카테고리 필터 가져오기
-
-  //   fetchImageData(keyword || undefined, categories.length > 0 ? categories : undefined);
-  // }, [searchParams]); // URL 파라미터가 변경될 때마다 실행
-
-  // const [products, setProducts] = useState([]); // 상품 목록 상태
-  // const [modalFilters, setModalFilters] = useState({
-  //   keyword: "",
-  //   categories: [],
-  //   gender: null,
-  //   colors: [],
-  //   priceRange: null,
-  //   sizes: [],
-  //   brands: [],
-  // });
   // //필터적용버튼
   const handleViewProducts = () => {
     fetchShopData(
