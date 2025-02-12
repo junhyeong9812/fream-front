@@ -8,6 +8,7 @@ import {
 } from "../services/productDetailServices";
 import ProductDetailHeader from "../components/ProductdetailHeader";
 import ProductDetailImage from "../components/ProductDetailImage";
+import ProductDetailInfo from "../components/ProductDetailInfo";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -81,7 +82,11 @@ const ProductDetailPage = () => {
             otherColors={productDetail.otherColors}
           />
           <div className={styles.detailDivider} />
-          {/* Product Info Component will go here */}
+          <ProductDetailInfo
+            productDetail={productDetail}
+            selectedSize={selectedSize}
+            setSelectedSize={setSelectedSize}
+          />
         </div>
 
         <div className={styles.detailSecondContainer}>
