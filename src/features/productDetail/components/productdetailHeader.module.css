@@ -7,7 +7,7 @@
   height: 110px;
   position: fixed;
   justify-content: center;
-  z-index: 2;
+  z-index: 2000;
 }
 
 .scrollContainer {
