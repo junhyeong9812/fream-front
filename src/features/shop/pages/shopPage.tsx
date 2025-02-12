@@ -777,7 +777,8 @@ const ShopPage: React.FC = () => {
   const fetchImageData = async (keyword?: string, categories?: string[]) => {
     try {
       // fetchShopData를 사용하여 데이터 가져오기
-      const data = await fetchShopData(keyword, categories);
+      const data = await fetchShopData(keyword);
+      // const data = await fetchShopData(keyword, categories);
 
       if (data === "no") {
         console.error("데이터 가져오기 실패");
@@ -809,16 +810,16 @@ const ShopPage: React.FC = () => {
     );
   }, [searchParams]);
 
-  // //필터적용버튼
+  //필터적용버튼
   const handleViewProducts = () => {
     fetchShopData(
-      searchParams.get("keyword") || undefined,
-      modalFilters.categories,
-      modalFilters.gender,
-      modalFilters.colors,
-      modalFilters.priceRange,
-      modalFilters.sizes,
-      modalFilters.brands
+      searchParams.get("keyword") || undefined
+      // modalFilters.categories,
+      // modalFilters.gender,
+      // modalFilters.colors,
+      // modalFilters.priceRange,
+      // modalFilters.sizes,
+      // modalFilters.brands
     );
   };
 
