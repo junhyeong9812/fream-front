@@ -2,12 +2,12 @@
 
 .detailHeaderContainer {
   width: 100%;
-  top: 0;
+  top: 100px; /* 기존 헤더 높이만큼 조정 */
   background-color: white;
   height: 110px;
   position: fixed;
   justify-content: center;
-  z-index: 2000;
+  z-index: 1900; /* 기존 헤더보다 약간 낮은 z-index */
 }
 
 .scrollContainer {

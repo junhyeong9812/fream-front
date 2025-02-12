@@ -7,7 +7,7 @@ import { UserAccessLogDto } from "./global/types/accessLog";
 import { sendAccessLog } from "./global/services/accessLogService";
 import AppRoutes from "./routers/AppRouters";
 import { AuthProvider } from "./global/context/AuthContext";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 // App 전체 컨테이너
 const AppContainer = styled.div`
   display: flex;
@@ -20,6 +20,7 @@ const AppContainer = styled.div`
 // Header와 겹치지 않게 컨텐츠에 top-margin 적용
 const ContentWrapper = styled.div<{ $headerHeight: number }>`
   margin-top: ${({ $headerHeight }) => $headerHeight}px;
+  padding-top: 0; /* 추가 패딩 제거 */
 `;
 
 function App() {

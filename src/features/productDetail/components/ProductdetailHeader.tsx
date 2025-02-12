@@ -18,7 +18,19 @@ const ProductDetailHeader = ({
   final_size,
   setFinal_Size,
 }: ProductDetailHeaderProps) => {
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      // 기존 헤더의 높이 (100px)를 고려하여 스크롤 위치 판단
+      setIsVisible(window.scrollY > 100);
+    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   const formatGender = (gender: string) => {
     if (gender === "MAN") {
@@ -30,17 +42,7 @@ const ProductDetailHeader = ({
     }
   };
 
-  useEffect(() => {
-    const onScroll = () => {
-      setScrollPosition(window.scrollY);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
-
-  if (scrollPosition < 400) {
+  if (!isVisible) {
     return null;
   }
 
@@ -73,7 +75,7 @@ const ProductDetailHeader = ({
           </div>
         </div>
         <div style={{ width: "540px", display: "flex", marginTop: "14px" }}>
-          {/* Header_buy_modal과 Header_sell_modal 컴포넌트는 별도로 import하여 사용해야 합니다 */}
+          {/* 필요한 추가 컴포넌트 헤더바이모달 /헤더바이셀은 추가 필요*/}
         </div>
       </div>
     </div>
