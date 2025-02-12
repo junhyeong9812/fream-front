@@ -475,7 +475,6 @@ const ImageWrapper = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 8px;
-    background-color: green;
   }
 `;
 
@@ -611,7 +610,17 @@ const PopularityButtonWrapper = styled.div`
 
 const ShopPage: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams(); // 쿼리 파라미터 가져오기
+  const [modalFilters, setModalFilters] = useState({
+    keyword: "",
+    categories: [],
+    gender: null,
+    colors: [],
+    priceRange: null,
+    sizes: [],
+    brands: [],
+  });
+  
   // 모달 열림 여부
   const [open, setOpen] = useState(false);
 
@@ -740,20 +749,9 @@ const ShopPage: React.FC = () => {
   //인기순 버튼의 모달창
   const [buttonListModal, setButtonListModal] = useState(false);
 
+
   const handlePopularityOpenModal = () => setButtonListModal(true);
   const handlePopularityCloseModal = () => setButtonListModal(false);
-
-  //shop의 이미지 출력
-  // const imageList = [
-  //   { id: 1, imgUrl: "/logo512.png", brandName: "아디다스", productName: "제품명" , productPrice: "50000"},
-  //   { id: 2, imgUrl: "/logo512.png", brandName: "닥스", productName: "제품명", productPrice: "50000"},
-  //   { id: 3, imgUrl: "/logo512.png", brandName: "구찌", productName: "제품명", productPrice: "50000"},
-  //   { id: 4, imgUrl: "/logo512.png", brandName: "아디다스", productName: "제품명", productPrice: "50000"},
-  //   { id: 5, imgUrl: "/logo512.png", brandName: "닥스", productName: "제품명", productPrice: "50000"},
-  //   { id: 6, imgUrl: "/logo512.png", brandName: "아디다스", productName: "제품명", productPrice: "50000"},
-  //   { id: 7, imgUrl: "/logo512.png", brandName: "구찌", productName: "제품명", productPrice: "50000" },
-  //   { id: 8, imgUrl: "/logo512.png", brandName: "닥스", productName: "제품명", productPrice: "50000" }
-  // ];
 
   //이미지 데이터 get 코드
   type ImageData = {
@@ -778,24 +776,70 @@ const ShopPage: React.FC = () => {
   const [imageList, setImageList] = useState<ImageData[]>([]);
 
   // 데이터를 백엔드에서 받아오는 함수
-  const fetchImageData = async (keyword?: string) => {
+  const fetchImageData = async (keyword?: string, categories?: string[]) => {
     try {
-      const data = await fetchShopData(keyword);
+      // fetchShopData를 사용하여 데이터 가져오기
+      const data = await fetchShopData(keyword, categories);
+
       if (data === "no") {
         console.error("데이터 가져오기 실패");
         return;
       }
-      setImageList(data);
+  
+      // 데이터 포맷 변환
+      const formattedData: ImageData[] = data.map((item: any) => ({
+        id: item.id,
+        imgUrl: item.thumbnailImageUrl, 
+        brandName: "", 
+        productName: item.name,
+        productPrice: `${item.releasePrice}원`,
+      }));
+  
+      setImageList(formattedData); // 포맷된 데이터 설정
     } catch (error) {
-      console.error("fetchImageData 에러:", error);
+      console.error("fetchImageData에서 발생", error);
     }
   };
+
 
   // 컴포넌트가 처음 렌더링될 때 데이터 가져오기
   useEffect(() => {
     const keyword = searchParams.get("keyword");
-    fetchImageData(keyword || undefined);
-  }, [searchParams]); // searchParams가 변경될 때마다 실행
+    const categories = searchParams.getAll("category");
+    fetchImageData(keyword || undefined, categories.length > 0 ? categories : undefined);
+  }, [searchParams]);
+
+  // useEffect(() => {
+  //   fetchImageData(); 
+  // }, []);
+  //   const keyword = searchParams.get("keyword"); // 검색어 가져오기
+  //   const categories = searchParams.getAll("category"); // 여러 개의 카테고리 필터 가져오기
+  
+  //   fetchImageData(keyword || undefined, categories.length > 0 ? categories : undefined);
+  // }, [searchParams]); // URL 파라미터가 변경될 때마다 실행
+  
+  // const [products, setProducts] = useState([]); // 상품 목록 상태
+  // const [modalFilters, setModalFilters] = useState({
+  //   keyword: "",
+  //   categories: [],
+  //   gender: null,
+  //   colors: [],
+  //   priceRange: null,
+  //   sizes: [],
+  //   brands: [],
+  // });
+  // //필터적용버튼 
+  const handleViewProducts = () => {
+    fetchShopData(
+      searchParams.get("keyword") || undefined,
+      modalFilters.categories,
+      modalFilters.gender,
+      modalFilters.colors,
+      modalFilters.priceRange,
+      modalFilters.sizes,
+      modalFilters.brands
+    );
+  };
 
   const handleProductClick = (productId: number, colorName: string) => {
     navigate(`/products/${productId}?color=${colorName}`);
@@ -1021,7 +1065,6 @@ const ShopPage: React.FC = () => {
                           <FaChevronDown />
                         </p>
                       </FilterButtonMeun>
-                      {/* ... 나머지 필터 */}
                     </FilterChipButtons>
                   </ScrollContainer>
                 </FilterBasic>
@@ -1117,6 +1160,7 @@ const ShopPage: React.FC = () => {
                       <span className="infoPrice">
                         {image.price.toLocaleString()}원
                       </span>
+                      <span className="infoPrice">{image.productPrice}</span>
                       <span className="translated_name">즉시 구매가</span>
                     </div>
                     <div className="action_icon">
@@ -1139,7 +1183,7 @@ const ShopPage: React.FC = () => {
         </ContentContainer>
       </ShopContainer>
       {/* 모달 컴포넌트: open 상태이면 출력 */}
-      <FilterModal open={isModalOpen} onClose={handleCloseModal} />
+      <FilterModal open={isModalOpen} onClose={handleCloseModal} onApplyFilters={handleViewProducts} />
     </>
   );
 };
