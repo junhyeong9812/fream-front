@@ -40,6 +40,20 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
+.sizeSelectButton {
+  width: 560px;
+  height: 50px;
+  margin-top: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
 .productInfo {
   margin-top: 40px;
   display: grid;
@@ -69,6 +83,51 @@
 .actionButtons {
   margin-top: 20px;
   display: flex;
+  gap: 10px;
+}
+
+.buyButton,
+.sellButton {
+  width: 275px;
+  height: 60px;
+  border-radius: 10px;
+  border: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+}
+
+.buyButton {
+  background-color: rgb(239, 98, 83);
+}
+
+.sellButton {
+  background-color: rgb(65, 185, 121);
+}
+
+.buttonLabel {
+  width: 50px;
+  margin-left: 12px;
+  text-align: left;
+  font-size: 20px;
+}
+
+.priceInfo {
+  margin-left: 9px;
+  text-align: left;
+}
+
+.immediatePriceValue {
+  font-size: 17px;
+  height: 20px;
+  margin-top: 10px;
+}
+
+.immediatePriceLabel {
+  font-weight: lighter;
+  font-size: 12px;
 }
 
 .interestButton {
@@ -93,10 +152,6 @@
 .chartLoginPrompt {
   position: relative;
   height: 300px;
-}
-
-.chartLoginPrompt > div:first-child {
-  opacity: 0.1;
 }
 
 .chartOverlay {
@@ -129,31 +184,4 @@
   border: none;
   margin-top: 5px;
   cursor: pointer;
-}
-
-/* Additional benefit sections styling */
-.benefitSection {
-  margin-top: 60px;
-}
-
-.benefitTitle {
-  text-align: left;
-  font-weight: bold;
-}
-
-.benefitItem {
-  display: flex;
-  margin-top: 16px;
-  font-size: 13px;
-}
-
-.benefitLabel {
-  font-weight: lighter;
-  color: rgba(0, 0, 0, 0.5);
-  width: 70px;
-  text-align: left;
-}
-
-.benefitValue {
-  font-weight: bold;
 }

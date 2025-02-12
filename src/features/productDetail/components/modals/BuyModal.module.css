@@ -1,0 +1,32 @@
+.modalContent {
+  height: 700px;
+}
+
+.productInfo {
+  display: flex;
+  padding: 20px 30px;
+  gap: 15px;
+}
+
+.productImage {
+  height: 120px;
+  background-color: #f4f4f4;
+}
+
+.productDetails {
+  text-align: left;
+}
+
+.productId {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.productName {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.productKorName {
+  color: rgba(0, 0, 0, 0.7);
+}
