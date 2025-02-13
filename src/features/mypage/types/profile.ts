@@ -5,6 +5,7 @@ export interface BlockedProfileDto {
 }
 
 export interface ProfileInfoDto {
+  profileId: number;
   profileImage: string;
   profileName: string;
   realName: string;
@@ -22,6 +23,7 @@ export interface ProfileUpdateDto {
 }
 
 export interface ProfileData {
+  profileId: number;
   profileImage: string;
   profileName: string;
   realName: string;

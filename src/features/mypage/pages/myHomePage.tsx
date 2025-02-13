@@ -280,7 +280,8 @@ const createInitialTabData = (
 // MyHomePage 컴포넌트
 const MyHomePage: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileData>({
-    profileImage: "https://via.placeholder.com/90",
+    profileId: 0,
+    profileImage: "",
     profileName: "",
     realName: "",
     email: "",
@@ -300,10 +301,11 @@ const MyHomePage: React.FC = () => {
         const data = await getProfileInfo();
         console.log("이미지경로:", data.profileImage);
         setProfileData({
-          profileImage: data.profileImage || "https://via.placeholder.com/90",
+          profileId: data.profileId,
+          profileImage: `https://www.pinjun.xyz/api/profiles/${data.profileId}/image`,
           profileName: data.profileName,
           realName: data.realName,
-          email: data.email || "",
+          email: data.email,
         });
       } catch (error) {
         console.error("Failed to fetch profile data:", error);
