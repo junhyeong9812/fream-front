@@ -340,9 +340,6 @@ const MyHomePage: React.FC = () => {
     fetchProfileData();
     fetchData();
   }, []);
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = "https://via.placeholder.com/90";
-  };
 
   return (
     <MainContent>
@@ -351,11 +348,7 @@ const MyHomePage: React.FC = () => {
           <UserDetail>
             {/* 사용자 썸네일 */}
             <UserThumb>
-              <ThumbImg
-                src={profileData.profileImage}
-                alt="User Thumbnail"
-                onError={handleImageError}
-              />
+              <ThumbImg src={profileData.profileImage} alt="User Thumbnail" />
             </UserThumb>
 
             {/* 사용자 정보 */}
