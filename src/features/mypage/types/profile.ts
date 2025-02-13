@@ -8,6 +8,7 @@ export interface ProfileInfoDto {
   profileImage: string;
   profileName: string;
   realName: string;
+  email: string;
   bio: string;
   isPublic: boolean;
   blockedProfiles: BlockedProfileDto[];

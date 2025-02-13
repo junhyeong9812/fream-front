@@ -298,11 +298,12 @@ const MyHomePage: React.FC = () => {
     const fetchProfileData = async () => {
       try {
         const data = await getProfileInfo();
+        console.log("이미지경로:", data.profileImage);
         setProfileData({
           profileImage: data.profileImage || "https://via.placeholder.com/90",
           profileName: data.profileName,
           realName: data.realName,
-          email: localStorage.getItem("userEmail") || "",
+          email: data.email || "",
         });
       } catch (error) {
         console.error("Failed to fetch profile data:", error);
