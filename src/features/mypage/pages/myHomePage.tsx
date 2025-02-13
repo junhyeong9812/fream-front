@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ShortcutGridComponent from "../components/shortcutGridComponent";
 import PurchaseBoxComponent from "../components/purchaseBoxComponent";
 import ListBoxComponent from "../components/listBoxComponents";
 import InterestProduct from "../components/interestProduct";
+import {
+  createTabsData,
+  getOrderBidCounts,
+  getSaleBidCounts,
+} from "../services/MyHomePageService";
 
 // 더미 데이터
 const dummyData = {
@@ -231,9 +236,87 @@ const Button = styled.a`
 const Spacer = styled.div`
   height: 28px; /* 지정된 여백 */
 `;
+interface Tab {
+  title: string;
+  count: number;
+  isTotal: boolean;
+  href: string;
+}
 
+interface TabData {
+  tabs: Tab[];
+  empty: boolean;
+}
+const createInitialTabData = (
+  type: "purchase" | "sales" | "store"
+): TabData => {
+  const initialTabs =
+    type === "store"
+      ? [
+          { title: "전체", count: 0, isTotal: true, href: "/store/all" },
+          {
+            title: "신청 중",
+            count: 0,
+            isTotal: false,
+            href: "/store/requesting",
+          },
+          {
+            title: "보관 중",
+            count: 0,
+            isTotal: false,
+            href: "/store/storing",
+          },
+          { title: "종료", count: 0, isTotal: false, href: "/store/complete" },
+        ]
+      : [];
+
+  return {
+    tabs: initialTabs,
+    empty: true,
+  };
+};
 // MyHomePage 컴포넌트
 const MyHomePage: React.FC = () => {
+  const [purchaseData, setPurchaseData] = useState<TabData>(
+    createInitialTabData("purchase")
+  );
+  const [salesData, setSalesData] = useState<TabData>(
+    createInitialTabData("sales")
+  );
+  const [storeData] = useState<TabData>(createInitialTabData("store"));
+
+  // API 데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [orderCounts, saleCounts] = await Promise.all([
+          getOrderBidCounts(),
+          getSaleBidCounts(),
+        ]);
+
+        if (orderCounts) {
+          const tabs = createTabsData(orderCounts, "purchase");
+          setPurchaseData({
+            tabs,
+            empty: tabs[0]?.count === 0,
+          });
+        }
+
+        if (saleCounts) {
+          const tabs = createTabsData(saleCounts, "sales");
+          setSalesData({
+            tabs,
+            empty: tabs[0]?.count === 0,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
   return (
     <MainContent>
       <MyHome>
@@ -267,12 +350,12 @@ const MyHomePage: React.FC = () => {
         {/* 숏컷 그리드 섹션 */}
         <ShortcutGridComponent />
         {/* 구매내역 */}
-        <PurchaseBoxComponent title="구매내역" tabs={dummyData.purchase.tabs} />
+        <PurchaseBoxComponent title="구매내역" tabs={purchaseData.tabs} />
         {/* 판매내역 */}
         {dummyData.sales.empty ? (
-          <ListBoxComponent title="판매내역" tabs={dummyData.sales.tabs} />
+          <ListBoxComponent title="판매내역" tabs={salesData.tabs} />
         ) : (
-          <PurchaseBoxComponent title="판매내역" tabs={dummyData.sales.tabs} />
+          <PurchaseBoxComponent title="판매내역" tabs={salesData.tabs} />
         )}
         {/* 보관 판매 내역 */}
         {dummyData.store.empty ? (
@@ -283,6 +366,11 @@ const MyHomePage: React.FC = () => {
             tabs={dummyData.store.tabs}
           />
         )}
+        {/* {storeData.empty ? (
+          <ListBoxComponent title="보관판매내역" tabs={storeData.tabs} />
+        ) : (
+          <PurchaseBoxComponent title="보관판매내역" tabs={storeData.tabs} />
+        )} */}
         <AdditionalText>
           보관 판매는 앱, 데스크탑에서 이용 가능합니다.
         </AdditionalText>
