@@ -9,6 +9,8 @@ import {
   getOrderBidCounts,
   getSaleBidCounts,
 } from "../services/MyHomePageService";
+import { ProfileData } from "../types/profile";
+import { getProfileInfo } from "../services/ProfileService";
 
 // 더미 데이터
 const dummyData = {
@@ -277,6 +279,12 @@ const createInitialTabData = (
 };
 // MyHomePage 컴포넌트
 const MyHomePage: React.FC = () => {
+  const [profileData, setProfileData] = useState<ProfileData>({
+    profileImage: "https://via.placeholder.com/90",
+    profileName: "",
+    realName: "",
+    email: "",
+  });
   const [purchaseData, setPurchaseData] = useState<TabData>(
     createInitialTabData("purchase")
   );
@@ -287,6 +295,19 @@ const MyHomePage: React.FC = () => {
 
   // API 데이터 가져오기
   useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const data = await getProfileInfo();
+        setProfileData({
+          profileImage: data.profileImage || "https://via.placeholder.com/90",
+          profileName: data.profileName,
+          realName: data.realName,
+          email: localStorage.getItem("userEmail") || "",
+        });
+      } catch (error) {
+        console.error("Failed to fetch profile data:", error);
+      }
+    };
     const fetchData = async () => {
       try {
         const [orderCounts, saleCounts] = await Promise.all([
@@ -313,10 +334,13 @@ const MyHomePage: React.FC = () => {
         console.error("Failed to fetch data:", error);
       }
     };
-
+    fetchProfileData();
     fetchData();
   }, []);
-  
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = "https://via.placeholder.com/90";
+  };
+
   return (
     <MainContent>
       <MyHome>
@@ -325,16 +349,17 @@ const MyHomePage: React.FC = () => {
             {/* 사용자 썸네일 */}
             <UserThumb>
               <ThumbImg
-                src="https://via.placeholder.com/90" // Placeholder 이미지
+                src={profileData.profileImage}
                 alt="User Thumbnail"
+                onError={handleImageError}
               />
             </UserThumb>
 
             {/* 사용자 정보 */}
             <UserInfo>
               <InfoBox>
-                <Name>홍길동</Name>
-                <Email>hong@example.com</Email>
+                <Name>{profileData.realName || "사용자"}</Name>
+                <Email>{profileData.email || "이메일 정보 없음"}</Email>
               </InfoBox>
               <InfoButtons>
                 <Button href="/mypage/profile">프로필 관리</Button>
