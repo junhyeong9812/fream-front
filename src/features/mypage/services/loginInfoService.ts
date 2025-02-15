@@ -59,7 +59,7 @@ export const getLoginInfo = async (): Promise<LoginInfoResponse> => {
   }
 };
 
-// 로그인 정보 업데이트
+// 로그인 정보 업데이트1
 export const updateLoginInfo = async (
   data: LoginInfoUpdateDto
 ): Promise<LoginInfoResponse> => {
