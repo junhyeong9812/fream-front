@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ProfileGroup from "../components/ProfileGroup";
 import AdConsentSection from "../components/AdConsentSection";
+import {
+  getLoginInfo,
+  LoginInfoResponse,
+  LoginInfoUpdateDto,
+  updateLoginInfo,
+} from "../services/loginInfoService";
 
 const PageContainer = styled.div`
   padding: 0 20px;
@@ -36,61 +42,136 @@ const WithdrawalLink = styled.a`
 `;
 
 const LoginInfo: React.FC = () => {
-  //   const accountUnits = [
-  //     {
-  //       title: "이메일 주소",
-  //       content: "pi*****@naver.com",
-  //       onModify: () => alert("이메일 주소 변경"),
-  //     },
-  //     {
-  //       title: "비밀번호",
-  //       content: "●●●●●●●●●",
-  //       onModify: () => alert("비밀번호 변경"),
-  //     },
-  //   ];
+  const [loginInfo, setLoginInfo] = useState<LoginInfoResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  // 컴포넌트 마운트시 로그인 정보 조회
+  useEffect(() => {
+    fetchLoginInfo();
+  }, []);
+  useEffect(() => {
+    const fetchLoginInfo = async () => {
+      try {
+        const data = await getLoginInfo();
+        setLoginInfo(data);
+      } catch (error) {
+        console.error("로그인 정보 조회 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  //   const personalUnits = [
-  //     {
-  //       title: "휴대폰 번호",
-  //       content: "010-2***-908",
-  //       onModify: () => alert("휴대폰 번호 변경"),
-  //     },
-  //     {
-  //       title: "신발 사이즈",
-  //       content: "270",
-  //       onModify: () => alert("신발 사이즈 변경"),
-  //     },
-  //   ];
-  const [accountUnits, setAccountUnits] = useState([
-    { title: "이메일 주소", content: "pi*****@naver.com" },
-    { title: "비밀번호", content: "●●●●●●●●●" },
-  ]);
+    fetchLoginInfo();
+  }, []);
 
-  const [personalUnits, setPersonalUnits] = useState([
-    { title: "휴대폰 번호", content: "010-2***-908" },
-    { title: "신발 사이즈", content: "270" },
-  ]);
-  // 변경 핸들러
-  const handleModify = (index: number, type: "account" | "personal") => {
-    const newValue = prompt("새로운 값을 입력하세요:");
-    if (!newValue) return; // 입력값이 없으면 변경하지 않음
-
-    if (type === "account") {
-      // 계정 정보 업데이트
-      setAccountUnits((prev) =>
-        prev.map((item, i) =>
-          i === index ? { ...item, content: newValue } : item
-        )
-      );
-    } else if (type === "personal") {
-      // 개인 정보 업데이트
-      setPersonalUnits((prev) =>
-        prev.map((item, i) =>
-          i === index ? { ...item, content: newValue } : item
-        )
-      );
+  const fetchLoginInfo = async () => {
+    try {
+      const data = await getLoginInfo();
+      setLoginInfo(data);
+    } catch (error) {
+      console.error("로그인 정보 조회 실패:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // 정보 수정 핸들러
+  const handleModify = async (index: number, type: "account" | "personal") => {
+    if (!loginInfo) return;
+
+    try {
+      let updateData: LoginInfoUpdateDto = {};
+
+      if (type === "account") {
+        if (index === 0) {
+          // 이메일 변경
+          const newEmail = prompt("새로운 이메일을 입력하세요:");
+          if (!newEmail) return;
+          const password = prompt("현재 비밀번호를 입력하세요:");
+          if (!password) return;
+
+          updateData = { newEmail, password };
+        } else if (index === 1) {
+          // 비밀번호 변경
+          const currentPassword = prompt("현재 비밀번호를 입력하세요:");
+          if (!currentPassword) return;
+          const newPassword = prompt("새로운 비밀번호를 입력하세요:");
+          if (!newPassword) return;
+
+          updateData = { password: currentPassword, newPassword };
+        }
+      } else if (type === "personal") {
+        if (index === 0) {
+          // 전화번호 변경
+          const newPhoneNumber = prompt("새로운 전화번호를 입력하세요:");
+          if (!newPhoneNumber) return;
+
+          updateData = { newPhoneNumber };
+        } else if (index === 1) {
+          // 신발 사이즈 변경
+          const newShoeSize = prompt("새로운 신발 사이즈를 입력하세요:");
+          if (!newShoeSize) return;
+
+          updateData = { newShoeSize };
+        }
+      }
+
+      const updatedInfo = await updateLoginInfo(updateData);
+      setLoginInfo(updatedInfo); // 이미 매핑된 LoginInfoResponse 타입
+    } catch (error) {
+      console.error("정보 수정 실패:", error);
+      alert("정보 수정에 실패했습니다.");
+    }
+  };
+
+  // 광고 동의 상태 변경 핸들러
+  const handleConsentChange = async (type: "privacy" | "sms" | "email") => {
+    if (!loginInfo) return;
+
+    try {
+      const updateData: LoginInfoUpdateDto = {
+        privacyConsent:
+          type === "privacy" ? !loginInfo.optionalPrivacyAgreement : undefined,
+        smsConsent: type === "sms" ? !loginInfo.smsConsent : undefined,
+        emailConsent: type === "email" ? !loginInfo.emailConsent : undefined,
+      };
+
+      const updatedInfo = await updateLoginInfo(updateData);
+      setLoginInfo(updatedInfo); // 이미 매핑된 LoginInfoResponse 타입
+    } catch (error) {
+      console.error("동의 상태 변경 실패:", error);
+      alert("동의 상태 변경에 실패했습니다.");
+    }
+  };
+
+  if (isLoading) {
+    return <div>로딩중...</div>;
+  }
+
+  const accountUnits = [
+    {
+      title: "이메일 주소",
+      content: loginInfo?.email || "",
+      onModify: () => handleModify(0, "account"),
+    },
+    {
+      title: "비밀번호",
+      content: "●●●●●●●●●",
+      onModify: () => handleModify(1, "account"),
+    },
+  ];
+
+  const personalUnits = [
+    {
+      title: "휴대폰 번호",
+      content: loginInfo?.phoneNumber || "",
+      onModify: () => handleModify(0, "personal"),
+    },
+    {
+      title: "신발 사이즈",
+      content: loginInfo?.shoeSize || "",
+      onModify: () => handleModify(1, "personal"),
+    },
+  ];
 
   return (
     <PageContainer>
@@ -101,25 +182,19 @@ const LoginInfo: React.FC = () => {
 
       {/* 내 계정 섹션 */}
       {/* <ProfileGroup title="내 계정" units={accountUnits} /> */}
-      <ProfileGroup
-        title="내 계정"
-        units={accountUnits.map((unit, index) => ({
-          ...unit,
-          onModify: () => handleModify(index, "account"),
-        }))}
-      />
+      <ProfileGroup title="내 계정" units={accountUnits} />
 
       {/* 개인 정보 섹션 */}
       {/* <ProfileGroup title="개인 정보" units={personalUnits} paddingTop /> */}
-      <ProfileGroup
-        title="개인 정보"
-        units={personalUnits.map((unit, index) => ({
-          ...unit,
-          onModify: () => handleModify(index, "personal"),
-        }))}
-      />
+      <ProfileGroup title="개인 정보" units={personalUnits} paddingTop />
+
       {/* 광고성 정보 수신 섹션 */}
-      <AdConsentSection />
+      <AdConsentSection
+        optionalPrivacyAgreement={loginInfo?.optionalPrivacyAgreement || false}
+        smsConsent={loginInfo?.smsConsent || false}
+        emailConsent={loginInfo?.emailConsent || false}
+        onConsentChange={handleConsentChange}
+      />
       {/* 회원탈퇴 링크 */}
       <WithdrawalLink
         href="/withdrawal"

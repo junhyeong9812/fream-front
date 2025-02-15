@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
+interface AdConsentSectionProps {
+  optionalPrivacyAgreement: boolean;
+  smsConsent: boolean;
+  emailConsent: boolean;
+  onConsentChange: (type: "privacy" | "sms" | "email") => void;
+}
 const SectionContainer = styled.div`
   margin-top: 58px;
 `;
@@ -84,16 +89,26 @@ const FooterDescription = styled.p`
   margin-top: 16px;
 `;
 
-const AdConsentSection: React.FC = () => {
-  const [collectionConsent, setCollectionConsent] = useState(false);
-  const [smsConsent, setSmsConsent] = useState(false);
-  const [emailConsent, setEmailConsent] = useState(false);
+// const AdConsentSection: React.FC = () => {
+//   const [collectionConsent, setCollectionConsent] = useState(false);
+//   const [smsConsent, setSmsConsent] = useState(false);
+//   const [emailConsent, setEmailConsent] = useState(false);
 
-  const toggleCollectionConsent = () =>
-    setCollectionConsent(!collectionConsent);
-  const toggleSmsConsent = () => setSmsConsent(!smsConsent);
-  const toggleEmailConsent = () => setEmailConsent(!emailConsent);
-
+//   const toggleCollectionConsent = () =>
+//     setCollectionConsent(!collectionConsent);
+//   const toggleSmsConsent = () => setSmsConsent(!smsConsent);
+//   const toggleEmailConsent = () => setEmailConsent(!emailConsent);
+const AdConsentSection: React.FC<AdConsentSectionProps> = ({
+  optionalPrivacyAgreement,
+  smsConsent,
+  emailConsent,
+  onConsentChange,
+}) => {
+  // 개인정보 처리방침 모달 표시 함수
+  const showPrivacyPolicy = () => {
+    // TODO: 실제 모달 또는 다이얼로그로 교체
+    alert("개인정보 수집 및 이용 동의 내용 보기");
+  };
   return (
     <SectionContainer>
       {/* 섹션 제목 */}
@@ -112,8 +127,8 @@ const AdConsentSection: React.FC = () => {
           </ContentDescription>
 
           <SwitchContainer
-            className={collectionConsent ? "is-active" : ""}
-            onClick={toggleCollectionConsent}
+            className={optionalPrivacyAgreement ? "is-active" : ""}
+            onClick={() => onConsentChange("privacy")}
           >
             <SwitchCircle />
           </SwitchContainer>
@@ -126,7 +141,7 @@ const AdConsentSection: React.FC = () => {
           <ContentDescription>문자메세지</ContentDescription>
           <SwitchContainer
             className={smsConsent ? "is-active" : ""}
-            onClick={toggleSmsConsent}
+            onClick={() => onConsentChange("sms")}
           >
             <SwitchCircle />
           </SwitchContainer>
@@ -139,7 +154,7 @@ const AdConsentSection: React.FC = () => {
           <ContentDescription>이메일</ContentDescription>
           <SwitchContainer
             className={emailConsent ? "is-active" : ""}
-            onClick={toggleEmailConsent}
+            onClick={() => onConsentChange("email")}
           >
             <SwitchCircle />
           </SwitchContainer>
