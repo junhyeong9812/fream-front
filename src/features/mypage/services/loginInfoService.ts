@@ -64,10 +64,11 @@ export const updateLoginInfo = async (
   data: LoginInfoUpdateDto
 ): Promise<LoginInfoResponse> => {
   try {
-    const response = await apiClient.put<{
-      userInfo: BackendLoginInfoResponse;
-    }>("/users/update", data);
-    return mapLoginInfo(response.data.userInfo);
+    const response = await apiClient.put<BackendLoginInfoResponse>(
+      "/users/update",
+      data
+    );
+    return mapLoginInfo(response.data); // response.data.userInfo 대신 response.data 사용
   } catch (error) {
     console.error("로그인 정보 수정 실패:", error);
     throw error;
