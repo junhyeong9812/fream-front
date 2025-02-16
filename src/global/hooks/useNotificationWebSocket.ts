@@ -32,7 +32,7 @@ export const useWebSocket = () => {
   // 사용자 이메일 가져오기
   const fetchUserEmail = useCallback(async () => {
     try {
-      const response = await apiClient.get("/user/email", {
+      const response = await apiClient.get("/auth/email", {
         withCredentials: true,
       });
       emailRef.current = response.data;
