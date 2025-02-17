@@ -22,6 +22,9 @@ export const fetchShopData = async (keyword?: string) => {
   }
 };
 
+
+
+
 // export const fetchShopData = async (
 //   keyword?: string,
 //   categories?: string[],
@@ -75,6 +78,9 @@ export const fetchShopData = async (keyword?: string) => {
 //     return [];
 //   }
 // };
+
+
+
 
 // export const fetchShopData = async (
 //   keyword?: string,
