@@ -813,7 +813,15 @@ const ShopPage: React.FC = () => {
       //   productPrice: `${item.releasePrice}원`,
       // }));
 
-      setImageList(data); // 포맷된 데이터 설정
+      // setImageList(data); // 포맷된 데이터 설정
+      // 데이터를 변환하면서 price가 null인 경우 releasePrice 사용
+    const processedData = data.map((item: any) => ({
+      ...item, // 기존 데이터는 그대로 유지
+      price: item.price || item.releasePrice, // price가 null이면 releasePrice 사용
+      productPrice: (item.price || item.releasePrice).toLocaleString() + '원'
+    }));
+
+    setImageList(processedData);
     } catch (error) {
       console.error("fetchImageData에서 발생", error);
     }
