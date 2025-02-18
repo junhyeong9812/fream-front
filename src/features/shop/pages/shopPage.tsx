@@ -596,6 +596,25 @@ const FILTER_DATA = [
   { id: "price", label: "가격대" },
 ];
 
+ // 예시 데이터
+ const categories = [
+  { value: 'shoes', label: '신발' },
+  { value: 'clothes', label: '의류' },
+  // ... 추가 카테고리
+];
+
+const outerwear = [
+  { value: 'jackets', label: '재킷' },
+  { value: 'coats', label: '코트' },
+  // ... 추가 아우터
+];
+
+const shirts = [
+  { value: 'tshirts', label: '티셔츠' },
+  { value: 'dressShirts', label: '드레스 셔츠' },
+  // ... 추가 셔츠
+];
+
 /*--------------------------------
       ShopPage 컴포넌트
 ---------------------------------*/
@@ -1169,6 +1188,9 @@ const ShopPage: React.FC = () => {
         open={isModalOpen}
         onClose={handleCloseModal}
         onApplyFilters={handleViewProducts}
+        categoryList={categories} // 여기에 적절한 데이터를 전달
+        outerwearList={outerwear} // 여기에 적절한 데이터를 전달
+        shirtsList={shirts} // 여기에 적절한 데이터를 전달
       />
     </>
   );
