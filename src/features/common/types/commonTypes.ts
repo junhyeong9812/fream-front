@@ -37,6 +37,8 @@ export interface productWrapProps {
   productCategory: string;
 }
 export interface productInfo {
+  id: number;           // 추가
+  colorName: string;    // 추가
   transaction: string;
   img: string;
   backgroundcolor: string;

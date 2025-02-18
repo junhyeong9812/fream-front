@@ -21,6 +21,8 @@ export const fetchProductsByCategory = async () => {
       
       // API 응답을 프론트엔드 포맷으로 변환
       return response.data.content.map((item: any) => ({
+        id: item.id,                              // 추가
+        colorName: item.colorName || 'default',   // 추가
         transaction: item.viewCount || "0",
         img: item.thumbnailUrl,
         backgroundcolor: "#f4f4f4",

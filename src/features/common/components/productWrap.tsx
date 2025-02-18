@@ -188,7 +188,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchJustDroppedData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(justDroppedData);
+      // setProductList(justDroppedData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -199,7 +199,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMostPopularData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(mostPopularData);
+      // setProductList(mostPopularData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -210,7 +210,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchNewInData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(newInData);
+      // setProductList(newInData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -221,7 +221,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMufflerData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(mufflerData);
+      // setProductList(mufflerData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -232,7 +232,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchOutdoorData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(outdoorData);
+      // setProductList(outdoorData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -243,7 +243,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchBlrLeebokData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(blrLeebokData);
+      // setProductList(blrLeebokData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -254,7 +254,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchPeachesData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(peachesData);
+      // setProductList(peachesData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -265,7 +265,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWinterData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(winterData);
+      // setProductList(winterData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -277,7 +277,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchLuxuryWishData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(luxuryWishData);
+      // setProductList(luxuryWishData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -288,7 +288,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchLuxuryHotData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(luxuryHotData);
+      // setProductList(luxuryHotData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -299,7 +299,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchLuxuryCheapData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(luxuryCheapData);
+      // setProductList(luxuryCheapData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -310,7 +310,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchLuxurySmallData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(luxurySmallData);
+      // setProductList(luxurySmallData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -322,7 +322,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchDiscoverySomethingData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(discoverySomethingData);
+      // setProductList(discoverySomethingData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -333,7 +333,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchDiscoveryPdpData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(discoveryPdpData);
+      // setProductList(discoveryPdpData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -344,7 +344,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchDiscoveryMellowData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(discoveryMellowData);
+      // setProductList(discoveryMellowData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -355,7 +355,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchDiscoveryRoughneckData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(discoveryRoughneckData);
+      // setProductList(discoveryRoughneckData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -367,7 +367,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMenForData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(menForData);
+      // setProductList(menForData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -378,7 +378,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMenSneakersData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(menSneakersData);
+      // setProductList(menSneakersData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -389,7 +389,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMenArrivalsData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(menArrivalsData);
+      // setProductList(menArrivalsData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -400,7 +400,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMenKnitData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(menKnitData);
+      // setProductList(menKnitData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -411,7 +411,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMenJacketData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(menJacketData);
+      // setProductList(menJacketData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -422,7 +422,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMenLightData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(menLightData);
+      // setProductList(menLightData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -433,7 +433,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchMenChoiceData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(menChoiceData);
+      // setProductList(menChoiceData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -445,7 +445,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenForData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenForData);
+      // setProductList(womenForData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -456,7 +456,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenRisingData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenRisingData);
+      // setProductList(womenRisingData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -467,7 +467,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenArrivalsData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenArrivalsData);
+      // setProductList(womenArrivalsData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -478,7 +478,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenRocciData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenRocciData);
+      // setProductList(womenRocciData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -489,7 +489,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenWishData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenWishData);
+      // setProductList(womenWishData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -500,7 +500,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenBeautyData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenBeautyData);
+      // setProductList(womenBeautyData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -511,7 +511,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenCuteData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenCuteData);
+      // setProductList(womenCuteData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -522,7 +522,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenPinkBrownData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenPinkBrownData);
+      // setProductList(womenPinkBrownData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -533,7 +533,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenHeavyData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenHeavyData);
+      // setProductList(womenHeavyData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);
@@ -544,7 +544,7 @@ const ProductWrap: React.FC<productWrapProps> = ({ productCategory }) => {
     const productData = await fetchWomenSienneData();
     if (productData === "no") {
       // console.log("더미데이터 들어옴");
-      setProductList(womenSienneData);
+      // setProductList(womenSienneData);
     } else {
       console.log("정상적으로 데이터 들어옴");
       setProductList(productData);

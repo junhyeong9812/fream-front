@@ -2,8 +2,14 @@ import "../css/product.css";
 import React from "react";
 import { productProps } from "../types/commonTypes";
 import { PiBookmarkSimpleThin } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 const Product: React.FC<productProps> = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleProductClick = () => {
+    navigate(`/products/${product.id}?color=${product.colorName}`);
+  };
   return (
     <div className="product_container">
       {product.transaction === "0" ? (

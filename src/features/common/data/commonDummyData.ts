@@ -2514,7 +2514,7 @@
     },
   ]
 
-  export const womenBeautyData = [
+  // export const womenBeautyData = [
     {
       transaction: "0",
       img: `${process.env.PUBLIC_URL}/womenImg/beauty/beauty1.webp`,
