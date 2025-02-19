@@ -7,11 +7,15 @@ import { useNavigate } from "react-router-dom";
 const Product: React.FC<productProps> = ({ product }) => {
   const navigate = useNavigate();
 
-  const handleProductClick = () => {
-    navigate(`/products/${product.id}?color=${product.colorName}`);
+  const handleProductClick = (productId: number, colorName: string) => {
+    navigate(`/products/${productId}?color=${colorName}`);
   };
   return (
-    <div className="product_container">
+    <div
+      className="product_container"
+      onClick={() => handleProductClick(product.id, product.colorName)}
+      style={{ cursor: "pointer" }}
+    >
       {product.transaction === "0" ? (
         <></>
       ) : (

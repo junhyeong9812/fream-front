@@ -596,22 +596,22 @@ const FILTER_DATA = [
   { id: "price", label: "가격대" },
 ];
 
- // 예시 데이터
- const categories = [
-  { value: 'shoes', label: '신발' },
-  { value: 'clothes', label: '의류' },
+// 예시 데이터
+const categories = [
+  { value: "shoes", label: "신발" },
+  { value: "clothes", label: "의류" },
   // ... 추가 카테고리
 ];
 
 const outerwear = [
-  { value: 'jackets', label: '재킷' },
-  { value: 'coats', label: '코트' },
+  { value: "jackets", label: "재킷" },
+  { value: "coats", label: "코트" },
   // ... 추가 아우터
 ];
 
 const shirts = [
-  { value: 'tshirts', label: '티셔츠' },
-  { value: 'dressShirts', label: '드레스 셔츠' },
+  { value: "tshirts", label: "티셔츠" },
+  { value: "dressShirts", label: "드레스 셔츠" },
   // ... 추가 셔츠
 ];
 
@@ -815,13 +815,13 @@ const ShopPage: React.FC = () => {
 
       // setImageList(data); // 포맷된 데이터 설정
       // 데이터를 변환하면서 price가 null인 경우 releasePrice 사용
-    const processedData = data.map((item: any) => ({
-      ...item, // 기존 데이터는 그대로 유지
-      price: item.price || item.releasePrice, // price가 null이면 releasePrice 사용
-      productPrice: (item.price || item.releasePrice).toLocaleString() + '원'
-    }));
+      const processedData = data.map((item: any) => ({
+        ...item, // 기존 데이터는 그대로 유지
+        price: item.price || item.releasePrice, // price가 null이면 releasePrice 사용
+        productPrice: (item.price || item.releasePrice).toLocaleString() + "원",
+      }));
 
-    setImageList(processedData);
+      setImageList(processedData);
     } catch (error) {
       console.error("fetchImageData에서 발생", error);
     }
@@ -1169,7 +1169,7 @@ const ShopPage: React.FC = () => {
                       <span className="infoPrice">
                         {image.price.toLocaleString()}원
                       </span>
-                      <span className="infoPrice">{image.productPrice}</span>
+                      {/* <span className="infoPrice">{image.productPrice}</span> */}
                       <span className="translated_name">즉시 구매가</span>
                     </div>
                     <div className="action_icon">
