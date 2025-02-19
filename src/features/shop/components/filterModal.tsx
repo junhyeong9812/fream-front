@@ -76,6 +76,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [imageList, setImageList] = useState<Product[]>([]);
   const [showMore, setShowMore] = useState(false); //더보기 버튼
 
+  
   //버튼 선택 저장 state
   const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({});
   if (!open) return null; // open이 false면 null 리턴
@@ -185,15 +186,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
     
     //카테고리 2번째부터 출력
     const visibleCategories = showMore ? categoryData : categoryData.slice(0, 2);
-  
-    // const handleFilterClick = (category: string, value: string) => {
-    //   setSelectedFilters((prev) => {
-    //     const newSet = new Set(prev[category] || []);
-    //     newSet.has(value) ? newSet.delete(value) : newSet.add(value);
-    //     return { ...prev, [category]: newSet };
-    //   });
-    // };
-
 
 
     // 브랜드 목록 스크롤
@@ -218,7 +210,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const groupKeys = Object.keys(groupedItems); // 그룹 키 목록
 
 
-const handleFilterClick = (category:string, value:string) => {
+  const handleFilterClick = (category:string, value:string) => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
 
@@ -247,17 +239,6 @@ const handleFilterClick = (category:string, value:string) => {
       return updatedFilters;
     });
   };
-
-
-  // const handleCategoryClick = (category: string) => {
-  //   setModalFilters((prev) => ({
-  //     ...prev,
-  //     categories: prev.categories.includes(category)
-  //       ? prev.categories.filter((c) => c !== category)
-  //       : [...prev.categories, category],
-  //   }));
-  //   console.log("완")
-  // };
 
   // 성별 필터 선택
   const handleGenderClick = (gender: string) => {
@@ -308,13 +289,13 @@ const handleFilterClick = (category:string, value:string) => {
   const handleViewProducts = async () => {
     try {
       const data = await fetchShopData(
-        searchParams.get("keyword") || undefined
-        // modalFilters.categories,
-        // modalFilters.gender,
-        // modalFilters.colors,
-        // modalFilters.priceRange,
-        // modalFilters.sizes,
-        // modalFilters.brands
+        searchParams.get("keyword") || undefined,
+        modalFilters.categories,
+        modalFilters.gender,
+        modalFilters.colors,
+        modalFilters.priceRange,
+        modalFilters.sizes,
+        modalFilters.brands
       );
 
       if (data.length === 0) {
@@ -342,6 +323,24 @@ const handleFilterClick = (category:string, value:string) => {
     });
   };
 
+  //필터 모두선택 버튼
+  const handleSelectAll = (category: string, options: ButtonOption[]) => {
+    setSelectedFilters((prevFilters) => {
+      const isAllSelected = options.every((item) => prevFilters[category]?.has(item.value));
+  
+      if (isAllSelected) {
+        const updatedFilters = { ...prevFilters };
+        updatedFilters[category] = new Set(); // 모든 선택 해제
+        return updatedFilters;
+      } else {
+        // 모든 선택
+        return {
+          ...prevFilters,
+          [category]: new Set(options.map((item) => item.value)),
+        };
+      }
+    });
+  };
 
   //초기화버튼
   const handleResetFilters = () => {
@@ -378,32 +377,41 @@ const handleFilterClick = (category:string, value:string) => {
                   />
                 </div>
                {/*  */}
-               {visibleCategories.map(({ name, options }) => (
-                  <div key={name} className="filter-options">
-                    <div className="subhead">
-                      <p className="subheading">{name}</p>
-                      <button className="btn_multiple">모두 선택</button>
-                    </div>
-                    <div className="section-content">
-                      {options.map((item) => (
-                        <label key={item.value} className="bubble">
-                          <div>
-                            <button
-                              className="filter_button"
-                              style={{
-                                backgroundColor: selectedFilters[name]?.has(item.value) ? 'black' : 'transparent',
-                                color: selectedFilters[name]?.has(item.value) ? 'white' : 'black',
-                              }}
-                              onClick={() => handleFilterClick(name, item.value)}
-                            >
-                              {item.label}
-                            </button>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+               {visibleCategories.map(({ name, options }) => {
+  const allSelected = options.every((item) => selectedFilters[name]?.has(item.value));
+
+  return (
+    <div key={name} className="filter-options">
+      <div className="subhead">
+        <p className="subheading">{name}</p>
+        <button 
+          className="btn_multiple" 
+          onClick={() => handleSelectAll(name, options)}
+        >
+          {allSelected ? "모두 해제" : "모두 선택"}
+        </button>
+      </div>
+      <div className="section-content">
+        {options.map((item) => (
+          <label key={item.value} className="bubble">
+            <div>
+              <button
+                className="filter_button"
+                style={{
+                  backgroundColor: selectedFilters[name]?.has(item.value) ? 'black' : 'transparent',
+                  color: selectedFilters[name]?.has(item.value) ? 'white' : 'black',
+                }}
+                onClick={() => handleFilterClick(name, item.value)}
+              >
+                {item.label}
+              </button>
+            </div>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+})}
 
                   {/* 더보기 버튼 */}
                   {!showMore && (
@@ -438,7 +446,7 @@ const handleFilterClick = (category:string, value:string) => {
                         <input
                           type="radio"
                           name="gender"
-                          onClick={() => handleGenderClick("남성")}
+                          onClick={() => handleGenderClick("male")}
                         />
                         <div>
                           <button className="filter_button">남성</button>
@@ -448,7 +456,7 @@ const handleFilterClick = (category:string, value:string) => {
                         <input
                           type="radio"
                           name="gender"
-                          onClick={() => handleGenderClick("여성")}
+                          onClick={() => handleGenderClick("woman")}
                         />
                         <div>
                           <button className="filter_button">여성</button>
@@ -458,7 +466,7 @@ const handleFilterClick = (category:string, value:string) => {
                         <input
                           type="radio"
                           name="gender"
-                          onClick={() => handleGenderClick("키즈")}
+                          onClick={() => handleGenderClick("Kids")}
                         />
                         <div>
                           <button className="filter_button">키즈</button>
@@ -718,7 +726,7 @@ const handleFilterClick = (category:string, value:string) => {
            <FilterContainer>
             <div>
               {/* {Array.from(newSet)} */}
-              <ul className="flex items-center bg-gray-100 px-3 py-1 rounded-lg">
+              <ul className="px-3 py-1">
                 {Object.entries(selectedFilters).map(([category, values]) =>
                   Array.from(values).map((value) => (
                     <li key={value} className="filterButton">
@@ -982,6 +990,8 @@ const ModalContent = styled.div`
     
   }
   `;
+
+
   const FilterContainer = styled.div`
   display: flex;  
   align-items: center;  
@@ -997,6 +1007,7 @@ const ModalContent = styled.div`
 
   ul {
     display: flex;   /* 가로 정렬을 위한 추가 */
+    flex-wrap: wrap;
     align-items: center;
     list-style: none;
     padding: 0;
@@ -1004,10 +1015,14 @@ const ModalContent = styled.div`
     gap: 8px;  /* 버튼 사이 간격 추가 */
   }
 
+  li {
+    display: flex; 
+    align-items: center;
+  }
+
   li button{
-    border: none;  /* 테두리 제거 */
+    border: none;
     background: none;
-    align-items: center;  
     padding: 6px 12px;
   }
 `;
