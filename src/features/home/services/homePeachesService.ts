@@ -6,6 +6,8 @@ export const fetchPeachesData = async () => {
 
     // API 응답을 프론트엔드 포맷으로 변환
     return response.data.content.map((item: any) => ({
+      id: item.id, 
+      colorName: item.colorName || "default", 
       transaction: item.tradeCount?.toString() || "0",  // 거래 수
       img: item.thumbnailImageUrl,                      // 썸네일 URL
       backgroundcolor: "#f4f4f4",                       // 기본값
