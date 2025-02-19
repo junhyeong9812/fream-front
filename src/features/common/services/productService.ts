@@ -16,28 +16,28 @@ interface ProductSearchDto {
 
 // 카테고리별 상품 조회 함수
 export const fetchProductsByCategory = async () => {
-    try {
-      const response = await apiClient.get("/products/query");
-      
-      // API 응답을 프론트엔드 포맷으로 변환
-      return response.data.content.map((item: any) => ({
-        id: item.id,                              // 추가
-        colorName: item.colorName || 'default',   // 추가
-        transaction: item.viewCount || "0",
-        img: item.thumbnailUrl,
-        backgroundcolor: "#f4f4f4",
-        brand: item.brandName,
-        name: item.productName,
-        price: item.salePrice.toLocaleString(),
-        buy: item.buyAvailable,
-        coupon: item.hasCoupon,
-        earn: item.hasPoints,
-      }));
-    } catch (error) {
-      console.error("상품 조회 실패:", error);
-      return "no";
-    }
-  };
+  try {
+    const response = await apiClient.get("/products/query");
+    console.log(response.data.content);
+    // API 응답을 프론트엔드 포맷으로 변환
+    return response.data.content.map((item: any) => ({
+      id: item.id, // 추가
+      colorName: item.colorName || "default", // 추가
+      transaction: item.viewCount || "0",
+      img: item.thumbnailUrl,
+      backgroundcolor: "#f4f4f4",
+      brand: item.brandName,
+      name: item.productName,
+      price: item.salePrice.toLocaleString(),
+      buy: item.buyAvailable,
+      coupon: item.hasCoupon,
+      earn: item.hasPoints,
+    }));
+  } catch (error) {
+    console.error("상품 조회 실패:", error);
+    return "no";
+  }
+};
 // export const fetchProductsByCategory = async (categoryType: string) => {
 //   try {
 //     // 카테고리별 검색 조건 설정

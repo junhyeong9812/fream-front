@@ -10,6 +10,9 @@ const Product: React.FC<productProps> = ({ product }) => {
   const handleProductClick = (productId: number, colorName: string) => {
     navigate(`/products/${productId}?color=${colorName}`);
   };
+  if (!product) {
+    return <div>Loading...</div>;
+  }
   return (
     <div
       className="product_container"

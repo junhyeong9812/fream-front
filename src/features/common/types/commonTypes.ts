@@ -37,8 +37,8 @@ export interface productWrapProps {
   productCategory: string;
 }
 export interface productInfo {
-  id: number;           // 추가
-  colorName: string;    // 추가
+  id: number;
+  colorName: string;
   transaction: string;
   img: string;
   backgroundcolor: string;
@@ -49,6 +49,7 @@ export interface productInfo {
   coupon: boolean;
   earn: boolean;
 }
+
 export interface productProps {
   product: productInfo;
 }
