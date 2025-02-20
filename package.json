@@ -57,6 +57,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/sockjs-client": "^1.5.4",
     "typescript-plugin-css-modules": "^5.1.0"
   }
 }

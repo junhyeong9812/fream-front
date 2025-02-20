@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { fetchShopData } from "src/features/shop/services/shopService";
 
 const url = new URL(window.location.href);
@@ -75,11 +75,57 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [modalFilters, setModalFilters] = useState<ModalFilters>(initialFilters);
   const [imageList, setImageList] = useState<Product[]>([]);
   const [showMore, setShowMore] = useState(false); //더보기 버튼
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  //모달창 버튼 백에서 받아옴
+  const [filterData, setFilterData] = useState<{
+    sizes: Record<string, string[]>;
+    genders: string[];
+    colors: { key: string; name: string }[];
+  }>({
+    sizes: {},
+    genders: [],
+    colors: [],
+  });
+  
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const response = await fetch("/api/filters"); // 백엔드 API 엔드포인트
+        const data = await response.json();
+        setFilterData(data);
+      } catch (error) {
+        console.error("필터 데이터 가져오기 실패:", error);
+      }
+    };
+  
+    fetchFilters();
+
+    //테스트용 데이터
+    const mockData = {
+      sizes: {
+        CLOTHING: ["XS", "S", "M", "L", "XL"],
+        SHOES: ["230", "240", "250", "260", "270"],
+        ACCESSORIES: ["ONE_SIZE"],
+      },
+      genders: ["MALE", "FEMALE", "KIDS", "UNISEX"],
+      colors: [
+        { key: "BLACK", name: "블랙" },
+        { key: "WHITE", name: "화이트" },
+        { key: "BLUE", name: "블루" },
+      ],
+    };
+    setFilterData(mockData);
+    
+  }, []);
   
   //버튼 선택 저장 state
   const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({});
   if (!open) return null; // open이 false면 null 리턴
+   
+  
+
+
 
   //브랜드 0목록 테스트용
   const items = [
@@ -149,9 +195,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
       { label: "500만원 이상", value: "over_5000000" },
     ];
   
-    const shoeSizes = ["70", "80", "90", "110"];
-    const apparelSizes = ["XXS", "XS", "S", "M", "L", "XL"];
-  
     const categories = [
       { label: "스니커즈", value: "스니커즈" },
       { label: "샌들/슬리퍼", value: "샌들/슬리퍼" },
@@ -183,10 +226,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
       { name: "셔츠", options: shirts },
       // 카테고리 추가
     ];
+
     
     //카테고리 2번째부터 출력
     const visibleCategories = showMore ? categoryData : categoryData.slice(0, 2);
-
+    
+    //데이터 전송시 모달창 닫기
+    const handleCloseModal = () => {
+      setIsModalOpen(false); 
+    };
 
     // 브랜드 목록 스크롤
     const groupItems = (items: string[]) => {
@@ -209,53 +257,35 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const groupedItems = groupItems(items);
   const groupKeys = Object.keys(groupedItems); // 그룹 키 목록
 
-
-  const handleFilterClick = (category:string, value:string) => {
+  const handleFilterClick = (category: string, value: string) => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
-
-      // 해당 카테고리의 Set이 없으면 새로 생성
-      if (!newFilters[category]) {
-        newFilters[category] = new Set();
-      }else {
-        newFilters[category] = new Set(newFilters[category]); 
-      }
-
-      // 선택된 항목이 있으면 제거, 없으면 추가
-      if (newFilters[category].has(value)) {
-        newFilters[category].delete(value);
+  
+      if (category === "gender") {
+        newFilters[category] = new Set([value]); // 단일 선택
       } else {
-        newFilters[category].add(value);
+        if (!newFilters[category]) {
+          newFilters[category] = new Set();
+        } else {
+          newFilters[category] = new Set(newFilters[category]);
+        }
+  
+        if (newFilters[category].has(value)) {
+          newFilters[category].delete(value);
+        } else {
+          newFilters[category].add(value);
+        }
       }
-      const updatedFilters = { ...newFilters };
+  
       console.log("현재 선택된 필터:", JSON.stringify(
         Object.fromEntries(
-          Object.entries(updatedFilters).map(([key, valueSet]) => [key, Array.from(valueSet)])
+          Object.entries(newFilters).map(([key, valueSet]) => [key, Array.from(valueSet)])
         ),
         null,
         2
       ));
-  
-      return updatedFilters;
+      return newFilters;
     });
-  };
-
-  // 성별 필터 선택
-  const handleGenderClick = (gender: string) => {
-    setModalFilters((prev) => ({
-      ...prev,
-      gender: prev.gender === gender ? null : gender, // 같은 걸 누르면 해제
-    }));
-  };
-
-  // 색상 필터 선택
-  const handleColorClick = (color: string) => {
-    setModalFilters((prev) => ({
-      ...prev,
-      colors: prev.colors.includes(color)
-        ? prev.colors.filter((c) => c !== color)
-        : [...prev.colors, color],
-    }));
   };
 
   // 가격대 필터 선택
@@ -303,7 +333,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
         return;
       }
 
-      setImageList(data); // 백엔드에서 받은 데이터를 상태에 저장
+      setImageList(data);
+      console.log("데이터:",data);
+
+      //모달 닫기
+      handleCloseModal();
     } catch (error) {
       console.error("handleViewProducts 에러:", error);
     }
@@ -377,52 +411,51 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   />
                 </div>
                {/*  */}
-               {visibleCategories.map(({ name, options }) => {
-  const allSelected = options.every((item) => selectedFilters[name]?.has(item.value));
-
-  return (
-    <div key={name} className="filter-options">
-      <div className="subhead">
-        <p className="subheading">{name}</p>
-        <button 
-          className="btn_multiple" 
-          onClick={() => handleSelectAll(name, options)}
-        >
-          {allSelected ? "모두 해제" : "모두 선택"}
-        </button>
-      </div>
-      <div className="section-content">
-        {options.map((item) => (
-          <label key={item.value} className="bubble">
-            <div>
-              <button
-                className="filter_button"
-                style={{
-                  backgroundColor: selectedFilters[name]?.has(item.value) ? 'black' : 'transparent',
-                  color: selectedFilters[name]?.has(item.value) ? 'white' : 'black',
-                }}
-                onClick={() => handleFilterClick(name, item.value)}
-              >
-                {item.label}
-              </button>
-            </div>
-          </label>
-        ))}
-      </div>
-    </div>
-  );
-})}
-
-                  {/* 더보기 버튼 */}
-                  {!showMore && (
-                    <div>
-                      <button className="seeCategory" onClick={() => setShowMore(true)}>
-                        더보기
+               {visibleCategories.map(({ name, options }) => 
+               {
+                const allSelected = options.every((item) => selectedFilters[name]?.has(item.value));
+                return (
+                  <div key={name} className="filter-options">
+                    <div className="subhead">
+                      <p className="subheading">{name}</p>
+                      <button 
+                        className="btn_multiple" 
+                        onClick={() => handleSelectAll(name, options)}
+                        >
+                        {allSelected ? "모두 해제" : "모두 선택"}
                       </button>
                     </div>
-                  )}
-                </div>
+                    <div className="section-content">
+                      {options.map((item) => (
+                        <label key={item.value} className="bubble">
+                          <div>
+                            <button
+                              className="filter_button"
+                              style={{
+                                backgroundColor: selectedFilters[name]?.has(item.value) ? 'black' : 'transparent',
+                                color: selectedFilters[name]?.has(item.value) ? 'white' : 'black',
+                              }}
+                              onClick={() => handleFilterClick(name, item.value)}
+                            >
+                              {item.label}
+                            </button>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                    );
+              })}
 
+              {/* 더보기 버튼 */}
+              {!showMore && (
+              <div>
+                <button className="seeCategory" onClick={() => setShowMore(true)}>
+                  더보기
+                </button>
+              </div>
+              )}
+              </div>
 
               {/* 성별 필터 */}
               <div className="filter-section">
@@ -442,40 +475,27 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   <div className="filter-options">
                     <p className="subheading">성별</p>
                     <div className="section-content">
-                      <label className="bubble">
-                        <input
-                          type="radio"
-                          name="gender"
-                          onClick={() => handleGenderClick("male")}
-                        />
-                        <div>
-                          <button className="filter_button">남성</button>
-                        </div>
-                      </label>
-                      <label className="bubble">
-                        <input
-                          type="radio"
-                          name="gender"
-                          onClick={() => handleGenderClick("woman")}
-                        />
-                        <div>
-                          <button className="filter_button">여성</button>
-                        </div>
-                      </label>
-                      <label className="bubble">
-                        <input
-                          type="radio"
-                          name="gender"
-                          onClick={() => handleGenderClick("Kids")}
-                        />
-                        <div>
-                          <button className="filter_button">키즈</button>
-                        </div>
-                      </label>
+                      {filterData.genders.map((gender) => (
+                        <label className="bubble" key={gender}>
+                          <div>
+                            <button
+                              className="filter_button"
+                              style={{
+                                backgroundColor: selectedFilters.gender?.has(gender) ? "black" : "transparent",
+                                color: selectedFilters.gender?.has(gender) ? "white" : "black",
+                              }}
+                              onClick={() => handleFilterClick("gender", gender)}
+                            >
+                              {gender === "MALE" ? "남성" : gender === "FEMALE" ? "여성" : gender === "KIDS" ? "키즈" : "공용"}
+                            </button>
+                          </div>
+                        </label>
+                      ))}
                     </div>
                   </div>
                 )}
-              </div>
+              </div>;
+
 
               {/* 색상 필터 */}
               <div className="filter-section">
@@ -490,32 +510,44 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     style={{ cursor: "pointer" }}
                   />
                 </div>
+
                 {colorOpen && (
                   <div className="filter-options">
                     <div className="section-content color">
                       {colors.map((color, index) => (
-                        <div className="filter-shortcut" key={index}>
-                          {color.img ? (
-                            <img
-                              src={color.img}
-                              alt={color.name}
-                              className="color-box image-style"
-                            />
-                          ) : (
-                            <div
-                              className="color-box"
-                              style={{ backgroundColor: color.rgb }}
-                            ></div>
-                          )}
+                        <label className="filter-shortcut" key={index}>
+                          <div
+                            className="color-box contents"
+                            style={{
+                              backgroundColor: color.rgb,
+                              position: "relative",
+                            }}
+                            onClick={() => handleFilterClick("color", color.name)}
+                          >
+                            {color.img && <img src={color.img} alt={color.name} className="image-style" />}
+                            {selectedFilters.color?.has(color.name) && (
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                style={{
+                                  position: "absolute",
+                                  top: "50%",
+                                  left: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                  color: ["화이트", "아이보리", "옐로우"].includes(color.name) ? "black" : "white",
+                                  fontSize: "1.2em",
+                                }}
+                              />
+                            )}
+                          </div>
                           <div className="title-color">
                             <p>{color.name}</p>
                           </div>
-                        </div>
+                        </label>
                       ))}
                     </div>
                   </div>
                 )}
-              </div>
+              </div>;
 
               {/* 혜택/할인 필터 */}
               <div className="filter-section">
@@ -532,6 +564,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     style={{ cursor: "pointer" }}
                   />
                 </div>
+
+
                 {discountOpen && (
                   <div className="filter-options">
                     {filters.map((filter, index) => (
@@ -635,12 +669,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 {collectionOpen && <div className="filter-options"></div>}
               </div>
 
-              {/* 사이즈 */}
+                    
+              {/* 사이즈 필터 */}
               <div className="filter-section">
                 <div className="section-header">
                   <div>
                     <h3>사이즈</h3>
-                    {!sizeOpen ? <p className="title">모든 사이즈</p> : null}
                   </div>
                   <FontAwesomeIcon
                     icon={sizeOpen ? faMinus : faPlus}
@@ -651,40 +685,31 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
                 {sizeOpen && (
                   <div className="filter-options">
-                    <p>신발</p>
-                    <div className="section-content">
-                      {shoeSizes.map((size) => (
-                        <label className="bubble" key={size}>
-                          <input
-                            type="checkbox"
-                            checked={modalFilters.sizes.includes(size)}
-                            onChange={() => handleSizeClick(size)}
-                          />
-                          <div>
-                            <button className="filter_button">{size}</button>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                    <p>의류</p>
-                    <div className="section-content">
-                      {apparelSizes.map((size) => (
-                        <label className="bubble" key={size}>
-                          <input
-                            type="checkbox"
-                            checked={modalFilters.sizes.includes(size)}
-                            onChange={() => handleSizeClick(size)}
-                          />
-                          <div>
-                            <button className="filter_button">{size}</button>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
+                    {Object.entries(filterData.sizes).map(([category, sizes]) => (
+                      <div key={category}>
+                        <p className="subheading">{category === "CLOTHING" ? "의류" : category === "SHOES" ? "신발" : "액세서리"}</p>
+                        <div className="section-content">
+                          {sizes.map((size) => (
+                            <label className="bubble" key={size}>
+                              <input
+                                type="checkbox"
+                                checked={modalFilters.sizes.includes(size)}
+                                onChange={() => handleSizeClick(size)}
+                              />
+                              <div>
+                                <button className="filter_button">{size}</button>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
 
+
+                        
               {/* 가격대 */}
               <div className="filter-section">
                 <div className="section-header">
@@ -723,7 +748,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               </div>
             </ModalContent>
 
-           <FilterContainer>
+            <FilterContainer>
             <div>
               {/* {Array.from(newSet)} */}
               <ul className="px-3 py-1">
@@ -944,6 +969,10 @@ const ModalContent = styled.div`
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
     }
     .image-style {
       width: 40px;
