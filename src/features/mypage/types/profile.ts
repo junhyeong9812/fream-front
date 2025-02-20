@@ -1,7 +1,7 @@
 export interface BlockedProfileDto {
-  id: number;
+  profileId: number;
   profileName: string;
-  profileImage: string;
+  profileImageUrl: string;
 }
 
 export interface ProfileInfoDto {
@@ -17,7 +17,7 @@ export interface ProfileInfoDto {
 
 export interface ProfileUpdateDto {
   profileName: string;
-  realName: string;
+  Name: string; // 백엔드 DTO와 일치하도록 수정
   bio: string;
   isPublic: boolean;
 }

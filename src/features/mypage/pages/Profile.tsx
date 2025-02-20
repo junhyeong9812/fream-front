@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import BlockedProfilesModal from "../components/BlockedProfilesModal";
-
+import { ProfileInfoDto, BlockedProfileDto } from "../types/profile";
+import {
+  getBlockedProfiles,
+  getProfileInfo,
+  unblockProfile,
+  updateProfile,
+} from "../services/ProfileService";
 // 페이지 컨테이너
 const PageContainer = styled.div`
   padding: 0 20px;
@@ -208,45 +214,170 @@ const SwitchCircle = styled.div<{ isActive: boolean }>`
 `;
 
 const Profile: React.FC = () => {
-  const [isProfileHidden, setIsProfileHidden] = useState(false);
+  // const [isProfileHidden, setIsProfileHidden] = useState(false);
 
-  const toggleProfileVisibility = () => {
-    setIsProfileHidden((prev) => !prev);
-  };
-  // 프로필 정보 상태
-  const [profileInfo, setProfileInfo] = useState({
-    profileName: "홍길동",
-    realName: "홍길동",
-    introduction: "안녕하세요, 저는 홍길동입니다.",
-    imageUrl: "https://via.placeholder.com/80",
-  });
+  // const toggleProfileVisibility = () => {
+  //   setIsProfileHidden((prev) => !prev);
+  // };
+  // // 프로필 정보 상태
+  // const [profileInfo, setProfileInfo] = useState({
+  //   profileName: "홍길동",
+  //   realName: "홍길동",
+  //   introduction: "안녕하세요, 저는 홍길동입니다.",
+  //   imageUrl: "https://via.placeholder.com/80",
+  // });
 
-  const [blockedProfiles, setBlockedProfiles] = useState([
-    {
-      id: 1,
-      profileName: "ljhun__",
-      realName: "이준",
-      imageUrl: "https://via.placeholder.com/44",
-    },
-    {
-      id: 2,
-      profileName: "eoagt5z",
-      realName: "김철수",
-      imageUrl: "https://via.placeholder.com/44",
-    },
-  ]);
+  // const [blockedProfiles, setBlockedProfiles] = useState([
+  //   {
+  //     id: 1,
+  //     profileName: "ljhun__",
+  //     realName: "이준",
+  //     imageUrl: "https://via.placeholder.com/44",
+  //   },
+  //   {
+  //     id: 2,
+  //     profileName: "eoagt5z",
+  //     realName: "김철수",
+  //     imageUrl: "https://via.placeholder.com/44",
+  //   },
+  // ]);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // // 변경 함수
+  // const handleModify = (key: keyof typeof profileInfo) => {
+  //   const newValue = prompt(`새로운 ${key}를 입력하세요:`, profileInfo[key]);
+  //   if (newValue) {
+  //     setProfileInfo({ ...profileInfo, [key]: newValue });
+  //   }
+  // };
+  // const handleUnblock = (id: number) => {
+  //   setBlockedProfiles((prev) => prev.filter((profile) => profile.id !== id));
+  // };
+  const [profileInfo, setProfileInfo] = useState<ProfileInfoDto | null>(null);
+  const [blockedProfiles, setBlockedProfiles] = useState<BlockedProfileDto[]>(
+    []
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProfileHidden, setIsProfileHidden] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 변경 함수
-  const handleModify = (key: keyof typeof profileInfo) => {
-    const newValue = prompt(`새로운 ${key}를 입력하세요:`, profileInfo[key]);
-    if (newValue) {
-      setProfileInfo({ ...profileInfo, [key]: newValue });
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        setIsLoading(true);
+        const profileData = await getProfileInfo();
+        setProfileInfo(profileData);
+        setIsProfileHidden(!profileData.isPublic);
+
+        const blockedProfiles = await getBlockedProfiles();
+        setBlockedProfiles(blockedProfiles);
+      } catch (error) {
+        console.error("Failed to fetch profile data", error);
+        setError("프로필 정보를 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  const toggleProfileVisibility = async () => {
+    if (!profileInfo) return;
+
+    try {
+      await updateProfile({
+        profileName: profileInfo.profileName,
+        Name: profileInfo.realName,
+        bio: profileInfo.bio,
+        isPublic: !isProfileHidden,
+      });
+      setIsProfileHidden((prev) => !prev);
+    } catch (error) {
+      console.error("Failed to update profile visibility", error);
+      setError("프로필 공개 설정 변경 중 오류가 발생했습니다.");
     }
   };
-  const handleUnblock = (id: number) => {
-    setBlockedProfiles((prev) => prev.filter((profile) => profile.id !== id));
+
+  const handleModify = async (key: keyof ProfileInfoDto) => {
+    if (!profileInfo) return;
+
+    const newValue = prompt(
+      `새로운 ${key}를 입력하세요:`,
+      profileInfo[key] as string
+    );
+    if (newValue) {
+      try {
+        await updateProfile({
+          profileName:
+            key === "profileName" ? newValue : profileInfo.profileName,
+          Name: key === "realName" ? newValue : profileInfo.realName,
+          bio: key === "bio" ? newValue : profileInfo.bio,
+          isPublic: profileInfo.isPublic,
+        });
+
+        setProfileInfo((prev) => (prev ? { ...prev, [key]: newValue } : null));
+      } catch (error) {
+        console.error(`Failed to update ${key}`, error);
+        setError(`${key} 업데이트 중 오류가 발생했습니다.`);
+      }
+    }
   };
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await updateProfile(
+        {
+          profileName: profileInfo?.profileName || "",
+          Name: profileInfo?.realName || "",
+          bio: profileInfo?.bio || "",
+          isPublic: profileInfo?.isPublic || false,
+        },
+        file
+      );
+
+      // 프로필 정보 다시 불러오기
+      const updatedProfileInfo = await getProfileInfo();
+      setProfileInfo(updatedProfileInfo);
+    } catch (error) {
+      console.error("Failed to upload profile image", error);
+      setError("프로필 이미지 업로드 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleUnblockProfile = async (profileId: number) => {
+    try {
+      // 차단 해제 로직
+      const updatedBlockedProfiles = await getBlockedProfiles();
+      setBlockedProfiles(updatedBlockedProfiles);
+    } catch (error) {
+      console.error("Failed to unblock profile", error);
+      setError("프로필 차단 해제 중 오류가 발생했습니다.");
+    }
+  };
+  const handleUnblock = async (profileId: number) => {
+    try {
+      // 프로필 차단 해제 API 호출
+      await unblockProfile(profileId);
+
+      // 차단된 프로필 목록 다시 불러오기
+      const updatedBlockedProfiles = await getBlockedProfiles();
+      setBlockedProfiles(updatedBlockedProfiles);
+    } catch (error) {
+      console.error("Failed to unblock profile", error);
+      setError("프로필 차단 해제 중 오류가 발생했습니다.");
+    }
+  };
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error) return <div>{error}</div>;
+  if (!profileInfo) return null;
 
   return (
     <PageContainer>
@@ -259,7 +390,7 @@ const Profile: React.FC = () => {
       <UserProfile>
         <ProfileThumb>
           <ProfileImage
-            src="https://via.placeholder.com/80"
+            src={profileInfo.profileImage || "https://via.placeholder.com/80"}
             alt="사용자 이미지"
           />
         </ProfileThumb>
@@ -303,10 +434,10 @@ const Profile: React.FC = () => {
           <ProfileUnit>
             <TitleLabel>소개</TitleLabel>
             <UnitContent>
-              <Description isPlaceholder={!profileInfo.introduction}>
-                {profileInfo.introduction || "나를 소개하세요"}
+              <Description isPlaceholder={!profileInfo.bio}>
+                {profileInfo.bio || "나를 소개하세요"}
               </Description>
-              <ModifyButton onClick={() => handleModify("introduction")}>
+              <ModifyButton onClick={() => handleModify("bio")}>
                 변경
               </ModifyButton>
             </UnitContent>

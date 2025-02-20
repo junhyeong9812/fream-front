@@ -1,5 +1,9 @@
 import apiClient from "src/global/services/ApiClient";
-import { ProfileInfoDto, ProfileUpdateDto } from "../types/profile";
+import {
+  BlockedProfileDto,
+  ProfileInfoDto,
+  ProfileUpdateDto,
+} from "../types/profile";
 
 export const getProfileInfo = async (): Promise<ProfileInfoDto> => {
   try {
@@ -30,6 +34,32 @@ export const updateProfile = async (
     return response.data;
   } catch (error) {
     console.error("Failed to update profile:", error);
+    throw error;
+  }
+};
+
+export const getBlockedProfiles = async (): Promise<BlockedProfileDto[]> => {
+  try {
+    const response = await apiClient.get<BlockedProfileDto[]>(
+      "/profiles/blocked"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch blocked profiles:", error);
+    throw error;
+  }
+};
+
+export const unblockProfile = async (
+  blockedProfileId: number
+): Promise<string> => {
+  try {
+    const response = await apiClient.delete<string>(
+      `/profiles/blocked?blockedProfileId=${blockedProfileId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to unblock profile:", error);
     throw error;
   }
 };
