@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { AddressCardProps } from "../types/address";
 
 // 스타일드 컴포넌트
 const AddressCardContainer = styled.div<{ isDefault?: boolean }>`
@@ -66,41 +67,24 @@ const ActionButton = styled.a`
   }
 `;
 
-// AddressCard 컴포넌트 정의
-export interface AddressData {
-  id: number;
-  name: string;
-  phoneNumber: string;
-  zonecode: string;
-  roadAddress: string;
-  detailAddress: string;
-  isDefaultAddress: boolean;
-}
-
-interface AddressCardProps {
-  address: AddressData;
-  onEdit: (address: AddressData) => void;
-  onDelete: (address: AddressData) => void;
-}
-
 const AddressCard: React.FC<AddressCardProps> = ({
   address,
   onEdit,
   onDelete,
 }) => {
   return (
-    <AddressCardContainer isDefault={address.isDefaultAddress}>
+    <AddressCardContainer isDefault={address.isDefault}>
       <AddressInfo>
         <NameBox>
-          <Name>{address.name}</Name>
-          {address.isDefaultAddress && <Mark>기본 배송지</Mark>}
+          <Name>{address.recipientName}</Name>
+          {address.isDefault && <Mark>기본 배송지</Mark>}
         </NameBox>
         <Phone>
           {address.phoneNumber.slice(0, 3)}-{address.phoneNumber.slice(3, 7)}-
           {address.phoneNumber.slice(7)}
         </Phone>
         <AddressBox>
-          {address.zonecode}, {address.roadAddress} {address.detailAddress}
+          {address.zipCode}, {address.address} {address.detailedAddress}
         </AddressBox>
       </AddressInfo>
       <ButtonContainer>
@@ -117,7 +101,7 @@ const AddressCard: React.FC<AddressCardProps> = ({
           href="#"
           onClick={(e) => {
             e.preventDefault();
-            onDelete(address);
+            onDelete(address.id);
           }}
         >
           삭제

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FiX } from "react-icons/fi";
 import DeliveryCheck from "./DeliveryCheck";
-import { AddAddressModalProps, AddressData } from "../types/mypageTypes";
+import {
+  AddAddressModalProps,
+  AddressCreateDto,
+  AddressUpdateDto,
+} from "../types/address";
 
 // 다음 주소 API 스크립트 추가
 declare global {
@@ -177,88 +181,101 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
   onSubmit,
   initialData,
 }) => {
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [zonecode, setZonecode] = useState("");
-  const [roadAddress, setRoadAddress] = useState("");
-  const [detailAddress, setDetailAddress] = useState("");
-  const [isDefaultAddress, setIsDefaultAddress] = useState(false); // 체크박스 상태 관리
+  const [formData, setFormData] = useState({
+    recipientName: initialData?.recipientName || "",
+    phoneNumber: initialData?.phoneNumber || "",
+    zipCode: initialData?.zipCode || "",
+    address: initialData?.address || "",
+    detailedAddress: initialData?.detailedAddress || "",
+    isDefault: initialData?.isDefault || false,
+  });
 
   const [activeInput, setActiveInput] = useState<string | null>(null);
-
-  // 초기값 설정
-  useEffect(() => {
-    if (initialData) {
-      setName(initialData.name);
-      setPhoneNumber(initialData.phoneNumber);
-      setZonecode(initialData.zonecode);
-      setRoadAddress(initialData.roadAddress);
-      setDetailAddress(initialData.detailAddress);
-      setIsDefaultAddress(initialData.isDefaultAddress);
-    }
-  }, [initialData]);
-
-  const handleSubmit = () => {
-    const newData: AddressData = {
-      id: initialData?.id || 0, // 수정 시 기존 id 유지
-      name,
-      phoneNumber,
-      zonecode,
-      roadAddress,
-      detailAddress,
-      isDefaultAddress,
-    };
-
-    onSubmit(newData);
-  };
-
-  // 다음 주소 API 호출
-  const openPostcode = () => {
-    new window.daum.Postcode({
-      oncomplete: (data: any) => {
-        setZonecode(data.zonecode);
-        setRoadAddress(data.roadAddress);
-      },
-    }).open();
-  };
-
-  // 에러 상태
   const [nameError, setNameError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        recipientName: initialData.recipientName,
+        phoneNumber: initialData.phoneNumber,
+        zipCode: initialData.zipCode,
+        address: initialData.address,
+        detailedAddress: initialData.detailedAddress,
+        isDefault: initialData.isDefault,
+      });
+    }
+  }, [initialData]);
+
   const validateName = () => {
-    const isValid = name.length >= 2 && name.length <= 50;
+    const isValid =
+      formData.recipientName.length >= 2 && formData.recipientName.length <= 50;
     setNameError(!isValid);
+    return isValid;
   };
 
   const validatePhoneNumber = () => {
-    const isValid = /^010\d{8}$/.test(phoneNumber);
+    const isValid = /^010\d{8}$/.test(formData.phoneNumber);
     setPhoneError(!isValid);
+    return isValid;
+  };
+
+  const handleSubmit = () => {
+    const isNameValid = validateName();
+    const isPhoneValid = validatePhoneNumber();
+
+    if (!isNameValid || !isPhoneValid) {
+      alert("입력값을 확인해주세요.");
+      return;
+    }
+
+    const submitData = initialData
+      ? { ...formData, addressId: initialData.id }
+      : formData;
+
+    onSubmit(submitData);
+  };
+
+  const openPostcode = () => {
+    new window.daum.Postcode({
+      oncomplete: (data: any) => {
+        setFormData((prev) => ({
+          ...prev,
+          zipCode: data.zonecode,
+          address: data.roadAddress,
+        }));
+      },
+    }).open();
   };
 
   return (
     <ModalOverlay>
       <ModalContainer>
         <CloseButton onClick={onClose} />
-        {/* 타이틀 영역 */}
         <TitleSection>
-          <ModalTitle>새 주소 추가</ModalTitle>
+          <ModalTitle>
+            {initialData ? "배송지 수정" : "새 배송지 추가"}
+          </ModalTitle>
         </TitleSection>
 
-        {/* 입력 폼 영역 */}
         <ContentSection>
           {/* 이름 입력 */}
           <InputBox
             hasError={nameError}
             isActive={activeInput === "name"}
-            isFirstChild={true}
+            isFirstChild
           >
             <h4>이름</h4>
             <input
               type="text"
               placeholder="이름을 입력하세요"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.recipientName}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  recipientName: e.target.value,
+                }))
+              }
               onFocus={() => setActiveInput("name")}
               onBlur={() => {
                 validateName();
@@ -274,8 +291,13 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
             <input
               type="text"
               placeholder="-없이 입력"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={formData.phoneNumber}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  phoneNumber: e.target.value,
+                }))
+              }
               onFocus={() => setActiveInput("phone")}
               onBlur={() => {
                 validatePhoneNumber();
@@ -284,48 +306,59 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
             />
             <p>정확한 휴대폰 번호를 입력해주세요.</p>
           </InputBox>
-          {/* 우편번호 번호 입력 */}
+
+          {/* 우편번호 */}
           <InputBox>
-            <h4>우편번호 번호</h4>
+            <h4>우편번호</h4>
             <input
               type="text"
-              placeholder="우편 번호를 검색하세요."
-              value={zonecode}
+              placeholder="우편번호를 검색하세요"
+              value={formData.zipCode}
               readOnly
             />
             <a onClick={openPostcode}>우편번호</a>
           </InputBox>
-          {/* 주소 입력 */}
+
+          {/* 주소 */}
           <InputBox isActive={activeInput === "address"}>
             <h4>주소</h4>
             <input
               type="text"
-              placeholder="우편 번호 검색 후, 자동 입력됩니다."
-              value={roadAddress}
+              placeholder="우편번호 검색 후, 자동입력됩니다"
+              value={formData.address}
               readOnly
             />
           </InputBox>
 
-          {/* 상세 주소 입력 */}
+          {/* 상세 주소 */}
           <InputBox isActive={activeInput === "detail"}>
             <h4>상세 주소</h4>
             <input
               type="text"
               placeholder="건물, 아파트, 동/호수 입력"
-              value={detailAddress}
-              onChange={(e) => setDetailAddress(e.target.value)}
+              value={formData.detailedAddress}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  detailedAddress: e.target.value,
+                }))
+              }
               onFocus={() => setActiveInput("detail")}
               onBlur={() => setActiveInput(null)}
             />
           </InputBox>
+
           {/* 기본 배송지 체크박스 */}
           <CheckboxItem>
             <DeliveryCheck
-              isChecked={isDefaultAddress}
-              onToggle={() => setIsDefaultAddress((prev) => !prev)}
+              isChecked={formData.isDefault}
+              onToggle={() =>
+                setFormData((prev) => ({ ...prev, isDefault: !prev.isDefault }))
+              }
             />
           </CheckboxItem>
         </ContentSection>
+
         {/* 버튼 영역 */}
         <LayerButton>
           <Button variant="outline" onClick={onClose}>
@@ -341,3 +374,172 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
 };
 
 export default AddAddressModal;
+// const AddAddressModal: React.FC<AddAddressModalProps> = ({
+//   onClose,
+//   onSubmit,
+//   initialData,
+// }) => {
+//   const [name, setName] = useState("");
+//   const [phoneNumber, setPhoneNumber] = useState("");
+//   const [zonecode, setZonecode] = useState("");
+//   const [roadAddress, setRoadAddress] = useState("");
+//   const [detailAddress, setDetailAddress] = useState("");
+//   const [isDefaultAddress, setIsDefaultAddress] = useState(false); // 체크박스 상태 관리
+
+//   const [activeInput, setActiveInput] = useState<string | null>(null);
+
+//   // 초기값 설정
+//   useEffect(() => {
+//     if (initialData) {
+//       setName(initialData.name);
+//       setPhoneNumber(initialData.phoneNumber);
+//       setZonecode(initialData.zonecode);
+//       setRoadAddress(initialData.roadAddress);
+//       setDetailAddress(initialData.detailAddress);
+//       setIsDefaultAddress(initialData.isDefaultAddress);
+//     }
+//   }, [initialData]);
+
+//   const handleSubmit = () => {
+//     const newData: AddressData = {
+//       id: initialData?.id || 0, // 수정 시 기존 id 유지
+//       name,
+//       phoneNumber,
+//       zonecode,
+//       roadAddress,
+//       detailAddress,
+//       isDefaultAddress,
+//     };
+
+//     onSubmit(newData);
+//   };
+
+//   // 다음 주소 API 호출
+//   const openPostcode = () => {
+//     new window.daum.Postcode({
+//       oncomplete: (data: any) => {
+//         setZonecode(data.zonecode);
+//         setRoadAddress(data.roadAddress);
+//       },
+//     }).open();
+//   };
+
+//   // 에러 상태
+//   const [nameError, setNameError] = useState(false);
+//   const [phoneError, setPhoneError] = useState(false);
+
+//   const validateName = () => {
+//     const isValid = name.length >= 2 && name.length <= 50;
+//     setNameError(!isValid);
+//   };
+
+//   const validatePhoneNumber = () => {
+//     const isValid = /^010\d{8}$/.test(phoneNumber);
+//     setPhoneError(!isValid);
+//   };
+
+//   return (
+//     <ModalOverlay>
+//       <ModalContainer>
+//         <CloseButton onClick={onClose} />
+//         {/* 타이틀 영역 */}
+//         <TitleSection>
+//           <ModalTitle>새 주소 추가</ModalTitle>
+//         </TitleSection>
+
+//         {/* 입력 폼 영역 */}
+//         <ContentSection>
+//           {/* 이름 입력 */}
+//           <InputBox
+//             hasError={nameError}
+//             isActive={activeInput === "name"}
+//             isFirstChild={true}
+//           >
+//             <h4>이름</h4>
+//             <input
+//               type="text"
+//               placeholder="이름을 입력하세요"
+//               value={name}
+//               onChange={(e) => setName(e.target.value)}
+//               onFocus={() => setActiveInput("name")}
+//               onBlur={() => {
+//                 validateName();
+//                 setActiveInput(null);
+//               }}
+//             />
+//             <p>올바른 이름을 입력해주세요.(2자~50자)</p>
+//           </InputBox>
+
+//           {/* 휴대폰 번호 입력 */}
+//           <InputBox hasError={phoneError} isActive={activeInput === "phone"}>
+//             <h4>휴대폰 번호</h4>
+//             <input
+//               type="text"
+//               placeholder="-없이 입력"
+//               value={phoneNumber}
+//               onChange={(e) => setPhoneNumber(e.target.value)}
+//               onFocus={() => setActiveInput("phone")}
+//               onBlur={() => {
+//                 validatePhoneNumber();
+//                 setActiveInput(null);
+//               }}
+//             />
+//             <p>정확한 휴대폰 번호를 입력해주세요.</p>
+//           </InputBox>
+//           {/* 우편번호 번호 입력 */}
+//           <InputBox>
+//             <h4>우편번호 번호</h4>
+//             <input
+//               type="text"
+//               placeholder="우편 번호를 검색하세요."
+//               value={zonecode}
+//               readOnly
+//             />
+//             <a onClick={openPostcode}>우편번호</a>
+//           </InputBox>
+//           {/* 주소 입력 */}
+//           <InputBox isActive={activeInput === "address"}>
+//             <h4>주소</h4>
+//             <input
+//               type="text"
+//               placeholder="우편 번호 검색 후, 자동 입력됩니다."
+//               value={roadAddress}
+//               readOnly
+//             />
+//           </InputBox>
+
+//           {/* 상세 주소 입력 */}
+//           <InputBox isActive={activeInput === "detail"}>
+//             <h4>상세 주소</h4>
+//             <input
+//               type="text"
+//               placeholder="건물, 아파트, 동/호수 입력"
+//               value={detailAddress}
+//               onChange={(e) => setDetailAddress(e.target.value)}
+//               onFocus={() => setActiveInput("detail")}
+//               onBlur={() => setActiveInput(null)}
+//             />
+//           </InputBox>
+//           {/* 기본 배송지 체크박스 */}
+//           <CheckboxItem>
+//             <DeliveryCheck
+//               isChecked={isDefaultAddress}
+//               onToggle={() => setIsDefaultAddress((prev) => !prev)}
+//             />
+//           </CheckboxItem>
+//         </ContentSection>
+//         {/* 버튼 영역 */}
+//         <LayerButton>
+//           <Button variant="outline" onClick={onClose}>
+//             취소
+//           </Button>
+//           <Button variant="solid" onClick={handleSubmit}>
+//             저장하기
+//           </Button>
+//         </LayerButton>
+//       </ModalContainer>
+//     </ModalOverlay>
+//   );
+// };
+
+// export default AddAddressModal;
