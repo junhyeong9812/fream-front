@@ -16,7 +16,10 @@ const PageContainer = styled.div`
 
 const PageHeader = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding-bottom: 16px;
+  width: 100%;
 `;
 
 const Title = styled.h3`
@@ -25,34 +28,35 @@ const Title = styled.h3`
   letter-spacing: -0.36px;
   margin: 0;
 `;
+
 const Title_box = styled.div`
   font-size: 24px;
   letter-spacing: -0.36px;
 `;
 
 const AddressBtnBox = styled.div`
-  align-items: center;
   display: flex;
-  flex-shrink: 0;
+  align-items: center;
   margin-left: auto;
   padding-left: 30px;
+  min-width: fit-content;
 
-  /* a 태그에 대한 스타일링 */
   a.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid #222;
     border-radius: 10px;
     font-size: 12px;
     height: 34px;
     letter-spacing: -0.06px;
     line-height: 32px;
-    margin-right: 0;
     padding: 0 14px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
     color: rgba(34, 34, 34, 0.8);
     background-color: #fff;
     text-decoration: none;
+    white-space: nowrap;
+    min-width: max-content;
 
     &:hover {
       text-decoration: none;
@@ -61,78 +65,17 @@ const AddressBtnBox = styled.div`
 `;
 const AddressBtn_span = styled.span`
   font-size: 12px;
-  height: 34px;
   letter-spacing: -0.06px;
   line-height: 32px;
   color: rgba(34, 34, 34, 0.8);
+  white-space: nowrap;
 `;
+
 const AddressList = styled.div`
   margin-top: 20px;
 `;
 
 const Address: React.FC = () => {
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [selectedAddress, setSelectedAddress] = useState<null | AddressData>(
-  //   null
-  // ); // 선택된 주소 데이터
-
-  // // 더미 주소 데이터
-  // // 주소 리스트를 useState로 관리
-  // const [addressList, setAddressList] = useState<AddressData[]>([
-  //   {
-  //     id: 1,
-  //     name: "홍길동",
-  //     phoneNumber: "01012345678",
-  //     zonecode: "12345",
-  //     roadAddress: "서울특별시 강남구 테헤란로",
-  //     detailAddress: "123호",
-  //     isDefaultAddress: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "김철수",
-  //     phoneNumber: "01098765432",
-  //     zonecode: "54321",
-  //     roadAddress: "부산광역시 해운대구 우동",
-  //     detailAddress: "456호",
-  //     isDefaultAddress: false,
-  //   },
-  // ]);
-
-  // const sortedAddresses = [
-  //   ...addressList.filter((address) => address.isDefaultAddress),
-  //   ...addressList.filter((address) => !address.isDefaultAddress),
-  // ];
-
-  // // 주소 추가
-  // const handleAdd = (newAddress: AddressData) => {
-  //   setAddressList((prevList) => [
-  //     ...prevList.map((address) => ({
-  //       ...address,
-  //       isDefaultAddress: false, // 기본 주소를 하나로 유지
-  //     })),
-  //     { ...newAddress, id: prevList.length + 1 },
-  //   ]);
-  //   setIsModalOpen(false);
-  // };
-
-  // // 주소 수정
-  // const handleEdit = (updatedAddress: AddressData) => {
-  //   setAddressList((prevList) =>
-  //     prevList.map((address) =>
-  //       address.id === updatedAddress.id ? updatedAddress : address
-  //     )
-  //   );
-  //   setIsModalOpen(false);
-  // };
-
-  // // 주소 삭제
-  // const handleDelete = (addressToDelete: AddressData) => {
-  //   setAddressList((prevList) =>
-  //     prevList.filter((address) => address.id !== addressToDelete.id)
-  //   );
-  //   alert(`${addressToDelete.name}의 주소가 삭제되었습니다.`);
-  // };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] =
     useState<AddressResponseDto | null>(null);
