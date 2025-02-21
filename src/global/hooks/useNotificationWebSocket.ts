@@ -17,7 +17,11 @@ export const useWebSocket = () => {
       const response = await apiClient.get(
         "/notifications/filter/type/read-status",
         {
-          params: { type: "ALL", isRead: false, page: 0, size: 20 },
+          params: {
+            isRead: false,
+            page: 0,
+            size: 20,
+          },
         }
       );
       setNotifications(response.data);
