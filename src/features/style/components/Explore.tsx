@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import SortButton from "./SortButton";
+import { StyleResponseDto } from "../types/styleTypes";
+import StylePostItem from "./StylePostItem";
+import Masonry from "react-masonry-css";
+import type { default as MasonryType } from "masonry-layout";
+import imagesLoaded from "imagesloaded";
+import styleService from "../services/styleService";
 
 const Container = styled.div`
   padding-left: 40px;
@@ -78,7 +84,40 @@ const SortingContainer = styled.div`
   justify-content: flex-end;
 `;
 
+const MasonryContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+`;
+const StyledMasonry = styled(Masonry)`
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: -20px;
+  width: auto;
+
+  .masonry-grid_column {
+    padding-left: 20px;
+    background-clip: padding-box;
+  }
+`;
+
+const LoadingState = styled.div`
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+  font-size: 16px;
+`;
+
 const Explore: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [styles, setStyles] = useState<StyleResponseDto[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const shortcuts = [
     {
       title: "스캇&닌텐도 받기",
@@ -113,6 +152,12 @@ const Explore: React.FC = () => {
       imageSrc: "https://example.com/image8.webp",
     },
   ];
+  const breakpointColumns = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1,
+  };
   const sortOptions = ["추천순", "인기순", "최신순"];
   const [activeSort, setActiveSort] = useState<string>("추천순");
 
@@ -120,6 +165,44 @@ const Explore: React.FC = () => {
     setActiveSort(option);
     console.log(`정렬 기준이 "${option}"으로 변경되었습니다.`);
     // 추가 로직: 정렬 기준에 따라 데이터 재정렬
+  };
+  useEffect(() => {
+    const fetchStyles = async () => {
+      setIsLoading(true);
+      try {
+        const data = await styleService.getStyles();
+        setStyles(data);
+      } catch (error) {
+        console.error("스타일 목록 로딩 실패:", error);
+        setStyles([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStyles();
+  }, []);
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <LoadingState>로딩 중...</LoadingState>;
+    }
+
+    if (!styles.length) {
+      return <EmptyState>등록된 스타일이 없습니다.</EmptyState>;
+    }
+
+    return (
+      <StyledMasonry
+        breakpointCols={breakpointColumns}
+        className="masonry-grid"
+        columnClassName="masonry-grid_column"
+      >
+        {styles.map((style) => (
+          <StylePostItem key={style.id} {...style} />
+        ))}
+      </StyledMasonry>
+    );
   };
 
   return (
@@ -152,7 +235,16 @@ const Explore: React.FC = () => {
       </SortingContainer>
 
       <ContentContainer>
-        <p>여기에 트렌드 탭의 콘텐츠를 추가하세요.</p>
+        {/* <MasonryContainer ref={containerRef}>
+          {styles.map(style => (
+            <StylePostItem
+              key={style.id}
+              {...style}
+              className="post"
+            />
+          ))}
+        </MasonryContainer> */}
+        {renderContent()}
       </ContentContainer>
     </Container>
   );

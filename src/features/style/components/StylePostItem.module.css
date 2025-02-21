@@ -1,0 +1,45 @@
+.postContainer {
+  max-width: 300px;
+  background: #fff;
+  margin: 1px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.postImage {
+  width: 100%;
+  display: block;
+  height: 100%;
+}
+
+.profileSection {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.profilePic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.username {
+  flex: 1;
+  font-weight: bold;
+}
+
+.content {
+  padding: 10px;
+  font-size: 14px;
+}
+
+.likeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}

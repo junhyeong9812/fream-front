@@ -1,5 +1,4 @@
-// App.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import Header from "./global/components/header/Header";
 import Footer from "./global/components/footer/Footer";
@@ -9,25 +8,25 @@ import { sendAccessLog } from "./global/services/accessLogService";
 import AppRoutes from "./routers/AppRouters";
 import { AuthProvider } from "./global/context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { HeaderProvider, useHeader } from "./global/context/HeaderContext";
 
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 전체 높이를 최소한 뷰포트 높이로 설정 */
+  min-height: 100vh;
   width: 100%;
   background-color: white;
-  position: relative; /* 포지셔닝 컨텍스트 설정 */
+  position: relative;
 `;
 
 const ContentWrapper = styled.div<{ $headerHeight: number }>`
-  position: relative; /* 상대 위치 설정 */
+  position: relative;
   margin-top: ${({ $headerHeight }) => $headerHeight}px;
   padding-top: 0;
-  min-height: calc(100vh - ${({ $headerHeight }) => $headerHeight}px - 200px); /* footer 높이 고려 */
+  min-height: calc(100vh - ${({ $headerHeight }) => $headerHeight}px - 200px);
   width: 100%;
-  z-index: 1; /* 헤더보다 낮은 z-index */
+  z-index: 1;
 
-  /* 미디어 쿼리 추가 */
   @media screen and (min-width: 1200px) {
     margin-top: ${({ $headerHeight }) => $headerHeight}px;
   }
@@ -41,39 +40,10 @@ const StyledHeader = styled(Header)`
   z-index: 10;
 `;
 
-function App() {
-  const [headerHeight, setHeaderHeight] = useState(0);
-
-  const updateHeaderHeight = () => {
-    const header = document.querySelector("header");
-    if (header) {
-      const height = header.offsetHeight;
-      setHeaderHeight(height);
-    }
-  };
+const AppContent = () => {
+  const { headerHeight } = useHeader();
 
   useEffect(() => {
-    // 초기 헤더 높이 설정
-    updateHeaderHeight();
-
-    // ResizeObserver를 사용하여 헤더 크기 변화 감지
-    const resizeObserver = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        if (entry.target.tagName.toLowerCase() === 'header') {
-          const height = entry.contentRect.height;
-          setHeaderHeight(height);
-        }
-      }
-    });
-
-    const header = document.querySelector("header");
-    if (header) {
-      resizeObserver.observe(header);
-    }
-
-    // 윈도우 리사이즈 이벤트 리스너
-    window.addEventListener('resize', updateHeaderHeight);
-
     // 페이지 접속 로그
     const logData: UserAccessLogDto = {
       pageUrl: window.location.pathname,
@@ -83,23 +53,25 @@ function App() {
       browserLanguage: navigator.language,
     };
     sendAccessLog(logData);
-
-    // 클린업
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', updateHeaderHeight);
-    };
   }, []);
 
   return (
+    <AppContainer>
+      <StyledHeader />
+      <ContentWrapper $headerHeight={headerHeight}>
+        <AppRoutes />
+      </ContentWrapper>
+      <Footer />
+    </AppContainer>
+  );
+};
+
+function App() {
+  return (
     <AuthProvider>
-      <AppContainer>
-        <StyledHeader />
-        <ContentWrapper $headerHeight={headerHeight}>
-          <AppRoutes />
-        </ContentWrapper>
-        <Footer />
-      </AppContainer>
+      <HeaderProvider>
+        <AppContent />
+      </HeaderProvider>
     </AuthProvider>
   );
 }

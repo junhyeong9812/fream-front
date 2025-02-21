@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { FindPasswordData } from "../types/findPasswordType";
 import { fetchFindPasswordData } from "../services/findPasswordService";
 import { useNavigate } from "react-router-dom";
+import { useHeader } from "src/global/context/HeaderContext";
 
 const FindPassword: React.FC = () => {
   const navigate = useNavigate();
+  const { headerHeight } = useHeader();
 
   const [findPasswordBtn, setFindPasswordBtn] = useState<boolean>(false);
 
@@ -87,7 +89,13 @@ const FindPassword: React.FC = () => {
   };
 
   return (
-    <div className="find_password_form_container">
+    <div
+      className="find_password_form_container"
+      style={{
+        paddingTop: `${headerHeight + 60}px`,
+        minHeight: `calc(100vh - ${headerHeight}px)`,
+      }}
+    >
       {findPasswordCheck ? (
         <div>
           <p className="find_password_form_success_notice_content">

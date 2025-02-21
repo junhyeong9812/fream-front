@@ -15,6 +15,7 @@ import FilterModal from "../components/filterModal";
 import PopularModal from "../components/popularityModal";
 import { fetchShopData } from "../services/shopService";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useHeader } from "src/global/context/HeaderContext";
 
 // 최상위 컨테이너
 const ShopContainer = styled.div`
@@ -91,13 +92,12 @@ export const SearchInner = styled.div`
 /*---------------------------------
     네비게이션 탭
 ----------------------------------*/
-export const ShopTab = styled.nav`
+export const ShopTab = styled.nav<{ $headerHeight: number }>`
   background: #fff;
   position: sticky;
-  top: var(--global-header-height);
+  top: ${({ $headerHeight }) => $headerHeight}px; // CSS 변수 대신 prop 사용
   z-index: 1;
 
-  /* nav 좌우 padding */
   padding-left: 40px;
   padding-right: 40px;
 
@@ -290,19 +290,19 @@ const ContentContainer = styled.div`
   }
 `;
 
-const ShopFilterOpenButtonsContainer = styled.div`
-  /* .search-container-shop-filter-open-buttons-container */
+const ShopFilterOpenButtonsContainer = styled.div<{ $headerHeight: number }>`
   background-color: #fff;
   position: static;
-  top: 105px; /* 모바일 기본값 */
+  top: ${({ $headerHeight }) =>
+    $headerHeight + 105}px; // 헤더 높이 + 기존 offset
   z-index: 5;
 
-  /* PC */
   @media (min-width: 961px) {
-    top: 130px; /* PC에서는 130px */
+    top: ${({ $headerHeight }) => $headerHeight + 130}px;
     &.top-fixed {
-      top: 132px;
+      top: ${({ $headerHeight }) => $headerHeight + 132}px;
     }
+  }
 `;
 
 const ShopFilters = styled.div`
@@ -629,6 +629,7 @@ const PopularityButtonWrapper = styled.div`
 
 const ShopPage: React.FC = () => {
   const navigate = useNavigate();
+  const { headerHeight } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams(); // 쿼리 파라미터 가져오기
   const [modalFilters, setModalFilters] = useState({
     keyword: "",
@@ -876,7 +877,7 @@ const ShopPage: React.FC = () => {
         {/* </SearchContainer> */}
 
         {/* 네비게이션 탭 */}
-        <ShopTab>
+        <ShopTab $headerHeight={headerHeight}>
           <Tabs>
             <UlTab className="ul_search_tab">
               {TAB_MENU_DATA.map((menu) => (
@@ -965,7 +966,7 @@ const ShopPage: React.FC = () => {
 
         {/* 메인 컨텐츠 */}
         <ContentContainer>
-          <ShopFilterOpenButtonsContainer>
+          <ShopFilterOpenButtonsContainer $headerHeight={headerHeight}>
             <ShopFilters>
               <FilterDeliveryContainer>
                 <FilterChipButtons>

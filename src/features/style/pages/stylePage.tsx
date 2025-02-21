@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { NavLink, Outlet } from "react-router-dom";
+import { useHeader } from "src/global/context/HeaderContext";
 
-const StylePageContainer = styled.div`
+const StylePageContainer = styled.div<{ $headerHeight: number }>`
   width: 1280px;
   margin: 0 auto;
+  padding-top: ${({ $headerHeight }) => $headerHeight}px;
 `;
 
 const PageTitle = styled.h1`
@@ -15,9 +17,9 @@ const PageTitle = styled.h1`
   text-align: center;
 `;
 
-const StickyNavContainer = styled.div`
+const StickyNavContainer = styled.div<{ $headerHeight: number }>`
   position: sticky;
-  top: var(--global-header-height);
+  top: ${({ $headerHeight }) => $headerHeight}px;
   z-index: 3;
   background-color: white;
 `;
@@ -83,6 +85,8 @@ const TabName = styled.span`
 `;
 
 const StylePage: React.FC = () => {
+  const { headerHeight } = useHeader();
+
   const tabs = [
     { name: "KICKS", path: "/style/kicks", updated: false },
     { name: "팔로잉", path: "/style/following", updated: false },
@@ -100,9 +104,9 @@ const StylePage: React.FC = () => {
   ];
 
   return (
-    <StylePageContainer>
+    <StylePageContainer $headerHeight={headerHeight}>
       <PageTitle>STYLE</PageTitle>
-      <StickyNavContainer>
+      <StickyNavContainer $headerHeight={headerHeight}>
         <Tabs>
           <TabList>
             {tabs.map((tab) => (
