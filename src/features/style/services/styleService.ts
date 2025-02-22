@@ -3,6 +3,7 @@ import {
   StyleResponseDto,
   StyleDetailResponseDto,
   ProfileStyleResponseDto,
+  PageResponse,
 } from "../types/styleTypes";
 
 const API_BASE_URL = "https://www.pinjun.xyz/api";
@@ -11,11 +12,11 @@ export const styleService = {
   // 스타일 목록 조회
   async getStyles() {
     try {
-      const response = await apiClient.get<StyleResponseDto[]>(
+      const response = await apiClient.get<PageResponse<StyleResponseDto>>(
         "/styles/queries"
       );
-      // return response.data;
-      return response.data.map((style) => ({
+      // content 배열만 반환
+      return response.data.content.map((style) => ({
         ...style,
         mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
         profileImageUrl: style.profileImageUrl
