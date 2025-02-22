@@ -1,7 +1,27 @@
-import React from "react";
+import React, { createContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { NavLink, Outlet } from "react-router-dom";
 import { useHeader } from "src/global/context/HeaderContext";
+
+// Context 타입 정의
+interface StyleContextType {
+  page: number;
+  setPage: (page: number) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+  hasMore: boolean;
+  setHasMore: (hasMore: boolean) => void;
+}
+
+// Context 생성
+export const StyleContext = createContext<StyleContextType>({
+  page: 0,
+  setPage: () => {},
+  isLoading: false,
+  setIsLoading: () => {},
+  hasMore: true,
+  setHasMore: () => {},
+});
 
 const StylePageContainer = styled.div<{ $headerHeight: number }>`
   width: 1280px;
@@ -86,6 +106,28 @@ const TabName = styled.span`
 
 const StylePage: React.FC = () => {
   const { headerHeight } = useHeader();
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  // 스크롤 감지
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isLoading || !hasMore) return;
+
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const scrollPercentage =
+        (scrollTop / (scrollHeight - clientHeight)) * 100;
+
+      if (scrollPercentage > 50) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading, hasMore]);
 
   const tabs = [
     { name: "KICKS", path: "/style/kicks", updated: false },
@@ -124,7 +166,18 @@ const StylePage: React.FC = () => {
           </TabList>
         </Tabs>
       </StickyNavContainer>
-      <Outlet /> {/* 하위 경로의 컴포넌트를 렌더링 */}
+      <StyleContext.Provider
+        value={{
+          page,
+          setPage,
+          isLoading,
+          setIsLoading,
+          hasMore,
+          setHasMore,
+        }}
+      >
+        <Outlet /> {/* 하위 경로의 컴포넌트를 렌더링 */}
+      </StyleContext.Provider>
     </StylePageContainer>
   );
 };

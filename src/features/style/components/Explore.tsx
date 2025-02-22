@@ -118,6 +118,8 @@ const Explore: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [styles, setStyles] = useState<StyleResponseDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
   const shortcuts = [
     {
       title: "스캇&닌텐도 받기",
@@ -166,22 +168,60 @@ const Explore: React.FC = () => {
     console.log(`정렬 기준이 "${option}"으로 변경되었습니다.`);
     // 추가 로직: 정렬 기준에 따라 데이터 재정렬
   };
+  // 스크롤 감지
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isLoading || !hasMore) return;
+
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const scrollPercentage =
+        (scrollTop / (scrollHeight - clientHeight)) * 100;
+
+      if (scrollPercentage > 50) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading, hasMore]);
+  // 데이터 fetch
   useEffect(() => {
     const fetchStyles = async () => {
       setIsLoading(true);
       try {
-        const data = await styleService.getStyles();
-        setStyles(data);
+        const response = await styleService.getStyles(page);
+
+        setStyles((prev) =>
+          page === 0 ? response.content : [...prev, ...response.content]
+        );
+        setHasMore(!response.last);
       } catch (error) {
         console.error("스타일 목록 로딩 실패:", error);
-        setStyles([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchStyles();
-  }, []);
+  }, [page]);
+  // useEffect(() => {
+  //   const fetchStyles = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const data = await styleService.getStyles();
+  //       setStyles(data);
+  //     } catch (error) {
+  //       console.error("스타일 목록 로딩 실패:", error);
+  //       setStyles([]);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchStyles();
+  // }, []);
 
   const renderContent = () => {
     if (isLoading) {
@@ -193,15 +233,30 @@ const Explore: React.FC = () => {
     }
 
     return (
-      <StyledMasonry
-        breakpointCols={breakpointColumns}
-        className="masonry-grid"
-        columnClassName="masonry-grid_column"
-      >
-        {styles.map((style) => (
-          <StylePostItem key={style.id} {...style} />
-        ))}
-      </StyledMasonry>
+      // <StyledMasonry
+      //   breakpointCols={breakpointColumns}
+      //   className="masonry-grid"
+      //   columnClassName="masonry-grid_column"
+      // >
+      //   {styles.map((style) => (
+      //     <StylePostItem key={style.id} {...style} />
+      //   ))}
+      // </StyledMasonry>
+      <>
+        <StyledMasonry
+          breakpointCols={breakpointColumns}
+          className="masonry-grid"
+          columnClassName="masonry-grid_column"
+        >
+          {styles.map((style) => (
+            <StylePostItem key={style.id} {...style} />
+          ))}
+        </StyledMasonry>
+        {isLoading && <LoadingState>로딩 중...</LoadingState>}
+        {!hasMore && styles.length > 0 && (
+          <EmptyState>더 이상 스타일이 없습니다.</EmptyState>
+        )}
+      </>
     );
   };
 

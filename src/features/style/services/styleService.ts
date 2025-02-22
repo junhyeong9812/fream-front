@@ -10,19 +10,46 @@ const API_BASE_URL = "https://www.pinjun.xyz/api";
 
 export const styleService = {
   // 스타일 목록 조회
-  async getStyles() {
+  // async getStyles() {
+  //   try {
+  //     const response = await apiClient.get<PageResponse<StyleResponseDto>>(
+  //       "/styles/queries"
+  //     );
+  //     // content 배열만 반환
+  //     return response.data.content.map((style) => ({
+  //       ...style,
+  //       mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
+  //       profileImageUrl: style.profileImageUrl
+  //         ? `${API_BASE_URL}/profiles/${style.profileId}/image`
+  //         : style.profileImageUrl,
+  //     }));
+  //   } catch (error) {
+  //     console.error("스타일 목록 조회 실패:", error);
+  //     throw error;
+  //   }
+  // },
+  async getStyles(page = 0, size = 10) {
+    // 페이지와 사이즈 파라미터 추가
     try {
       const response = await apiClient.get<PageResponse<StyleResponseDto>>(
-        "/styles/queries"
+        "/styles/queries",
+        {
+          params: { page, size }, // 쿼리 파라미터 추가
+        }
       );
-      // content 배열만 반환
-      return response.data.content.map((style) => ({
-        ...style,
-        mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
-        profileImageUrl: style.profileImageUrl
-          ? `${API_BASE_URL}/profiles/${style.profileId}/image`
-          : style.profileImageUrl,
-      }));
+
+      return {
+        content: response.data.content.map((style) => ({
+          ...style,
+          mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
+          profileImageUrl: style.profileImageUrl
+            ? `${API_BASE_URL}/profiles/${style.profileId}/image`
+            : style.profileImageUrl,
+        })),
+        last: response.data.last, // 마지막 페이지 여부
+        totalPages: response.data.totalPages,
+        totalElements: response.data.totalElements,
+      };
     } catch (error) {
       console.error("스타일 목록 조회 실패:", error);
       throw error;
