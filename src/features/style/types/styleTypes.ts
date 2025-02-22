@@ -1,5 +1,6 @@
 export interface StyleResponseDto {
   id: number;
+  profileId: number;
   profileName: string;
   profileImageUrl: string;
   content: string;

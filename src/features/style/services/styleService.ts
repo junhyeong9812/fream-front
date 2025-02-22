@@ -20,7 +20,7 @@ export const styleService = {
         ...style,
         mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
         profileImageUrl: style.profileImageUrl
-          ? `${API_BASE_URL}/profiles/${style.profileImageUrl}/image`
+          ? `${API_BASE_URL}/profiles/${style.profileId}/image`
           : style.profileImageUrl,
       }));
     } catch (error) {
@@ -42,7 +42,7 @@ export const styleService = {
           (url) => `${API_BASE_URL}${url}`
         ),
         profileImageUrl: response.data.profileImageUrl
-          ? `${API_BASE_URL}/profiles/${response.data.profileImageUrl}/image`
+          ? `${API_BASE_URL}/profiles/${response.data.profileId}/image`
           : response.data.profileImageUrl,
         productInfos: response.data.productInfos.map((product) => ({
           ...product,
