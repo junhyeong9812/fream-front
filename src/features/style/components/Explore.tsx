@@ -120,6 +120,7 @@ const Explore: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+  const [scrollThreshold, setScrollThreshold] = useState(50); // 초기 임계값 50%
   const shortcuts = [
     {
       title: "스캇&닌텐도 받기",
@@ -173,19 +174,22 @@ const Explore: React.FC = () => {
     const handleScroll = () => {
       if (isLoading || !hasMore) return;
 
-      const { scrollTop, scrollHeight, clientHeight } =
-        document.documentElement;
-      const scrollPercentage =
-        (scrollTop / (scrollHeight - clientHeight)) * 100;
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100;
 
-      if (scrollPercentage > 50) {
-        setPage((prev) => prev + 1);
+      // 페이지 수에 따라 임계값 조정
+      const threshold = 50 + (page * 5); // 페이지당 5%씩 증가
+      
+      if (scrollPercentage > threshold) {
+        setPage(prev => prev + 1);
+        setScrollThreshold(threshold + 5); // 다음 임계값 설정
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading, hasMore]);
+  }, [isLoading, hasMore, page, scrollThreshold]);
+
   // 데이터 fetch
   useEffect(() => {
     const fetchStyles = async () => {
