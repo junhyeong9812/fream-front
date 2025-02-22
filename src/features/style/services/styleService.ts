@@ -5,6 +5,8 @@ import {
   ProfileStyleResponseDto,
 } from "../types/styleTypes";
 
+const API_BASE_URL = "https://www.pinjun.xyz/api";
+
 export const styleService = {
   // 스타일 목록 조회
   async getStyles() {
@@ -12,7 +14,14 @@ export const styleService = {
       const response = await apiClient.get<StyleResponseDto[]>(
         "/styles/queries"
       );
-      return response.data;
+      // return response.data;
+      return response.data.map((style) => ({
+        ...style,
+        mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
+        profileImageUrl: style.profileImageUrl
+          ? `${API_BASE_URL}${style.profileImageUrl}`
+          : style.profileImageUrl,
+      }));
     } catch (error) {
       console.error("스타일 목록 조회 실패:", error);
       throw error;
@@ -25,7 +34,20 @@ export const styleService = {
       const response = await apiClient.get<StyleDetailResponseDto>(
         `/styles/queries/${styleId}`
       );
-      return response.data;
+      // return response.data;
+      return {
+        ...response.data,
+        mediaUrls: response.data.mediaUrls.map(
+          (url) => `${API_BASE_URL}${url}`
+        ),
+        profileImageUrl: response.data.profileImageUrl
+          ? `${API_BASE_URL}${response.data.profileImageUrl}`
+          : response.data.profileImageUrl,
+        productInfos: response.data.productInfos.map((product) => ({
+          ...product,
+          thumbnailImageUrl: `${API_BASE_URL}${product.thumbnailImageUrl}`,
+        })),
+      };
     } catch (error) {
       console.error("스타일 상세 조회 실패:", error);
       throw error;
@@ -38,7 +60,11 @@ export const styleService = {
       const response = await apiClient.get<ProfileStyleResponseDto[]>(
         `/styles/queries/profile/${profileId}`
       );
-      return response.data;
+      // return response.data;
+      return response.data.map((style) => ({
+        ...style,
+        mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
+      }));
     } catch (error) {
       console.error("프로필 스타일 목록 조회 실패:", error);
       throw error;
@@ -49,9 +75,8 @@ export const styleService = {
   async getStyleMedia(styleId: number, fileName: string) {
     try {
       const response = await apiClient.get<Blob>(
-        `/styles/queries/${styleId}/media`,
+        `/styles/queries/${styleId}/media/${fileName}`,
         {
-          params: { fileName },
           responseType: "blob",
         }
       );
