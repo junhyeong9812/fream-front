@@ -166,22 +166,36 @@ const Explore: React.FC = () => {
 
   const handleSortChange = (option: string) => {
     setActiveSort(option);
-    console.log(`정렬 기준이 "${option}"으로 변경되었습니다.`);
-    // 추가 로직: 정렬 기준에 따라 데이터 재정렬
+    setPage(0); // Reset page when sorting changes
+    setStyles([]); // Clear existing styles
+
+    // Map the Korean sort options to backend parameters
+    const sortParam = option === "인기순" ? "popular" : undefined;
+    styleService
+      .getStyles(0, 10, sortParam)
+      .then((response) => {
+        setStyles(response.content);
+        setHasMore(!response.last);
+      })
+      .catch((error) => {
+        console.error("스타일 로딩 실패:", error);
+      });
   };
   // 스크롤 감지
   useEffect(() => {
     const handleScroll = () => {
       if (isLoading || !hasMore) return;
 
-      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-      const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100;
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const scrollPercentage =
+        (scrollTop / (scrollHeight - clientHeight)) * 100;
 
       // 페이지 수에 따라 임계값 조정
-      const threshold = 50 + (page * 5); // 페이지당 5%씩 증가
-      
+      const threshold = 50 + page * 5; // 페이지당 5%씩 증가
+
       if (scrollPercentage > threshold) {
-        setPage(prev => prev + 1);
+        setPage((prev) => prev + 1);
         setScrollThreshold(threshold + 5); // 다음 임계값 설정
       }
     };
@@ -191,11 +205,31 @@ const Explore: React.FC = () => {
   }, [isLoading, hasMore, page, scrollThreshold]);
 
   // 데이터 fetch
+  // useEffect(() => {
+  //   const fetchStyles = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const response = await styleService.getStyles(page);
+
+  //       setStyles((prev) =>
+  //         page === 0 ? response.content : [...prev, ...response.content]
+  //       );
+  //       setHasMore(!response.last);
+  //     } catch (error) {
+  //       console.error("스타일 목록 로딩 실패:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchStyles();
+  // }, [page]);
   useEffect(() => {
     const fetchStyles = async () => {
       setIsLoading(true);
       try {
-        const response = await styleService.getStyles(page);
+        const sortParam = activeSort === "인기순" ? "popular" : undefined;
+        const response = await styleService.getStyles(page, 10, sortParam);
 
         setStyles((prev) =>
           page === 0 ? response.content : [...prev, ...response.content]
@@ -209,23 +243,7 @@ const Explore: React.FC = () => {
     };
 
     fetchStyles();
-  }, [page]);
-  // useEffect(() => {
-  //   const fetchStyles = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const data = await styleService.getStyles();
-  //       setStyles(data);
-  //     } catch (error) {
-  //       console.error("스타일 목록 로딩 실패:", error);
-  //       setStyles([]);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchStyles();
-  // }, []);
+  }, [page, activeSort]);
 
   const renderContent = () => {
     if (isLoading) {

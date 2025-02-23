@@ -9,32 +9,17 @@ import {
 const API_BASE_URL = "https://www.pinjun.xyz/api";
 
 export const styleService = {
-  // 스타일 목록 조회
-  // async getStyles() {
-  //   try {
-  //     const response = await apiClient.get<PageResponse<StyleResponseDto>>(
-  //       "/styles/queries"
-  //     );
-  //     // content 배열만 반환
-  //     return response.data.content.map((style) => ({
-  //       ...style,
-  //       mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
-  //       profileImageUrl: style.profileImageUrl
-  //         ? `${API_BASE_URL}/profiles/${style.profileId}/image`
-  //         : style.profileImageUrl,
-  //     }));
-  //   } catch (error) {
-  //     console.error("스타일 목록 조회 실패:", error);
-  //     throw error;
-  //   }
-  // },
-  async getStyles(page = 0, size = 10) {
-    // 페이지와 사이즈 파라미터 추가
+  
+  async getStyles(page = 0, size = 10, sortBy?: string) {
     try {
       const response = await apiClient.get<PageResponse<StyleResponseDto>>(
         "/styles/queries",
         {
-          params: { page, size }, // 쿼리 파라미터 추가
+          params: { 
+            page, 
+            size,
+            sortBy // Add sortBy parameter - if undefined, backend will use default (latest)
+          },
         }
       );
 
