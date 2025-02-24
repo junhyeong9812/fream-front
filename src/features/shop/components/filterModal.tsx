@@ -261,45 +261,17 @@ const FilterModal: React.FC<FilterModalProps> = ({
   // 그룹화된 항목 가져오기
   const groupedItems = groupItems(items);
   const groupKeys = Object.keys(groupedItems); // 그룹 키 목록
-
-  // const handleFilterClick = (category: string, value: string) => {
-  //   setSelectedFilters((prevFilters) => {
-  //     const newFilters = { ...prevFilters };
-  
-  //     if (category === "gender") {
-  //       newFilters[category] = new Set([value]); // 단일 선택
-  //     } else {
-  //       if (!newFilters[category]) {
-  //         newFilters[category] = new Set();
-  //       } else {
-  //         newFilters[category] = new Set(newFilters[category]);
-  //       }
-  
-  //       if (newFilters[category].has(value)) {
-  //         newFilters[category].delete(value);
-  //       } else {
-  //         newFilters[category].add(value);
-  //       }
-  //     }
-      
-  
-  //     console.log("현재 선택된 필터:", JSON.stringify(
-  //       Object.fromEntries(
-  //         Object.entries(newFilters).map(([key, valueSet]) => [key, Array.from(valueSet)])
-  //       ),
-  //       null,
-  //       2
-  //     ));
-  //     return newFilters;
-  //   });
-  // };
-
   const handleFilterClick = (category: string, value: string) => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
   
       if (category === "gender" || category === "priceRange") {
-        newFilters[category] = new Set([value]); // 단일 선택 (기존 선택 해제)
+        // 기존에 같은 값이 있으면 해제
+        if (newFilters[category]?.has(value)) {
+          newFilters[category] = new Set(); // 선택 해제
+        } else {
+          newFilters[category] = new Set([value]); // 새 값 선택
+        }
       } else {
         if (!newFilters[category]) {
           newFilters[category] = new Set();
@@ -313,6 +285,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           newFilters[category].add(value); // 선택 추가
         }
       }
+  
   
       // 선택된 필터를 JSON 형태로 변환
       const filterPayload = Object.fromEntries(
@@ -399,7 +372,21 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   //초기화버튼
   const handleResetFilters = () => {
-    setModalFilters(initialFilters); // 초기값으로 리셋
+    setModalFilters(initialFilters);
+    setSelectedFilters({});
+  
+    console.log("필터 초기화:", initialFilters); 
+  
+    fetch("/api/filters/reset", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(initialFilters),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log("서버 응답:", data))
+      .catch((error) => console.error("필터 초기화 실패:", error));
   };
 
   return (
@@ -768,33 +755,37 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   />
                 </div>
                 {priceOpen && (
-                  <div className="filter-options">
+                    <div className="filter-options">
                       <p>가격대</p>
                       <div className="section-content">
-                          {filterData.priceRanges.map((range, index) => (
-                              <label className="bubble" key={index}>
-                                  <input
-                                      type="checkbox"
-                                      checked={modalFilters.priceRange === range.value}
-                                      onChange={() => handleFilterClick("priceRange", range.value)} // 가격대 클릭 시
-                                  />
-                                  <div>
-                                      <button
-                                          className="filter_button"
-                                          style={{
-                                              backgroundColor: modalFilters.priceRange === range.value ? 'black' : 'transparent',
-                                              color: modalFilters.priceRange === range.value ? 'white' : 'black',
-                                          }}
-                                          onClick={() => handleFilterClick("priceRange", range.value)} // 가격대 클릭 시
-                                      >
-                                          {range.label}
-                                      </button>
-                                  </div>
-                              </label>
-                          ))}
+                        {filterData.priceRanges.map((range, index) => {
+                          const isSelected = selectedFilters.priceRange?.has(range.value) ?? false;
+
+                          return (
+                            <label className="bubble" key={index}>
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => handleFilterClick("priceRange", range.value)}
+                              />
+                              <div>
+                                <button
+                                  className="filter_button"
+                                  style={{
+                                    backgroundColor: isSelected ? "black" : "transparent",
+                                    color: isSelected ? "white" : "black",
+                                  }}
+                                  onClick={() => handleFilterClick("priceRange", range.value)}
+                                >
+                                  {range.label}
+                                </button>
+                              </div>
+                            </label>
+                          );
+                        })}
                       </div>
-                  </div>
-              )}
+                    </div>
+                  )}
               </div>
             </ModalContent>
 

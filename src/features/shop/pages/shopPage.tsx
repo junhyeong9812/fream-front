@@ -359,18 +359,21 @@ const FilterButton = styled.button<FilterButtonProps>`
 `;
 
 const FilterButtonMeun = styled.button`
-  background: #f4f4f4;
-  border: 1px solid #f0f0f0;
+background: #f4f4f4;
+border: 1px solid #f0f0f0;
   border-radius: 30px;
   color: #4e4e4e;
   display: flex;
   flex-direction: row;
+  align-items: center;
   font-size: 13px;
   font-weight: 600;
   height: 30px;
-  align-items: center;
   padding: 0 8px;
   cursor: pointer;
+  .text-group{
+    margin: 0px;
+  }
 `;
 
 const SearchFilterButtons = styled.div`
@@ -658,14 +661,27 @@ const ShopPage: React.FC = () => {
   };
 
   // 모달에서 선택된 값 (ex. "인기순", "남성 인기순" 등)
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState("인기순");
 
-  // 모달에서 아이템 선택 시 호출할 콜백
+  //모달 인기순 버튼 post 전송
   const handleSelectItem = (item: string) => {
     console.log("선택된 아이템:", item);
     setSelectedValue(item);
-    // 모달은 이미 모달 내부에서 onClose()가 호출되어 닫힘
+    setOpen(false); 
+
+    fetch("/api/filters/sort", {  
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ sortOption: item }), 
+    })
+      .then((response) => response.json())
+      .then((data) => console.log("서버 응답:", data))
+      .catch((error) => console.error("정렬 옵션 전달 실패:", error));
   };
+
+
 
   // 탭 상태
   const [activeTabId, setActiveTabId] = useState<string>("all");
@@ -1119,7 +1135,8 @@ const ShopPage: React.FC = () => {
                     }
                   >
                     <span>
-                      인기순 <FontAwesomeIcon icon={faArrowUp} />
+                    {selectedValue}
+                      <FontAwesomeIcon icon={faArrowUp} />
                       <FontAwesomeIcon icon={faArrowDown} />
                     </span>
                   </button>
