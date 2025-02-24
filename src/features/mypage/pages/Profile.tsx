@@ -390,7 +390,10 @@ const Profile: React.FC = () => {
       <UserProfile>
         <ProfileThumb>
           <ProfileImage
-            src={profileInfo.profileImage || "https://via.placeholder.com/80"}
+            src={
+              `https://www.pinjun.xyz/api/profiles/${profileInfo.profileImage}/image` ||
+              "https://via.placeholder.com/80"
+            }
             alt="사용자 이미지"
           />
         </ProfileThumb>

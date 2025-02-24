@@ -6,9 +6,11 @@ import { FaApple } from "react-icons/fa";
 import { LoginData } from "../types/loginTypes";
 import { fetchLoginData } from "../services/loginService";
 import { AuthContext } from "src/global/context/AuthContext";
+import { useHeader } from "src/global/context/HeaderContext";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const { headerHeight } = useHeader();
   const { setIsLoggedIn } = useContext(AuthContext); // ← 로그인 성공 시 Context 갱신
 
   const [loginData, setLoginData] = useState<LoginData>({
@@ -118,7 +120,13 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="login_form_container">
+    <div
+      className="login_form_container"
+      style={{
+        paddingTop: `${headerHeight + 60}px`,
+        minHeight: `calc(100vh - ${headerHeight}px)`,
+      }}
+    >
       <div className="login_form_content">
         <div className="login_form_logo_content">
           <img

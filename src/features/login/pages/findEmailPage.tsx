@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { FindEmailData } from "../types/findEmailTypes";
 import { fetchFindEmailData } from "../services/findEmailService";
 import { useNavigate } from "react-router-dom";
+import { useHeader } from "src/global/context/HeaderContext";
 
 const FindEmail: React.FC = () => {
   const navigate = useNavigate();
+  const { headerHeight } = useHeader();
 
   const [findEmailBtn, setFindEmailBtn] = useState<boolean>(false);
 
@@ -88,7 +90,13 @@ const FindEmail: React.FC = () => {
   // const displayEmail = maskEmail(findEmail);
 
   return (
-    <div className="find_email_form_container">
+    <div
+      className="find_email_form_container"
+      style={{
+        paddingTop: `${headerHeight + 60}px`,
+        minHeight: `calc(100vh - ${headerHeight}px)`,
+      }}
+    >
       {findEmailCheck ? (
         <div>
           <h2 className="find_email_form_success_title_content">

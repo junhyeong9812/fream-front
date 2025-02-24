@@ -5,9 +5,11 @@ import JoinModal from "../components/joinModal";
 import { JoinData } from "../types/joinTypes";
 import { fetchJoinData } from "../services/joinService";
 import { useNavigate } from "react-router-dom";
+import { useHeader } from "src/global/context/HeaderContext";
 
 const JoinPage: React.FC = () => {
   const navigate = useNavigate();
+  const { headerHeight } = useHeader();
 
   const [joinData, setJoinData] = useState<JoinData>({
     email: "",
@@ -206,7 +208,13 @@ const JoinPage: React.FC = () => {
   };
 
   return (
-    <div className="signup_form_container">
+    <div
+      className="signup_form_container"
+      style={{
+        paddingTop: `${headerHeight + 60}px`,
+        minHeight: `calc(100vh - ${headerHeight}px)`,
+      }}
+    >
       <div className="signup_form_margin_content">
         <div className="signup_form_content">
           <div className="signup_form_title_content">회원가입</div>
