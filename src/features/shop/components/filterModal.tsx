@@ -7,6 +7,35 @@ import apiClient from "src/global/services/ApiClient";
 
 const url = new URL(window.location.href);
 const searchParams = new URLSearchParams(url.search);
+interface CategorySubDto {
+  id: number;
+  value: string;
+  label: string;
+  subCategories?: CategorySubDto[] | null;
+}
+
+interface CategoryDto {
+  id: number;
+  value: string;
+  label: string;
+  subCategories?: CategorySubDto[] | null;
+}
+
+// 카테고리 데이터 구조를 위한 타입
+interface CategoryDataItem {
+  name: string;
+  options: ButtonOption[];
+}
+
+// 필터 데이터 타입 확장
+interface FilterDataType {
+  sizes: Record<string, string[]>;
+  genders: string[];
+  colors: { key: string; name: string }[];
+  discounts: { title: string; options: string[] }[];
+  priceRanges: { label: string; value: string }[];
+  categories: CategoryDto[]; // 카테고리 추가
+}
 
 interface FilterModalProps {
   open: boolean; // 모달 오픈 여부
@@ -76,6 +105,29 @@ const initialFilters: ModalFilters = {
   sizes: [],
   brands: [],
 };
+const categories = [
+  { label: "스니커즈", value: "스니커즈" },
+  { label: "샌들/슬리퍼", value: "샌들/슬리퍼" },
+];
+const outerwear = [
+  { label: "블루종1", value: "블루종1" },
+  { label: "블루종2", value: "블루종2" },
+  { label: "블루종3", value: "블루종3" },
+  { label: "블루종4", value: "블루종4" },
+  { label: "블루종5", value: "블루종5" },
+  { label: "블루종6", value: "블루종6" },
+  { label: "블루종7", value: "블루종7" },
+];
+
+const shirts = [
+  { label: "블루종8", value: "블루종8" },
+  { label: "블루종9", value: "블루종9" },
+  { label: "블루종10", value: "블루종10" },
+  { label: "블루종11", value: "블루종11" },
+  { label: "블루종12", value: "블루종12" },
+  { label: "블루종13", value: "블루종13" },
+  { label: "블루종14", value: "블루종14" },
+];
 
 const FilterModal: React.FC<FilterModalProps> = ({
   open,
@@ -102,20 +154,34 @@ const FilterModal: React.FC<FilterModalProps> = ({
   // 필터 카운트를 위한 상태 추가
   const [filteredProductCount, setFilteredProductCount] = useState<number>(0);
   //모달창 버튼 백에서 받아옴
-  const [filterData, setFilterData] = useState<{
-    sizes: Record<string, string[]>;
-    genders: string[];
-    colors: { key: string; name: string }[];
-    discounts: { title: string; options: string[] }[];
-    priceRanges: { label: string; value: string }[];
-  }>({
+  // const [filterData, setFilterData] = useState<{
+  //   sizes: Record<string, string[]>;
+  //   genders: string[];
+  //   colors: { key: string; name: string }[];
+  //   discounts: { title: string; options: string[] }[];
+  //   priceRanges: { label: string; value: string }[];
+  // }>({
+  //   sizes: {},
+  //   genders: [],
+  //   colors: [],
+  //   discounts: [],
+  //   priceRanges: [],
+  // });
+  // 기존 state 선언 부분을 수정
+  const [categoryData, setCategoryData] = useState<CategoryDataItem[]>([
+    { name: "신발", options: categories },
+    { name: "아우터", options: outerwear },
+    { name: "셔츠", options: shirts },
+  ]);
+
+  const [filterData, setFilterData] = useState<FilterDataType>({
     sizes: {},
     genders: [],
     colors: [],
     discounts: [],
     priceRanges: [],
+    categories: [],
   });
-
   //도메인 공유를 위해 apiClient라는 서비스 함수를 미리 만들어두었어요/
   //기본적으로 fetch로 /api형식으로 작성해놓으시면 도메인을 찾을 수 없어서
   //사용할 수 없고 /filter에 필요한 데이터를 반환하는 백엔드
@@ -125,11 +191,55 @@ const FilterModal: React.FC<FilterModalProps> = ({
       try {
         const response = await apiClient.get("/products/query/filters");
         setFilterData(response.data);
+
+        // 카테고리 데이터 동적 구성
+        // 카테고리 데이터 동적 구성
+        if (response.data.categories) {
+          // 각 메인 카테고리(Tops, Shoes)를 탭으로 처리
+          const newCategoryData: CategoryDataItem[] =
+            response.data.categories.map((category: CategoryDto) => ({
+              name: category.label, // 탭 이름 (예: "신발", "상의")
+              options: category.subCategories
+                ? category.subCategories.map((sub: CategorySubDto) => ({
+                    label: sub.label, // 하위 카테고리 레이블 (예: "스니커즈", "반팔 티셔츠")
+                    value: String(sub.id), // ID 값으로 설정 (백엔드와 통신에 필요)
+                  }))
+                : [],
+            }));
+          setCategoryData(newCategoryData);
+        }
       } catch (error) {
         console.error("필터 데이터 가져오기 실패:", error);
 
         // API 호출 실패 시 바로 mockData 설정
-        const mockData = {
+        // const mockData = {
+        //   sizes: {
+        //     CLOTHING: ["XS", "S", "M", "L", "XL"],
+        //     SHOES: ["230", "240", "250", "260", "270"],
+        //     ACCESSORIES: ["ONE_SIZE"],
+        //   },
+        //   genders: ["MALE", "FEMALE", "KIDS", "UNISEX"],
+        //   colors: [
+        //     { key: "BLACK", name: "블랙" },
+        //     { key: "WHITE", name: "화이트" },
+        //     { key: "BLUE", name: "블루" },
+        //   ],
+        //   discounts: [
+        //     { title: "혜택", options: ["무료배송", "할인", "정가이하"] },
+        //     { title: "할인율", options: ["30% 이하", "30%~50%", "50% 이상"] },
+        //   ],
+        //   priceRanges: [
+        //     { label: "10만원 이하", value: "under_100000" },
+        //     { label: "10만원대", value: "100000_200000" },
+        //     { label: "20만원대", value: "200000_300000" },
+        //     { label: "30만원대", value: "300000_400000" },
+        //     { label: "30~50만원", value: "300000_500000" },
+        //     { label: "50~100만원", value: "500000_1000000" },
+        //     { label: "100~500만원", value: "1000000_5000000" },
+        //     { label: "500만원 이상", value: "over_5000000" },
+        //   ],
+        // };
+        const mockData: FilterDataType = {
           sizes: {
             CLOTHING: ["XS", "S", "M", "L", "XL"],
             SHOES: ["230", "240", "250", "260", "270"],
@@ -155,6 +265,27 @@ const FilterModal: React.FC<FilterModalProps> = ({
             { label: "100~500만원", value: "1000000_5000000" },
             { label: "500만원 이상", value: "over_5000000" },
           ],
+          categories: [
+            // 기본 목 데이터 카테고리 추가
+            {
+              id: 1,
+              value: "Shoes",
+              label: "신발",
+              subCategories: [
+                { id: 3, value: "Sneakers", label: "스니커즈" },
+                { id: 4, value: "SandalsSlippers", label: "샌들/슬리퍼" },
+              ],
+            },
+            {
+              id: 2,
+              value: "Tops",
+              label: "상의",
+              subCategories: [
+                { id: 5, value: "ShortSleeveTShirts", label: "반팔 티셔츠" },
+                { id: 6, value: "LongSleeveTShirts", label: "긴팔 티셔츠" },
+              ],
+            },
+          ],
         };
         setFilterData(mockData);
       }
@@ -162,6 +293,20 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
     fetchFilters();
   }, []);
+  const getGenderLabel = (gender: string) => {
+    switch (gender) {
+      case "MALE":
+        return "남성";
+      case "FEMALE":
+        return "여성";
+      case "KIDS":
+        return "키즈";
+      case "UNISEX":
+        return "공용";
+      default:
+        return gender;
+    }
+  };
 
   //버튼 선택 저장 state
   const [selectedFilters, setSelectedFilters] = useState<
@@ -225,37 +370,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
   //   { label: "500만원 이상", value: "over_5000000" },
   // ];
 
-  const categories = [
-    { label: "스니커즈", value: "스니커즈" },
-    { label: "샌들/슬리퍼", value: "샌들/슬리퍼" },
-  ];
-  const outerwear = [
-    { label: "블루종1", value: "블루종1" },
-    { label: "블루종2", value: "블루종2" },
-    { label: "블루종3", value: "블루종3" },
-    { label: "블루종4", value: "블루종4" },
-    { label: "블루종5", value: "블루종5" },
-    { label: "블루종6", value: "블루종6" },
-    { label: "블루종7", value: "블루종7" },
-  ];
-
-  const shirts = [
-    { label: "블루종8", value: "블루종8" },
-    { label: "블루종9", value: "블루종9" },
-    { label: "블루종10", value: "블루종10" },
-    { label: "블루종11", value: "블루종11" },
-    { label: "블루종12", value: "블루종12" },
-    { label: "블루종13", value: "블루종13" },
-    { label: "블루종14", value: "블루종14" },
-  ];
-
   //최적화
-  const categoryData = [
-    { name: "신발", options: categories },
-    { name: "아우터", options: outerwear },
-    { name: "셔츠", options: shirts },
-    // 카테고리 추가
-  ];
+  // const categoryData = [
+  //   { name: "신발", options: categories },
+  //   { name: "아우터", options: outerwear },
+  //   { name: "셔츠", options: shirts },
+  //   // 카테고리 추가
+  // ];
 
   //카테고리 2번째부터 출력
   const visibleCategories = showMore ? categoryData : categoryData.slice(0, 2);
@@ -335,7 +456,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
       return newFilters;
     });
   };
-  
 
   const handleViewProducts = async () => {
     try {
@@ -543,13 +663,14 @@ const FilterModal: React.FC<FilterModalProps> = ({
                                 handleFilterClick("gender", gender)
                               }
                             >
-                              {gender === "MALE"
+                              {/* {gender === "MALE"
                                 ? "남성"
                                 : gender === "FEMALE"
                                 ? "여성"
                                 : gender === "KIDS"
                                 ? "키즈"
-                                : "공용"}
+                                : "공용"} */}
+                              {getGenderLabel(gender)}
                             </button>
                           </div>
                         </label>
