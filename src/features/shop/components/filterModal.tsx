@@ -11,7 +11,7 @@ interface FilterModalProps {
   open: boolean; // 모달 오픈 여부
   onClose: () => void; // 닫기 함수
   onApplyFilters: () => void;
-  categoryList: ButtonOption[]; 
+  categoryList: ButtonOption[];
   outerwearList: ButtonOption[];
   shirtsList: ButtonOption[];
 }
@@ -72,18 +72,19 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [collectionOpen, setCollectionOpen] = useState(false);
   const [sizeOpen, setSizeOpen] = useState(false);
   const [priceOpen, setPriceOpen] = useState(false);
-  const [modalFilters, setModalFilters] = useState<ModalFilters>(initialFilters);
+  const [modalFilters, setModalFilters] =
+    useState<ModalFilters>(initialFilters);
   const [imageList, setImageList] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showMore, setShowMore] = useState(false); //더보기 버튼
-  const [selectedPrice, setSelectedPrice] = useState<string | null>(null);//가격대 필터
+  const [selectedPrice, setSelectedPrice] = useState<string | null>(null); //가격대 필터
   //모달창 버튼 백에서 받아옴
   const [filterData, setFilterData] = useState<{
     sizes: Record<string, string[]>;
     genders: string[];
     colors: { key: string; name: string }[];
-    discounts: {title: string; options:string[] }[];
-    priceRanges: { label: string; value: string }[]; 
+    discounts: { title: string; options: string[] }[];
+    priceRanges: { label: string; value: string }[];
   }>({
     sizes: {},
     genders: [],
@@ -91,7 +92,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     discounts: [],
     priceRanges: [],
   });
-  
+
   useEffect(() => {
     const fetchFilters = async () => {
       try {
@@ -100,49 +101,41 @@ const FilterModal: React.FC<FilterModalProps> = ({
         setFilterData(data);
       } catch (error) {
         console.error("필터 데이터 가져오기 실패:", error);
+
+        // API 호출 실패 시 바로 mockData 설정
+        const mockData = {
+          sizes: {
+            CLOTHING: ["XS", "S", "M", "L", "XL"],
+            SHOES: ["230", "240", "250", "260", "270"],
+            ACCESSORIES: ["ONE_SIZE"],
+          },
+          genders: ["MALE", "FEMALE", "KIDS", "UNISEX"],
+          colors: [
+            { key: "BLACK", name: "블랙" },
+            { key: "WHITE", name: "화이트" },
+            { key: "BLUE", name: "블루" },
+          ],
+          discounts: [
+            { title: "혜택", options: ["무료배송", "할인", "정가이하"] },
+            { title: "할인율", options: ["30% 이하", "30%~50%", "50% 이상"] },
+          ],
+          priceRanges: [
+            { label: "10만원 이하", value: "under_100000" },
+            // 나머지 가격대 옵션들...
+          ],
+        };
+        setFilterData(mockData);
       }
     };
-  
-    fetchFilters();
 
-    //테스트용 데이터
-    const mockData = {
-      sizes: {
-        CLOTHING: ["XS", "S", "M", "L", "XL"],
-        SHOES: ["230", "240", "250", "260", "270"],
-        ACCESSORIES: ["ONE_SIZE"],
-      },
-      genders: ["MALE", "FEMALE", "KIDS", "UNISEX"],
-      colors: [
-        { key: "BLACK", name: "블랙" },
-        { key: "WHITE", name: "화이트" },
-        { key: "BLUE", name: "블루" },
-      ],
-      discounts: [
-        { title: "혜택", options: ["무료배송", "할인", "정가이하"] },
-        { title: "할인율", options: ["30% 이하", "30%~50%", "50% 이상"] },
-      ],
-      priceRanges: [
-        { label: "10만원 이하", value: "under_100000" },
-        { label: "10만원대", value: "100000_200000" },
-        { label: "20만원대", value: "200000_300000" },
-        { label: "30만원대", value: "300000_400000" },
-        { label: "30~50만원", value: "300000_500000" },
-        { label: "50~100만원", value: "500000_1000000" },
-        { label: "100~500만원", value: "1000000_5000000" },
-        { label: "500만원 이상", value: "over_5000000" },
-      ],
-    };
-    setFilterData(mockData);
-    
+    fetchFilters();
   }, []);
 
-  
   //버튼 선택 저장 state
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({});
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, Set<string>>
+  >({});
   if (!open) return null;
-
-
 
   //브랜드 0목록 테스트용
   const items = [
@@ -162,87 +155,86 @@ const FilterModal: React.FC<FilterModalProps> = ({
     "coca cola",
     "coca cola",
     "coca cola",
-    ];
-  
-    //색 출력 코드
-    const colors = [
-      { name: "블랙", rgb: "rgb(0, 0, 0)" },
-      { name: "그레이", rgb: "rgb(204, 204, 204)" },
-      { name: "화이트", rgb: "rgb(255, 255, 255)" },
-      { name: "아이보리", rgb: "rgb(244, 238, 221)" },
-      { name: "베이지", rgb: "rgb(230, 194, 129)" },
-      { name: "브라운", rgb: "rgb(102, 50, 3)" },
-      { name: "카키", rgb: "rgb(143, 120, 75)" },
-      { name: "그린", rgb: "rgb(0, 128, 0)" },
-      { name: "라이트그린", rgb: "rgb(144, 238, 144)" },
-      { name: "민트", rgb: "rgb(114, 213, 192)" },
-      { name: "네이비", rgb: "rgb(0, 0, 128)" },
-      { name: "블루", rgb: "rgb(43, 50, 243)" },
-      { name: "스카이블루", rgb: "rgb(135, 206, 235)" },
-      { name: "퍼플", rgb: "rgb(128, 0, 128)" },
-      { name: "핑크", rgb: "rgb(255, 192, 203)" },
-      { name: "레드", rgb: "rgb(255, 0, 0)" },
-      { name: "오렌지", rgb: "rgb(255, 165, 0)" },
-      { name: "옐로우", rgb: "rgb(255, 255, 0)" },
-      { name: "실버", img: "/shopcolorimg/silver.png" },
-      { name: "골드", img: "/shopcolorimg/gold.png" },
-      { name: "믹스", img: "/shopcolorimg/mixColor.png" },
-    ];
-  
-    // const priceRanges = [
-    //   { label: "10만원 이하", value: "under_100000" },
-    //   { label: "10만원대", value: "100000_200000" },
-    //   { label: "20만원대", value: "200000_300000" },
-    //   { label: "30만원대", value: "300000_400000" },
-    //   { label: "30~50만원", value: "300000_500000" },
-    //   { label: "50~100만원", value: "500000_1000000" },
-    //   { label: "100~500만원", value: "1000000_5000000" },
-    //   { label: "500만원 이상", value: "over_5000000" },
-    // ];
-  
-    const categories = [
-      { label: "스니커즈", value: "스니커즈" },
-      { label: "샌들/슬리퍼", value: "샌들/슬리퍼" },
-    ];
-    const outerwear = [
-      { label: "블루종1", value:"블루종1"},
-      { label: "블루종2", value:"블루종2"},
-      { label: "블루종3", value:"블루종3"},
-      { label: "블루종4", value:"블루종4"},
-      { label: "블루종5", value:"블루종5"},
-      { label: "블루종6", value:"블루종6"},
-      { label: "블루종7", value:"블루종7"},
-    ]
-  
-    const shirts = [
-      { label: "블루종8", value:"블루종8"},
-      { label: "블루종9", value:"블루종9"},
-      { label: "블루종10", value:"블루종10"},
-      { label: "블루종11", value:"블루종11"},
-      { label: "블루종12", value:"블루종12"},
-      { label: "블루종13", value:"블루종13"},
-      { label: "블루종14", value:"블루종14"},
-    ]
-  
-    //최적화 
-    const categoryData = [
-      { name: "신발", options: categories },
-      { name: "아우터", options: outerwear },
-      { name: "셔츠", options: shirts },
-      // 카테고리 추가
-    ];
+  ];
 
-    
-    //카테고리 2번째부터 출력
-    const visibleCategories = showMore ? categoryData : categoryData.slice(0, 2);
-    
-    //데이터 전송시 모달창 닫기
-    const handleCloseModal = () => {
-      setIsModalOpen(false); 
-    };
+  //색 출력 코드
+  const colors = [
+    { name: "블랙", rgb: "rgb(0, 0, 0)" },
+    { name: "그레이", rgb: "rgb(204, 204, 204)" },
+    { name: "화이트", rgb: "rgb(255, 255, 255)" },
+    { name: "아이보리", rgb: "rgb(244, 238, 221)" },
+    { name: "베이지", rgb: "rgb(230, 194, 129)" },
+    { name: "브라운", rgb: "rgb(102, 50, 3)" },
+    { name: "카키", rgb: "rgb(143, 120, 75)" },
+    { name: "그린", rgb: "rgb(0, 128, 0)" },
+    { name: "라이트그린", rgb: "rgb(144, 238, 144)" },
+    { name: "민트", rgb: "rgb(114, 213, 192)" },
+    { name: "네이비", rgb: "rgb(0, 0, 128)" },
+    { name: "블루", rgb: "rgb(43, 50, 243)" },
+    { name: "스카이블루", rgb: "rgb(135, 206, 235)" },
+    { name: "퍼플", rgb: "rgb(128, 0, 128)" },
+    { name: "핑크", rgb: "rgb(255, 192, 203)" },
+    { name: "레드", rgb: "rgb(255, 0, 0)" },
+    { name: "오렌지", rgb: "rgb(255, 165, 0)" },
+    { name: "옐로우", rgb: "rgb(255, 255, 0)" },
+    { name: "실버", img: "/shopcolorimg/silver.png" },
+    { name: "골드", img: "/shopcolorimg/gold.png" },
+    { name: "믹스", img: "/shopcolorimg/mixColor.png" },
+  ];
 
-    // 브랜드 목록 스크롤
-    const groupItems = (items: string[]) => {
+  // const priceRanges = [
+  //   { label: "10만원 이하", value: "under_100000" },
+  //   { label: "10만원대", value: "100000_200000" },
+  //   { label: "20만원대", value: "200000_300000" },
+  //   { label: "30만원대", value: "300000_400000" },
+  //   { label: "30~50만원", value: "300000_500000" },
+  //   { label: "50~100만원", value: "500000_1000000" },
+  //   { label: "100~500만원", value: "1000000_5000000" },
+  //   { label: "500만원 이상", value: "over_5000000" },
+  // ];
+
+  const categories = [
+    { label: "스니커즈", value: "스니커즈" },
+    { label: "샌들/슬리퍼", value: "샌들/슬리퍼" },
+  ];
+  const outerwear = [
+    { label: "블루종1", value: "블루종1" },
+    { label: "블루종2", value: "블루종2" },
+    { label: "블루종3", value: "블루종3" },
+    { label: "블루종4", value: "블루종4" },
+    { label: "블루종5", value: "블루종5" },
+    { label: "블루종6", value: "블루종6" },
+    { label: "블루종7", value: "블루종7" },
+  ];
+
+  const shirts = [
+    { label: "블루종8", value: "블루종8" },
+    { label: "블루종9", value: "블루종9" },
+    { label: "블루종10", value: "블루종10" },
+    { label: "블루종11", value: "블루종11" },
+    { label: "블루종12", value: "블루종12" },
+    { label: "블루종13", value: "블루종13" },
+    { label: "블루종14", value: "블루종14" },
+  ];
+
+  //최적화
+  const categoryData = [
+    { name: "신발", options: categories },
+    { name: "아우터", options: outerwear },
+    { name: "셔츠", options: shirts },
+    // 카테고리 추가
+  ];
+
+  //카테고리 2번째부터 출력
+  const visibleCategories = showMore ? categoryData : categoryData.slice(0, 2);
+
+  //데이터 전송시 모달창 닫기
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // 브랜드 목록 스크롤
+  const groupItems = (items: string[]) => {
     const sortedItems = [...items].sort(); // 전체 정렬
 
     const grouped: { [key: string]: string[] } = {};
@@ -264,7 +256,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const handleFilterClick = (category: string, value: string) => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
-  
+
       if (category === "gender" || category === "priceRange") {
         // 기존에 같은 값이 있으면 해제
         if (newFilters[category]?.has(value)) {
@@ -278,22 +270,24 @@ const FilterModal: React.FC<FilterModalProps> = ({
         } else {
           newFilters[category] = new Set(newFilters[category]); // 불변성 유지
         }
-  
+
         if (newFilters[category].has(value)) {
           newFilters[category].delete(value); // 선택 해제
         } else {
           newFilters[category].add(value); // 선택 추가
         }
       }
-  
-  
+
       // 선택된 필터를 JSON 형태로 변환
       const filterPayload = Object.fromEntries(
-        Object.entries(newFilters).map(([key, valueSet]) => [key, Array.from(valueSet)])
+        Object.entries(newFilters).map(([key, valueSet]) => [
+          key,
+          Array.from(valueSet),
+        ])
       );
-  
+
       console.log("현재 선택된 필터:", JSON.stringify(filterPayload, null, 2));
-  
+
       fetch("/api/filters/apply", {
         method: "POST",
         headers: {
@@ -304,11 +298,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
         .then((response) => response.json())
         .then((data) => console.log("서버 응답:", data))
         .catch((error) => console.error("필터 적용 요청 실패:", error));
-  
+
       return newFilters;
     });
   };
- 
 
   const handleViewProducts = async () => {
     try {
@@ -328,7 +321,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       }
 
       setImageList(data);
-      console.log("데이터:",data);
+      console.log("데이터:", data);
 
       //모달 닫기
       handleCloseModal();
@@ -341,12 +334,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
       newFilters[category].delete(value);
-  
+
       // 만약 카테고리가 비어 있으면 삭제
       if (newFilters[category].size === 0) {
         delete newFilters[category];
       }
-  
+
       return { ...newFilters };
     });
   };
@@ -354,8 +347,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
   //필터 모두선택 버튼
   const handleSelectAll = (category: string, options: ButtonOption[]) => {
     setSelectedFilters((prevFilters) => {
-      const isAllSelected = options.every((item) => prevFilters[category]?.has(item.value));
-  
+      const isAllSelected = options.every((item) =>
+        prevFilters[category]?.has(item.value)
+      );
+
       if (isAllSelected) {
         const updatedFilters = { ...prevFilters };
         updatedFilters[category] = new Set(); // 모든 선택 해제
@@ -374,9 +369,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const handleResetFilters = () => {
     setModalFilters(initialFilters);
     setSelectedFilters({});
-  
-    console.log("필터 초기화:", initialFilters); 
-  
+
+    console.log("필터 초기화:", initialFilters);
+
     fetch("/api/filters/reset", {
       method: "POST",
       headers: {
@@ -409,8 +404,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 <div className="section-header">
                   <div>
                     <h3>카테고리</h3>
-                    {!categoryOpen ? (<p className="title">모든 카테고리</p>
-                      ) : null}
+                    {!categoryOpen ? (
+                      <p className="title">모든 카테고리</p>
+                    ) : null}
                   </div>
                   <FontAwesomeIcon
                     icon={categoryOpen ? faMinus : faPlus}
@@ -418,53 +414,64 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     style={{ cursor: "pointer" }}
                   />
                 </div>
-               {/*  */}
-               {visibleCategories.map(({ name, options }) => 
-               {
-                const allSelected = options.every((item) => selectedFilters[name]?.has(item.value));
-                return (
-                  <div key={name} className="filter-options">
-                    <div className="subhead">
-                      <p className="subheading">{name}</p>
-                      <button 
-                        className="btn_multiple" 
-                        onClick={() => handleSelectAll(name, options)}
+                {/*  */}
+                {visibleCategories.map(({ name, options }) => {
+                  const allSelected = options.every((item) =>
+                    selectedFilters[name]?.has(item.value)
+                  );
+                  return (
+                    <div key={name} className="filter-options">
+                      <div className="subhead">
+                        <p className="subheading">{name}</p>
+                        <button
+                          className="btn_multiple"
+                          onClick={() => handleSelectAll(name, options)}
                         >
-                        {allSelected ? "모두 해제" : "모두 선택"}
-                      </button>
+                          {allSelected ? "모두 해제" : "모두 선택"}
+                        </button>
+                      </div>
+                      <div className="section-content">
+                        {options.map((item) => (
+                          <label key={item.value} className="bubble">
+                            <div>
+                              <button
+                                className="filter_button"
+                                style={{
+                                  backgroundColor: selectedFilters[name]?.has(
+                                    item.value
+                                  )
+                                    ? "black"
+                                    : "transparent",
+                                  color: selectedFilters[name]?.has(item.value)
+                                    ? "white"
+                                    : "black",
+                                }}
+                                onClick={() =>
+                                  handleFilterClick(name, item.value)
+                                }
+                              >
+                                {item.label}
+                              </button>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                    <div className="section-content">
-                      {options.map((item) => (
-                        <label key={item.value} className="bubble">
-                          <div>
-                            <button
-                              className="filter_button"
-                              style={{
-                                backgroundColor: selectedFilters[name]?.has(item.value) ? 'black' : 'transparent',
-                                color: selectedFilters[name]?.has(item.value) ? 'white' : 'black',
-                              }}
-                              onClick={() => handleFilterClick(name, item.value)}
-                            >
-                              {item.label}
-                            </button>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
+                  );
+                })}
+
+                {/* 더보기 버튼 */}
+                {!showMore && (
+                  <div>
+                    <button
+                      className="seeCategory"
+                      onClick={() => setShowMore(true)}
+                    >
+                      더보기
+                    </button>
                   </div>
-                    );
-              })}
-
-              {/* 더보기 버튼 */}
-              {!showMore && (
-              <div>
-                <button className="seeCategory" onClick={() => setShowMore(true)}>
-                  더보기
-                </button>
+                )}
               </div>
-              )}
-              </div>
-
               {/* 성별 필터 */}
               <div className="filter-section">
                 <div className="section-header">
@@ -489,12 +496,26 @@ const FilterModal: React.FC<FilterModalProps> = ({
                             <button
                               className="filter_button"
                               style={{
-                                backgroundColor: selectedFilters.gender?.has(gender) ? "black" : "transparent",
-                                color: selectedFilters.gender?.has(gender) ? "white" : "black",
+                                backgroundColor: selectedFilters.gender?.has(
+                                  gender
+                                )
+                                  ? "black"
+                                  : "transparent",
+                                color: selectedFilters.gender?.has(gender)
+                                  ? "white"
+                                  : "black",
                               }}
-                              onClick={() => handleFilterClick("gender", gender)}
+                              onClick={() =>
+                                handleFilterClick("gender", gender)
+                              }
                             >
-                              {gender === "MALE" ? "남성" : gender === "FEMALE" ? "여성" : gender === "KIDS" ? "키즈" : "공용"}
+                              {gender === "MALE"
+                                ? "남성"
+                                : gender === "FEMALE"
+                                ? "여성"
+                                : gender === "KIDS"
+                                ? "키즈"
+                                : "공용"}
                             </button>
                           </div>
                         </label>
@@ -502,10 +523,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     </div>
                   </div>
                 )}
-              </div>;
-
-
-              {/* 색상 필터 */}
+              </div>
+              ;{/* 색상 필터 */}
               <div className="filter-section">
                 <div className="section-header">
                   <div>
@@ -530,9 +549,17 @@ const FilterModal: React.FC<FilterModalProps> = ({
                               backgroundColor: color.rgb,
                               position: "relative",
                             }}
-                            onClick={() => handleFilterClick("color", color.name)}
+                            onClick={() =>
+                              handleFilterClick("color", color.name)
+                            }
                           >
-                            {color.img && <img src={color.img} alt={color.name} className="image-style" />}
+                            {color.img && (
+                              <img
+                                src={color.img}
+                                alt={color.name}
+                                className="image-style"
+                              />
+                            )}
                             {selectedFilters.color?.has(color.name) && (
                               <FontAwesomeIcon
                                 icon={faCheck}
@@ -541,7 +568,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
                                   top: "50%",
                                   left: "50%",
                                   transform: "translate(-50%, -50%)",
-                                  color: ["화이트", "아이보리", "옐로우"].includes(color.name) ? "black" : "white",
+                                  color: [
+                                    "화이트",
+                                    "아이보리",
+                                    "옐로우",
+                                  ].includes(color.name)
+                                    ? "black"
+                                    : "white",
                                   fontSize: "1.2em",
                                 }}
                               />
@@ -555,15 +588,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     </div>
                   </div>
                 )}
-              </div>;
-
-              {/* 혜택/할인 필터 */}
+              </div>
+              ;{/* 혜택/할인 필터 */}
               <div className="filter-section">
                 <div className="section-header">
                   <div>
                     <h3>혜택/할인</h3>
                     {!discountOpen ? (
-                      <p className="title">모든 혜택/할인</p>) : null}
+                      <p className="title">모든 혜택/할인</p>
+                    ) : null}
                   </div>
                   <FontAwesomeIcon
                     icon={discountOpen ? faMinus : faPlus}
@@ -571,47 +604,72 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     style={{ cursor: "pointer" }}
                   />
                 </div>
-                {filterData.discounts.map((filter, index) => (
-                <div key={index}>
-                  <div className="subhead">
-                    <p className="subheading">{filter.title}</p>
-                    <button 
-                      className="btn_multiple"
-                      onClick={() => handleSelectAll(
-                        filter.title, 
-                        filter.options.map(option => ({ value: option, label: option }))
-                      )}
-                    >
-                      {filter.options.every(option => selectedFilters[filter.title]?.has(option)) ? "모두 해제" : "모두 선택"}
-                    </button>
-                  </div>
-                  <div className="section-content">
-                    {filter.options.map((option, idx) => (
-                      <label className="bubble" key={idx}>
-                        <input 
-                          type="checkbox" 
-                          checked={selectedFilters[filter.title]?.has(option) || false}
-                          onChange={() => handleFilterClick(filter.title, option)}
-                        />
-                        <div>
-                          <button 
-                            className="filter_button"
-                            style={{
-                              backgroundColor: selectedFilters[filter.title]?.has(option) ? 'black' : 'transparent',
-                              color: selectedFilters[filter.title]?.has(option) ? 'white' : 'black',
-                            }}
-                            onClick={() => handleFilterClick(filter.title, option)}
-                          >
-                            {option}
-                          </button>
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                {discountOpen &&
+                  filterData.discounts &&
+                  filterData.discounts.map((filter, index) => (
+                    <div key={index}>
+                      <div className="subhead">
+                        <p className="subheading">{filter.title}</p>
+                        <button
+                          className="btn_multiple"
+                          onClick={() =>
+                            handleSelectAll(
+                              filter.title,
+                              filter.options.map((option) => ({
+                                value: option,
+                                label: option,
+                              }))
+                            )
+                          }
+                        >
+                          {filter.options.every((option) =>
+                            selectedFilters[filter.title]?.has(option)
+                          )
+                            ? "모두 해제"
+                            : "모두 선택"}
+                        </button>
+                      </div>
+                      <div className="section-content">
+                        {filter.options.map((option, idx) => (
+                          <label className="bubble" key={idx}>
+                            <input
+                              type="checkbox"
+                              checked={
+                                selectedFilters[filter.title]?.has(option) ||
+                                false
+                              }
+                              onChange={() =>
+                                handleFilterClick(filter.title, option)
+                              }
+                            />
+                            <div>
+                              <button
+                                className="filter_button"
+                                style={{
+                                  backgroundColor: selectedFilters[
+                                    filter.title
+                                  ]?.has(option)
+                                    ? "black"
+                                    : "transparent",
+                                  color: selectedFilters[filter.title]?.has(
+                                    option
+                                  )
+                                    ? "white"
+                                    : "black",
+                                }}
+                                onClick={() =>
+                                  handleFilterClick(filter.title, option)
+                                }
+                              >
+                                {option}
+                              </button>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
               </div>
-
               {/* 브랜드 */}
               <div className="filter-section">
                 <div className="section-header">
@@ -669,7 +727,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   </div>
                 )}
               </div>
-
               {/* 컬렉션 */}
               <div className="filter-section">
                 <div className="section-header">
@@ -688,8 +745,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
                 {collectionOpen && <div className="filter-options"></div>}
               </div>
-
-                    
               {/* 사이즈 필터 */}
               <div className="filter-section">
                 <div className="section-header">
@@ -704,43 +759,61 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 </div>
                 {sizeOpen && (
                   <div className="filter-options">
-                    {Object.entries(filterData.sizes).map(([category, sizes]) => (
-                      <div key={category}>
-                        <p className="subheading">
-                          {category === "CLOTHING" ? "의류" : category === "SHOES" ? "신발" : "액세서리"}
-                        </p>
-                        
-                        <div className="section-content">
-                        {sizes.map((option, idx) => ( 
-                            <label className="bubble" key={idx}>
-                              <input
-                                type="checkbox"
-                                checked={selectedFilters[category]?.has(option) || false} 
-                                onChange={() => handleFilterClick(category, option)}
-                              />
-                              <div>
-                                <button 
-                                  className="filter_button"
-                                  style={{
-                                    backgroundColor: selectedFilters[category]?.has(option) ? 'black' : 'transparent',
-                                    color: selectedFilters[category]?.has(option) ? 'white' : 'black',
-                                  }}
-                                  onClick={() => handleFilterClick(category, option)}
-                                >
-                                  {option}
-                                </button>
-                              </div>
-                            </label>
-                          ))}
+                    {Object.entries(filterData.sizes).map(
+                      ([category, sizes]) => (
+                        <div key={category}>
+                          <p className="subheading">
+                            {category === "CLOTHING"
+                              ? "의류"
+                              : category === "SHOES"
+                              ? "신발"
+                              : "액세서리"}
+                          </p>
+
+                          <div className="section-content">
+                            {sizes.map((option, idx) => (
+                              <label className="bubble" key={idx}>
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    selectedFilters[category]?.has(option) ||
+                                    false
+                                  }
+                                  onChange={() =>
+                                    handleFilterClick(category, option)
+                                  }
+                                />
+                                <div>
+                                  <button
+                                    className="filter_button"
+                                    style={{
+                                      backgroundColor: selectedFilters[
+                                        category
+                                      ]?.has(option)
+                                        ? "black"
+                                        : "transparent",
+                                      color: selectedFilters[category]?.has(
+                                        option
+                                      )
+                                        ? "white"
+                                        : "black",
+                                    }}
+                                    onClick={() =>
+                                      handleFilterClick(category, option)
+                                    }
+                                  >
+                                    {option}
+                                  </button>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 )}
               </div>
-
-
-                        
               {/* 가격대 */}
               <div className="filter-section">
                 <div className="section-header">
@@ -755,58 +828,65 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   />
                 </div>
                 {priceOpen && (
-                    <div className="filter-options">
-                      <p>가격대</p>
-                      <div className="section-content">
-                        {filterData.priceRanges.map((range, index) => {
-                          const isSelected = selectedFilters.priceRange?.has(range.value) ?? false;
+                  <div className="filter-options">
+                    <p>가격대</p>
+                    <div className="section-content">
+                      {filterData.priceRanges.map((range, index) => {
+                        const isSelected =
+                          selectedFilters.priceRange?.has(range.value) ?? false;
 
-                          return (
-                            <label className="bubble" key={index}>
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={() => handleFilterClick("priceRange", range.value)}
-                              />
-                              <div>
-                                <button
-                                  className="filter_button"
-                                  style={{
-                                    backgroundColor: isSelected ? "black" : "transparent",
-                                    color: isSelected ? "white" : "black",
-                                  }}
-                                  onClick={() => handleFilterClick("priceRange", range.value)}
-                                >
-                                  {range.label}
-                                </button>
-                              </div>
-                            </label>
-                          );
-                        })}
-                      </div>
+                        return (
+                          <label className="bubble" key={index}>
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() =>
+                                handleFilterClick("priceRange", range.value)
+                              }
+                            />
+                            <div>
+                              <button
+                                className="filter_button"
+                                style={{
+                                  backgroundColor: isSelected
+                                    ? "black"
+                                    : "transparent",
+                                  color: isSelected ? "white" : "black",
+                                }}
+                                onClick={() =>
+                                  handleFilterClick("priceRange", range.value)
+                                }
+                              >
+                                {range.label}
+                              </button>
+                            </div>
+                          </label>
+                        );
+                      })}
                     </div>
-                  )}
+                  </div>
+                )}
               </div>
             </ModalContent>
 
             <FilterContainer>
-            <div>
-              {/* {Array.from(newSet)} */}
-              <ul className="px-3 py-1">
-                {Object.entries(selectedFilters).map(([category, values]) =>
-                  Array.from(values).map((value) => (
-                    <li key={value} className="filterButton">
-                      <span>{value}</span>
-                      <button 
-                        
-                        onClick={() => handleRemoveFilter(category, value)}>
-                        ✕
-                      </button>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
+              <div>
+                {/* {Array.from(newSet)} */}
+                <ul className="px-3 py-1">
+                  {Object.entries(selectedFilters).map(([category, values]) =>
+                    Array.from(values).map((value) => (
+                      <li key={value} className="filterButton">
+                        <span>{value}</span>
+                        <button
+                          onClick={() => handleRemoveFilter(category, value)}
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
             </FilterContainer>
 
             <ModalFooter>
@@ -1013,7 +1093,6 @@ const ModalContent = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      
     }
     .image-style {
       width: 40px;
@@ -1048,7 +1127,7 @@ const ModalContent = styled.div`
       }
     }
   }
-  .seeCategory{
+  .seeCategory {
     width: 100%;
     height: 40px;
     border-radius: 8px;
@@ -1057,14 +1136,12 @@ const ModalContent = styled.div`
     color: #4e4e4e;
     font-size: 14px;
     cursor: pointer;
-    
   }
-  `;
+`;
 
-
-  const FilterContainer = styled.div`
-  display: flex;  
-  align-items: center;  
+const FilterContainer = styled.div`
+  display: flex;
+  align-items: center;
 
   .filterButton {
     cursor: pointer;
@@ -1076,29 +1153,28 @@ const ModalContent = styled.div`
   }
 
   ul {
-    display: flex;   /* 가로 정렬을 위한 추가 */
+    display: flex; /* 가로 정렬을 위한 추가 */
     flex-wrap: wrap;
     align-items: center;
     list-style: none;
     padding: 0;
     margin: 0;
-    gap: 8px;  /* 버튼 사이 간격 추가 */
+    gap: 8px; /* 버튼 사이 간격 추가 */
   }
 
   li {
-    display: flex; 
+    display: flex;
     align-items: center;
   }
 
-  li button{
+  li button {
     border: none;
     background: none;
     padding: 6px 12px;
   }
 `;
 
-
-  const ModalFooter = styled.div`
+const ModalFooter = styled.div`
   border-top: 1px solid #eee;
   padding: 16px;
   display: flex;
@@ -1123,5 +1199,4 @@ const ModalContent = styled.div`
     height: 40px;
     cursor: pointer;
   }
-  
 `;
