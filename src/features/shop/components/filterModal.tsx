@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { fetchShopData } from "src/features/shop/services/shopService";
+import apiClient from "src/global/services/ApiClient";
 
 const url = new URL(window.location.href);
 const searchParams = new URLSearchParams(url.search);
@@ -14,6 +15,26 @@ interface FilterModalProps {
   categoryList: ButtonOption[];
   outerwearList: ButtonOption[];
   shirtsList: ButtonOption[];
+}
+// 필터 객체를 위한 타입 정의
+type SelectedFilters = Record<string, Set<string>>;
+
+// 검색 파라미터를 위한 인터페이스 정의
+interface SearchParams {
+  keyword: string | null;
+  categoryIds: number[];
+  genders: string[];
+  brandIds: number[];
+  collectionIds: number[];
+  colors: string[];
+  sizes: string[];
+  minPrice: number | null;
+  maxPrice: number | null;
+  sortOption: { field: string; order: string } | null;
+}
+// 필터 카운트 응답을 위한 인터페이스
+interface FilterCountResponseDto {
+  totalCount: number;
 }
 
 interface Product {
@@ -78,6 +99,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showMore, setShowMore] = useState(false); //더보기 버튼
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null); //가격대 필터
+  // 필터 카운트를 위한 상태 추가
+  const [filteredProductCount, setFilteredProductCount] = useState<number>(0);
   //모달창 버튼 백에서 받아옴
   const [filterData, setFilterData] = useState<{
     sizes: Record<string, string[]>;
@@ -93,12 +116,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
     priceRanges: [],
   });
 
+  //도메인 공유를 위해 apiClient라는 서비스 함수를 미리 만들어두었어요/
+  //기본적으로 fetch로 /api형식으로 작성해놓으시면 도메인을 찾을 수 없어서
+  //사용할 수 없고 /filter에 필요한 데이터를 반환하는 백엔드
+  //코드를 생성해놔서 해당 함수들은 그대로 사용하시면 될 꺼 같아요.
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const response = await fetch("/api/filters"); // 백엔드 API 엔드포인트
-        const data = await response.json();
-        setFilterData(data);
+        const response = await apiClient.get("/products/query/filters");
+        setFilterData(response.data);
       } catch (error) {
         console.error("필터 데이터 가져오기 실패:", error);
 
@@ -121,7 +147,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
           ],
           priceRanges: [
             { label: "10만원 이하", value: "under_100000" },
-            // 나머지 가격대 옵션들...
+            { label: "10만원대", value: "100000_200000" },
+            { label: "20만원대", value: "200000_300000" },
+            { label: "30만원대", value: "300000_400000" },
+            { label: "30~50만원", value: "300000_500000" },
+            { label: "50~100만원", value: "500000_1000000" },
+            { label: "100~500만원", value: "1000000_5000000" },
+            { label: "500만원 이상", value: "over_5000000" },
           ],
         };
         setFilterData(mockData);
@@ -253,6 +285,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   // 그룹화된 항목 가져오기
   const groupedItems = groupItems(items);
   const groupKeys = Object.keys(groupedItems); // 그룹 키 목록
+
   const handleFilterClick = (category: string, value: string) => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
@@ -302,6 +335,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       return newFilters;
     });
   };
+  
 
   const handleViewProducts = async () => {
     try {
