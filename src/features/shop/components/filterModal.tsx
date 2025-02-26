@@ -60,6 +60,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
     discounts: [],
     priceRanges: [],
     categories: [],
+    brands: [], // 추가된 필드
+    collections: [], // 추가된 필드
   });
   const [categoryData, setCategoryData] = useState<CategoryDataItem[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<
@@ -386,16 +388,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     <p className={styles.subheading}>성별</p>
                     <div className={styles.sectionContent}>
                       {filterData.genders.map((gender) => (
-                        <label className={styles.bubble} key={gender}>
+                        <label className={styles.bubble} key={gender.value}>
                           <button
                             className={`${styles.filterButton} ${
-                              selectedFilters.gender?.has(gender)
+                              selectedFilters.gender?.has(gender.value)
                                 ? styles.filterButtonSelected
                                 : ""
                             }`}
-                            onClick={() => handleFilterClick("gender", gender)}
+                            onClick={() =>
+                              handleFilterClick("gender", gender.value)
+                            }
                           >
-                            {getGenderLabel(gender)}
+                            {gender.label}
                           </button>
                         </label>
                       ))}

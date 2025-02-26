@@ -1,4 +1,3 @@
-// Category related types
 export interface CategorySubDto {
   id: number;
   value: string;
@@ -22,11 +21,13 @@ export interface CategoryDataItem {
 // Filter data type
 export interface FilterDataType {
   sizes: Record<string, string[]>;
-  genders: string[];
+  genders: { value: string; label: string }[]; // 수정된 부분
   colors: { key: string; name: string }[];
   discounts: { title: string; options: string[] }[];
   priceRanges: { label: string; value: string }[];
   categories: CategoryDto[];
+  brands: { id: number; value: string; label: string }[]; // 추가된 부분
+  collections: { id: number; value: string; label: string }[]; // 추가된 부분
 }
 
 export interface FilterModalProps {

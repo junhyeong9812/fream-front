@@ -18,54 +18,65 @@ export const fetchFilterData = async (): Promise<FilterDataType> => {
 
     // Return mock data on error (for development)
     const mockData: FilterDataType = {
-      sizes: {
-        CLOTHING: ["XS", "S", "M", "L", "XL"],
-        SHOES: ["230", "240", "250", "260", "270"],
-        ACCESSORIES: ["ONE_SIZE"],
-      },
-      genders: ["MALE", "FEMALE", "KIDS", "UNISEX"],
-      colors: [
-        { key: "BLACK", name: "블랙" },
-        { key: "WHITE", name: "화이트" },
-        { key: "BLUE", name: "블루" },
-      ],
-      discounts: [
-        { title: "혜택", options: ["무료배송", "할인", "정가이하"] },
-        { title: "할인율", options: ["30% 이하", "30%~50%", "50% 이상"] },
-      ],
-      priceRanges: [
-        { label: "10만원 이하", value: "under_100000" },
-        { label: "10만원대", value: "100000_200000" },
-        { label: "20만원대", value: "200000_300000" },
-        { label: "30만원대", value: "300000_400000" },
-        { label: "30~50만원", value: "300000_500000" },
-        { label: "50~100만원", value: "500000_1000000" },
-        { label: "100~500만원", value: "1000000_5000000" },
-        { label: "500만원 이상", value: "over_5000000" },
-      ],
-      categories: [
-        {
-          id: 1,
-          value: "Shoes",
-          label: "신발",
-          subCategories: [
-            { id: 3, value: "Sneakers", label: "스니커즈" },
-            { id: 4, value: "SandalsSlippers", label: "샌들/슬리퍼" },
-          ],
+        sizes: {
+          CLOTHING: ["XS", "S", "M", "L", "XL"],
+          SHOES: ["230", "240", "250", "260", "270"],
+          ACCESSORIES: ["ONE_SIZE"],
         },
-        {
-          id: 2,
-          value: "Tops",
-          label: "상의",
-          subCategories: [
-            { id: 5, value: "ShortSleeveTShirts", label: "반팔 티셔츠" },
-            { id: 6, value: "LongSleeveTShirts", label: "긴팔 티셔츠" },
-          ],
-        },
-      ],
-    };
-    return mockData;
-  }
+        genders: [
+          { value: "MALE", label: "남성" },
+          { value: "FEMALE", label: "여성" },
+          { value: "KIDS", label: "키즈" },
+          { value: "UNISEX", label: "공용" }
+        ],
+        colors: [
+          { key: "BLACK", name: "블랙" },
+          { key: "WHITE", name: "화이트" },
+          { key: "BLUE", name: "블루" },
+        ],
+        discounts: [
+          { title: "혜택", options: ["무료배송", "할인", "정가이하"] },
+          { title: "할인율", options: ["30% 이하", "30%~50%", "50% 이상"] },
+        ],
+        priceRanges: [
+          { label: "10만원 이하", value: "under_100000" },
+          { label: "10만원대", value: "100000_200000" },
+          { label: "20만원대", value: "200000_300000" },
+          { label: "30만원대", value: "300000_400000" },
+          { label: "30~50만원", value: "300000_500000" },
+          { label: "50~100만원", value: "500000_1000000" },
+          { label: "100~500만원", value: "1000000_5000000" },
+          { label: "500만원 이상", value: "over_5000000" },
+        ],
+        categories: [
+          {
+            id: 1,
+            value: "Shoes",
+            label: "신발",
+            subCategories: [
+              { id: 3, value: "Sneakers", label: "스니커즈" },
+              { id: 4, value: "SandalsSlippers", label: "샌들/슬리퍼" },
+            ],
+          },
+          {
+            id: 2,
+            value: "Tops",
+            label: "상의",
+            subCategories: [
+              { id: 5, value: "ShortSleeveTShirts", label: "반팔 티셔츠" },
+              { id: 6, value: "LongSleeveTShirts", label: "긴팔 티셔츠" },
+            ],
+          },
+        ],
+        brands: [
+          { id: 1, value: "Nike", label: "Nike" },
+          { id: 2, value: "Adidas", label: "Adidas" },
+          { id: 3, value: "New Balance", label: "New Balance" }
+        ],
+        collections: []
+      };
+      return mockData;
+    }
 };
 
 /**
