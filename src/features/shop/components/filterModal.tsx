@@ -10,16 +10,20 @@ import {
   FilterDataType,
   FilterModalProps,
   SelectedFiltersPayload,
+  GroupedBrands,
+  BrandItem
 } from "../types/filterTypes";
 import {
   fetchFilterData,
   getFilteredProductsCount,
   prepareFilterPayload,
   resetFilters,
+  groupBrandsByFirstChar,
+  getSortedGroupKeys
 } from "../services/filterService";
 import { useSearchParams } from "react-router-dom";
 
-// Initial filter values
+// 초기 필터 값
 const initialFilters = {
   categories: [],
   gender: null,
@@ -29,30 +33,30 @@ const initialFilters = {
   brands: [],
 };
 
-const FilterModal: React.FC<FilterModalProps> = ({
-  open,
-  onClose,
-  onApplyFilters,
-  categoryList,
-  outerwearList,
-  shirtsList,
+const FilterModal: React.FC<FilterModalProps> = ({ 
+  open, 
+  onClose, 
+  onApplyFilters, 
+  categoryList, 
+  outerwearList, 
+  shirtsList 
 }) => {
-  // State for accordion sections
-  const [categoryOpen, setCategoryOpen] = useState(true);
-  const [genderOpen, setGenderOpen] = useState(true);
-  const [colorOpen, setColorOpen] = useState(false);
-  const [discountOpen, setDiscountOpen] = useState(true);
-  const [brandOpen, setBrandOpen] = useState(false);
-  const [collectionOpen, setCollectionOpen] = useState(false);
-  const [sizeOpen, setSizeOpen] = useState(false);
-  const [priceOpen, setPriceOpen] = useState(false);
+  // 아코디언 섹션 상태
+  const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
+  const [genderOpen, setGenderOpen] = useState<boolean>(true);
+  const [colorOpen, setColorOpen] = useState<boolean>(false);
+  const [discountOpen, setDiscountOpen] = useState<boolean>(true);
+  const [brandOpen, setBrandOpen] = useState<boolean>(false);
+  const [collectionOpen, setCollectionOpen] = useState<boolean>(false);
+  const [sizeOpen, setSizeOpen] = useState<boolean>(false);
+  const [priceOpen, setPriceOpen] = useState<boolean>(false);
 
-  // State for filter values
+  // 필터 값 상태
   const [modalFilters, setModalFilters] = useState(initialFilters);
-  const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState<boolean>(false);
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
 
-  // State for filter data and product count
+  // 필터 데이터 및 상품 개수 상태
   const [filterData, setFilterData] = useState<FilterDataType>({
     sizes: {},
     genders: [],
@@ -60,23 +64,25 @@ const FilterModal: React.FC<FilterModalProps> = ({
     discounts: [],
     priceRanges: [],
     categories: [],
-    brands: [], // 추가된 필드
-    collections: [], // 추가된 필드
+    brands: [],
+    collections: [],
   });
   const [categoryData, setCategoryData] = useState<CategoryDataItem[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, Set<string>>
-  >({});
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({});
   const [filteredProductCount, setFilteredProductCount] = useState<number>(0);
   const [searchParams] = useSearchParams();
+  
+  // 브랜드 그룹 상태 추가
+  const [groupedBrands, setGroupedBrands] = useState<GroupedBrands>({});
+  const [groupKeys, setGroupKeys] = useState<string[]>([]);
 
-  // Get filter data on component mount
+  // 컴포넌트 마운트 시 필터 데이터 가져오기
   useEffect(() => {
     const getFilterData = async () => {
       const data = await fetchFilterData();
       setFilterData(data);
 
-      // Process category data from API response
+      // API 응답에서 카테고리 데이터 처리
       if (data.categories) {
         const newCategoryData: CategoryDataItem[] = data.categories.map(
           (category: CategoryDto) => ({
@@ -91,12 +97,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
         );
         setCategoryData(newCategoryData);
       }
+      
+      // 브랜드 데이터 그룹화
+      if (data.brands && data.brands.length > 0) {
+        const grouped = groupBrandsByFirstChar(data.brands);
+        setGroupedBrands(grouped);
+        
+        // 그룹 키 정렬 (특수문자, 숫자, 알파벳 순)
+        const keys = getSortedGroupKeys(grouped);
+        setGroupKeys(keys);
+      }
     };
 
     getFilterData();
   }, []);
 
-  // Update product count when filters change
+  // 필터 변경 시 상품 개수 업데이트
   useEffect(() => {
     const updateProductCount = async () => {
       if (Object.keys(selectedFilters).length > 0) {
@@ -114,8 +130,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   if (!open) return null;
 
-  // Helper function to get gender label
-  const getGenderLabel = (gender: string) => {
+  // 성별 라벨 가져오는 도우미 함수
+  const getGenderLabel = (gender: string): string => {
     switch (gender) {
       case "MALE":
         return "남성";
@@ -130,27 +146,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     }
   };
 
-  // Brand list for testing
-  const items = [
-    "& Other Stories",
-    "0104",
-    "032c",
-    "&",
-    "Apple",
-    "Banana",
-    "123",
-    "Zebra",
-    "!start",
-    "2001",
-    "coca cola",
-    "coca cola",
-    "coca cola",
-    "coca cola",
-    "coca cola",
-    "coca cola",
-  ];
-
-  // Color options
+  // 색상 옵션
   const colors: ColorOption[] = [
     { name: "블랙", rgb: "rgb(0, 0, 0)" },
     { name: "그레이", rgb: "rgb(204, 204, 204)" },
@@ -175,42 +171,23 @@ const FilterModal: React.FC<FilterModalProps> = ({
     { name: "믹스", img: "/shopcolorimg/mixColor.png" },
   ];
 
-  // Visible categories based on 'showMore' state
+  // 'showMore' 상태에 따라 표시할 카테고리
   const visibleCategories = showMore ? categoryData : categoryData.slice(0, 2);
 
-  // Group items (for brand display)
-  const groupItems = (items: string[]) => {
-    const sortedItems = [...items].sort();
-    const grouped: { [key: string]: string[] } = {};
-
-    sortedItems.forEach((item) => {
-      const firstChar = item[0].toUpperCase();
-      if (!grouped[firstChar]) {
-        grouped[firstChar] = [];
-      }
-      grouped[firstChar].push(item);
-    });
-
-    return grouped;
-  };
-
-  const groupedItems = groupItems(items);
-  const groupKeys = Object.keys(groupedItems);
-
-  // Handle filter selection
-  const handleFilterClick = (category: string, value: string) => {
+  // 필터 선택 처리
+  const handleFilterClick = (category: string, value: string): void => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
 
       if (category === "gender" || category === "priceRange") {
-        // For single-select categories, create new set or reset if already selected
+        // 단일 선택 카테고리의 경우, 새 Set 생성 또는 이미 선택된 경우 초기화
         if (newFilters[category]?.has(value)) {
           newFilters[category] = new Set();
         } else {
           newFilters[category] = new Set([value]);
         }
       } else {
-        // For multi-select categories, toggle the selection
+        // 다중 선택 카테고리의 경우, 선택 토글
         if (!newFilters[category]) {
           newFilters[category] = new Set();
         } else {
@@ -224,7 +201,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
         }
       }
 
-      // If a category set is empty, remove it from filters
+      // 카테고리 Set이 비어있으면 필터에서 제거
       if (newFilters[category].size === 0) {
         delete newFilters[category];
       }
@@ -233,8 +210,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
     });
   };
 
-  // Handle 'select all' button
-  const handleSelectAll = (category: string, options: ButtonOption[]) => {
+  // '모두 선택' 버튼 처리
+  const handleSelectAll = (category: string, options: ButtonOption[]): void => {
     setSelectedFilters((prevFilters) => {
       const isAllSelected = options.every((item) =>
         prevFilters[category]?.has(item.value)
@@ -242,10 +219,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
       if (isAllSelected) {
         const updatedFilters = { ...prevFilters };
-        delete updatedFilters[category]; // Remove category if all selected
+        delete updatedFilters[category]; // 모두 선택된 경우 카테고리 제거
         return updatedFilters;
       } else {
-        // Select all options for the category
+        // 카테고리의 모든 옵션 선택
         return {
           ...prevFilters,
           [category]: new Set(options.map((item) => item.value)),
@@ -254,15 +231,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
     });
   };
 
-  // Handle filter removal
-  const handleRemoveFilter = (category: string, value: string) => {
+  // 필터 제거 처리
+  const handleRemoveFilter = (category: string, value: string): void => {
     setSelectedFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
 
       if (newFilters[category]) {
         newFilters[category].delete(value);
 
-        // Remove category if empty
+        // 카테고리가 비어있으면 제거
         if (newFilters[category].size === 0) {
           delete newFilters[category];
         }
@@ -272,15 +249,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
     });
   };
 
-  // Handle filter reset
-  const handleResetFilters = async () => {
+  // 필터 초기화 처리
+  const handleResetFilters = async (): Promise<void> => {
     setSelectedFilters({});
     setFilteredProductCount(0);
     await resetFilters();
   };
 
-  // Handle apply filters
-  const handleApplyFilters = () => {
+  // 필터 적용 처리
+  const handleApplyFilters = (): void => {
     const keyword = searchParams.get("keyword") || undefined;
     const payload = prepareFilterPayload(selectedFilters, keyword);
     onApplyFilters(payload);
@@ -302,7 +279,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             </div>
 
             <div className={styles.modalContent}>
-              {/* Category filter */}
+              {/* 카테고리 필터 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -356,7 +333,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     );
                   })}
 
-                {/* Show more button */}
+                {/* 더보기 버튼 */}
                 {!showMore && categoryData.length > 2 && (
                   <button
                     className={styles.seeCategory}
@@ -367,7 +344,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 )}
               </div>
 
-              {/* Gender filter */}
+              {/* 성별 필터 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -408,7 +385,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 )}
               </div>
 
-              {/* Color filter */}
+              {/* 색상 필터 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -479,7 +456,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 )}
               </div>
 
-              {/* Discount/Benefit filter */}
+              {/* 혜택/할인 필터 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -542,7 +519,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   ))}
               </div>
 
-              {/* Brand filter */}
+              {/* 브랜드 필터 - 개선된 버전 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -560,19 +537,33 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
                 {brandOpen && (
                   <div className={styles.scrollableList}>
-                    {groupKeys.map((key, index) => (
-                      <div key={index}>
-                        {/* Group title */}
+                    {groupKeys.map((key) => (
+                      <div key={key}>
+                        {/* 그룹 제목 */}
                         <div className={styles.groupTitle}>{key}</div>
 
-                        {/* Group items */}
-                        {groupedItems[key].map((item, itemIndex) => (
-                          <div key={itemIndex} className={styles.item}>
-                            {item}
+                        {/* 그룹 아이템들 */}
+                        {groupedBrands[key] && groupedBrands[key].map((brand) => (
+                          <div key={brand.id} className={styles.item}>
+                            <label className={styles.brandLabel}>
+                              <input
+                                type="checkbox"
+                                checked={selectedFilters.brands?.has(String(brand.id)) || false}
+                                onChange={() => handleFilterClick('brands', String(brand.id))}
+                                className={styles.brandCheckbox}
+                              />
+                              <span className={
+                                selectedFilters.brands?.has(String(brand.id))
+                                  ? styles.selectedBrand
+                                  : ''
+                              }>
+                                {brand.label}
+                              </span>
+                            </label>
                           </div>
                         ))}
 
-                        {/* Divider */}
+                        {/* 구분선 */}
                         <hr className={styles.divider} />
                       </div>
                     ))}
@@ -580,7 +571,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 )}
               </div>
 
-              {/* Collection filter */}
+              {/* 컬렉션 필터 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -599,7 +590,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 {collectionOpen && <div></div>}
               </div>
 
-              {/* Size filter */}
+              {/* 사이즈 필터 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -653,7 +644,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 )}
               </div>
 
-              {/* Price range filter */}
+              {/* 가격대 필터 */}
               <div className={styles.filterSection}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -697,7 +688,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               </div>
             </div>
 
-            {/* Selected filters display */}
+            {/* 선택된 필터 표시 */}
             <div className={styles.filterContainer}>
               <ul className={styles.filterTagsList}>
                 {Object.entries(selectedFilters).map(([category, values]) =>
@@ -719,7 +710,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               </ul>
             </div>
 
-            {/* Footer with action buttons */}
+            {/* 푸터와 동작 버튼 */}
             <div className={styles.modalFooter}>
               <button className={styles.btnReset} onClick={handleResetFilters}>
                 초기화

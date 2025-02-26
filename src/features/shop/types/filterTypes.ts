@@ -1,3 +1,4 @@
+// 하위 카테고리 DTO 인터페이스
 export interface CategorySubDto {
   id: number;
   value: string;
@@ -5,6 +6,7 @@ export interface CategorySubDto {
   subCategories?: CategorySubDto[] | null;
 }
 
+// 카테고리 DTO 인터페이스
 export interface CategoryDto {
   id: number;
   value: string;
@@ -12,24 +14,25 @@ export interface CategoryDto {
   subCategories?: CategorySubDto[] | null;
 }
 
-// Category data structure type
+// 카테고리 데이터 구조 타입
 export interface CategoryDataItem {
   name: string;
   options: ButtonOption[];
 }
 
-// Filter data type
+// 필터 데이터 타입
 export interface FilterDataType {
   sizes: Record<string, string[]>;
-  genders: { value: string; label: string }[]; // 수정된 부분
+  genders: { value: string; label: string }[];
   colors: { key: string; name: string }[];
   discounts: { title: string; options: string[] }[];
   priceRanges: { label: string; value: string }[];
   categories: CategoryDto[];
-  brands: { id: number; value: string; label: string }[]; // 추가된 부분
-  collections: { id: number; value: string; label: string }[]; // 추가된 부분
+  brands: { id: number; value: string; label: string }[];
+  collections: { id: number; value: string; label: string }[];
 }
 
+// 필터 모달 속성
 export interface FilterModalProps {
   open: boolean;
   onClose: () => void;
@@ -39,10 +42,10 @@ export interface FilterModalProps {
   shirtsList: ButtonOption[];
 }
 
-// Filter object type
+// 필터 객체 타입
 export type SelectedFilters = Record<string, Set<string>>;
 
-// Search parameters interface
+// 검색 매개변수 인터페이스
 export interface SearchParams {
   keyword: string | null;
   categoryIds: number[];
@@ -56,12 +59,12 @@ export interface SearchParams {
   sortOption: { field: string; order: string } | null;
 }
 
-// Filter count response interface
+// 필터 카운트 응답 인터페이스
 export interface FilterCountResponseDto {
   totalCount: number;
 }
 
-// Product 및 ImageData 인터페이스 - 둘을 통합
+// 제품 인터페이스
 export interface Product {
   id: number;
   name: string;
@@ -84,7 +87,7 @@ export interface Product {
 // 기존 ImageData 타입을 Product 타입의 별칭으로 유지 (기존 코드 호환성)
 export type ImageData = Product;
 
-// Filter state type
+// 필터 상태 타입
 export interface ModalFilters {
   categories: string[];
   gender: string | null;
@@ -94,20 +97,20 @@ export interface ModalFilters {
   brands: string[];
 }
 
-// Button type
+// 버튼 타입
 export interface ButtonOption {
   value: string;
   label: string;
 }
 
-// Color type
+// 색상 타입
 export interface ColorOption {
   name: string;
   rgb?: string;
   img?: string;
 }
 
-// Payload for filter API
+// 필터 API용 페이로드
 export interface SelectedFiltersPayload {
   categoryIds?: number[];
   genders?: string[];
@@ -118,4 +121,20 @@ export interface SelectedFiltersPayload {
   minPrice?: number;
   maxPrice?: number;
   keyword?: string;
+}
+
+// 브랜드 그룹화에 사용되는 타입
+export interface GroupedBrands {
+  [key: string]: { id: number; value: string; label: string }[];
+}
+
+// 다국어 지원을 위한 헬퍼 타입들
+export interface LocalizedLabel {
+  [locale: string]: string;
+}
+
+export interface BrandItem {
+  id: number;
+  value: string;
+  label: string;
 }

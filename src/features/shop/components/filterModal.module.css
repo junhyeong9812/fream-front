@@ -1,5 +1,5 @@
+/* 모달 오버레이 - 전체 화면 커버 */
 .modalOverlay {
-  /* Full screen overlay */
   position: fixed;
   top: 0;
   right: 0;
@@ -8,14 +8,15 @@
   z-index: 1000;
 }
 
+/* 모달 래퍼 - 전체 모달 컨테이너 */
 .modalWrapper {
   width: 100%;
   height: 100%;
   position: relative;
 }
 
+/* 모달 컨테이너 - 실제 모달 레이어 위치 설정 */
 .modalContainer {
-  /* Modal layer positioning */
   position: absolute;
   top: 0;
   right: 0;
@@ -27,8 +28,8 @@
   z-index: 2010;
 }
 
+/* 모달 배경 - 반투명 배경 */
 .modalBackground {
-  /* Semi-transparent background */
   position: fixed;
   top: 0;
   left: 0;
@@ -38,8 +39,8 @@
   z-index: 2000;
 }
 
+/* 모달 내부 - 실제 콘텐츠 부분 */
 .modalInner {
-  /* Actual content part */
   position: relative;
   background: #fff;
   width: 100%;
@@ -50,6 +51,7 @@
   overflow: hidden;
 }
 
+/* 닫기 버튼 */
 .closeButton {
   position: absolute;
   top: 14px;
@@ -60,12 +62,14 @@
   font-size: 20px;
 }
 
+/* 모달 헤더 */
 .modalHeader {
   text-align: center;
   padding: 18px 50px;
   border-bottom: 1px solid #eee;
 }
 
+/* 모달 헤더 제목 */
 .modalHeaderTitle {
   font-size: 18px;
   font-weight: 700;
@@ -73,11 +77,13 @@
   line-height: 22px;
 }
 
+/* 모달 콘텐츠 영역 - 스크롤 가능 */
 .modalContent {
   flex: 1;
   overflow-y: auto;
 }
 
+/* 필터 섹션 - 각 필터 카테고리 */
 .filterSection {
   display: flex;
   flex-direction: column;
@@ -88,6 +94,7 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
+/* 섹션 헤더 - 제목과 토글 버튼 */
 .sectionHeader {
   display: flex;
   justify-content: space-between;
@@ -95,11 +102,13 @@
   width: 100%;
 }
 
+/* 섹션 제목 */
 .sectionTitle {
   font-size: 17px;
   font-weight: 600;
 }
 
+/* 섹션 부제목 - 접힌 상태에서 요약 정보 */
 .sectionSubtitle {
   color: #909090;
   display: inline-block;
@@ -108,12 +117,34 @@
   text-overflow: ellipsis;
 }
 
+/* 스크롤 가능한 목록 - 브랜드 리스트 등 */
 .scrollableList {
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: auto;
   margin-top: 10px;
+  padding-right: 10px;
 }
 
+/* 스크롤바 스타일링 (Webkit 브라우저용) */
+.scrollableList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollableList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.scrollableList::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.scrollableList::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* '모두 선택/해제' 버튼 */
 .btnMultiple {
   border: none;
   background: none;
@@ -122,12 +153,14 @@
   color: #888;
 }
 
+/* 서브헤더 - 카테고리 내 부제목 영역 */
 .subhead {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+/* 서브헤딩 - 카테고리 내 부제목 */
 .subheading {
   font-size: 14px;
   font-weight: 600;
@@ -135,17 +168,20 @@
   padding-bottom: 10px;
 }
 
+/* 색상 그리드 레이아웃 */
 .colorGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
 }
 
+/* 컨텐츠 공통 스타일 */
 .contents {
   padding: 16px;
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
+/* 필터 바로가기 - 색상 선택 등 */
 .filterShortcut {
   align-items: center;
   cursor: pointer;
@@ -155,16 +191,19 @@
   white-space: nowrap;
 }
 
+/* 색상 제목 컨테이너 */
 .titleColor {
   display: flex;
   justify-content: center;
 }
 
+/* 색상 이름 텍스트 */
 .titleColorText {
   color: rgba(34, 34, 34, 0.8);
   font-size: 12px;
 }
 
+/* 색상 상자 - 색상 표시용 원형 */
 .colorBox {
   width: 40px;
   height: 40px;
@@ -175,6 +214,7 @@
   position: relative;
 }
 
+/* 이미지 스타일 - 색상 이미지 */
 .imageStyle {
   width: 40px;
   height: 40px;
@@ -183,21 +223,25 @@
   border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
+/* 섹션 내용 - 필터 옵션 컨테이너 */
 .sectionContent {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
+/* 버블 - 필터 옵션 컨테이너 */
 .bubble {
   display: inline-flex;
   align-items: center;
 }
 
+/* 숨겨진 인풋 (체크박스 등) */
 .bubble input {
   display: none;
 }
 
+/* 필터 버튼 - 옵션 선택 버튼 */
 .filterButton {
   background-color: transparent;
   border-radius: 30px;
@@ -210,11 +254,13 @@
   margin-left: 5px;
 }
 
+/* 선택된 필터 버튼 스타일 */
 .filterButtonSelected {
   background-color: black;
   color: white;
 }
 
+/* '더보기' 버튼 */
 .seeCategory {
   width: 100%;
   height: 40px;
@@ -227,6 +273,7 @@
   margin-top: 10px;
 }
 
+/* 필터 컨테이너 - 선택된 필터 표시 영역 */
 .filterContainer {
   display: flex;
   align-items: center;
@@ -234,6 +281,7 @@
   padding: 10px 16px;
 }
 
+/* 필터 태그 리스트 */
 .filterTagsList {
   display: flex;
   flex-wrap: wrap;
@@ -244,6 +292,7 @@
   gap: 8px;
 }
 
+/* 개별 필터 태그 */
 .filterTag {
   display: flex;
   align-items: center;
@@ -253,6 +302,7 @@
   font-size: 12px;
 }
 
+/* 제거 버튼 - 태그 삭제용 */
 .removeButton {
   border: none;
   background: none;
@@ -261,6 +311,7 @@
   font-size: 12px;
 }
 
+/* 모달 푸터 */
 .modalFooter {
   border-top: 1px solid #eee;
   padding: 16px;
@@ -268,6 +319,7 @@
   gap: 8px;
 }
 
+/* 초기화 버튼 */
 .btnReset {
   flex: 0 0 auto;
   background-color: #f4f4f4;
@@ -279,6 +331,7 @@
   cursor: pointer;
 }
 
+/* 적용 버튼 */
 .btnSubmit {
   flex: 1;
   border-radius: 18px;
@@ -289,25 +342,55 @@
   cursor: pointer;
 }
 
+/* 상품 개수 표시 */
 .productCount {
   font-size: 14px;
   color: #888;
   margin-left: 8px;
 }
 
+/* 브랜드 항목 스타일 */
 .item {
-  margin-bottom: 9px;
+  margin-bottom: 10px;
   font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
+.item:hover {
+  color: #000;
+}
+
+/* 브랜드 그룹 제목 */
 .groupTitle {
-  margin-bottom: 9px;
-  font-size: 16px;
+  margin-bottom: 12px;
+  font-size: 18px;
   font-weight: bold;
+  color: #333;
 }
 
+/* 구분선 */
 .divider {
-  margin: 9px 0;
+  margin: 15px 0;
   border: none;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 브랜드 라벨 */
+.brandLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* 브랜드 체크박스 */
+.brandCheckbox {
+  margin-right: 8px;
+}
+
+/* 선택된 브랜드 스타일 */
+.selectedBrand {
+  font-weight: 600;
+  color: #000;
 }
