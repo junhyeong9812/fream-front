@@ -1,0 +1,512 @@
+.shopContainer {
+  position: relative;
+  width: 1200px;
+  margin: 0 auto;
+}
+
+/* 검색 영역 */
+.searchPcTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0;
+  position: relative;
+}
+
+.titleText {
+  color: #000;
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.12px;
+}
+
+.suggestsVisibility {
+  position: absolute;
+  top: -22px;
+}
+
+.searchInner {
+  border-bottom: 3px solid #000;
+  flex: none;
+  flex-grow: 1;
+  margin: 0 8px;
+  padding-bottom: 16px;
+  width: 500px;
+}
+
+.inputSearch {
+  color: #000;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 29px;
+  overflow: hidden;
+  padding: 0 13px 0 1px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 468px;
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+  -webkit-appearance: none;
+}
+
+.btnSearchDelete {
+  float: right;
+  height: 24px;
+  margin-right: 3px;
+  margin-top: 3px;
+  width: 24px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* 네비게이션 탭 */
+.shopTab {
+  background: #fff;
+  position: sticky;
+  padding-left: 40px;
+  padding-right: 40px;
+  z-index: 1;
+}
+
+.shopTabFixedTop {
+  border-bottom: 0;
+}
+
+@media (min-width: 961px) {
+  .shopTab {
+    z-index: 2;
+  }
+}
+
+.tabs {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.ulTab {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 45px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+}
+
+.liTab {
+  display: inline-flex;
+  padding: 0 12px 0 0;
+}
+
+.tabLink {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding-top: 15px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+  color: #999;
+  cursor: pointer;
+  position: relative;
+}
+
+.tabLinkActive {
+  color: #222;
+  border-bottom-color: #222;
+  font-weight: 700;
+}
+
+/* 트렌드 키워드 슬라이드 */
+.trendContainer {
+  padding: 16px;
+  max-width: 1280px;
+  overflow-x: hidden;
+}
+
+.trendKeywordsGrid {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+  padding: 16px 0;
+}
+
+.flickingViewport {
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+  touch-action: pan-y;
+}
+
+.flickingCamera {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  will-change: transform;
+  z-index: 1;
+}
+
+.flickingCamera > * {
+  flex-shrink: 0;
+}
+
+.trendingKeywordSlide {
+  display: inline-flex !important;
+  justify-content: center;
+}
+
+.trendKeyword {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.trendKeywordImg {
+  display: flex;
+  width: 68px;
+  height: 68px;
+}
+
+@media (min-width: 961px) {
+  .trendKeywordImg {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+.trendKeywordName {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+@media (min-width: 961px) {
+  .trendKeywordName {
+    font-size: 13px;
+  }
+}
+
+.movingControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.arrow {
+  background: none;
+  border: 0;
+  outline: none;
+  appearance: none;
+  color: #222;
+  font-size: 24px;
+  cursor: pointer;
+  margin: 0 15px;
+}
+
+.arrowDisabled {
+  color: #bbb;
+  cursor: not-allowed;
+}
+
+.paginations {
+  display: flex;
+}
+
+.pagination {
+  background: #d3d3d3;
+  border-radius: 6px;
+  color: transparent;
+  cursor: pointer;
+  font-size: 0;
+  height: 6px;
+  margin: 0 4px;
+  width: 6px;
+}
+
+.paginationActive {
+  background-color: #222;
+}
+
+/* 메인 컨텐츠(필터 영역) */
+.contentContainer {
+  position: relative;
+}
+
+@media (min-width: 961px) {
+  .contentContainer {
+    padding-bottom: 80px;
+  }
+}
+
+.shopFilterOpenButtonsContainer {
+  background-color: #fff;
+  position: static;
+  z-index: 5;
+}
+
+.shopFilters {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1280px;
+  display: flex;
+  padding: 12px 0 0;
+}
+
+@media (min-width: 961px) {
+  .shopFilters {
+    padding: 16px 0 0;
+  }
+}
+
+.filterDeliveryContainer {
+  flex-shrink: 0;
+  -ms-overflow-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 16px;
+  scrollbar-width: none;
+}
+
+.filterChipButtons {
+  display: inline-flex;
+  flex-basis: content;
+  gap: 6px;
+  padding-right: 16px;
+  width: max-content;
+}
+
+@media (min-width: 961px) {
+  .filterChipButtons {
+    gap: 8px;
+    padding-right: 0;
+  }
+}
+
+.filterButton {
+  border: 1px solid #f0f0f0;
+  border-radius: 30px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.filterButtonActive {
+  background-color: #000;
+  color: #fff;
+}
+
+.filterButtonInactive {
+  background-color: #fff;
+  color: #000;
+}
+
+.buttonIcon {
+  margin-right: 4px;
+}
+
+.filterButtonMenu {
+  background: #f4f4f4;
+  border: 1px solid #f0f0f0;
+  border-radius: 30px;
+  color: #4e4e4e;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  height: 30px;
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.textGroup {
+  margin: 0px;
+}
+
+.searchFilterButtons {
+  display: grid;
+  grid-gap: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 12px 16px 0;
+}
+
+@media (min-width: 961px) {
+  .searchFilterButtons {
+    gap: 8px;
+    grid-template-columns: auto auto;
+    overflow: visible;
+    padding: 0;
+  }
+}
+
+.filterBasic {
+  position: relative;
+}
+
+.scrollContainer {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+@media (min-width: 961px) {
+  .scrollContainer {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.shopCounts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.sortingTitle {
+  border: none;
+  background: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  gap: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.filterFixed {
+  display: flex;
+  gap: 12px;
+  line-height: 1;
+  font-size: 16px;
+}
+
+.checkBox {
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.filterCheckButton {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  cursor: pointer;
+  padding: 5px 16px;
+}
+
+.searchContent {
+  display: grid;
+  grid-gap: 20px 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(192px, 100%), 1fr));
+}
+
+.searchResult {
+  display: flex;
+  flex-direction: column;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.overlayText {
+  position: absolute;
+  top: 7%;
+  left: 56%;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  font-weight: bold;
+  width: 120px;
+  text-align: right;
+}
+
+.imageInfo {
+  text-align: left;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #333;
+}
+
+.imgTitle {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.brandName {
+  align-items: center;
+  color: #333;
+  display: flex;
+  font-size: 13px;
+  line-height: 16px;
+  margin-bottom: 2px;
+  font-weight: 700;
+}
+
+.name {
+  display: block;
+  font-size: 13px;
+}
+
+.translatedName {
+  color: rgba(34, 34, 34, 0.5);
+  font-size: 11px;
+  line-height: 13px;
+  margin-top: 2px;
+}
+
+.infoPrice {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 17px;
+}
+
+.price {
+  margin-top: 12px;
+}
+
+.actionIcon {
+  display: flex;
+  column-gap: 12px;
+  padding-top: 12px;
+}
+
+.popularityButtonWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.06);
+  margin: 8px 0;
+}

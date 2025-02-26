@@ -1,0 +1,313 @@
+.modalOverlay {
+  /* Full screen overlay */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.modalWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.modalContainer {
+  /* Modal layer positioning */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  z-index: 2010;
+}
+
+.modalBackground {
+  /* Semi-transparent background */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+}
+
+.modalInner {
+  /* Actual content part */
+  position: relative;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  z-index: 2010;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 20px;
+}
+
+.modalHeader {
+  text-align: center;
+  padding: 18px 50px;
+  border-bottom: 1px solid #eee;
+}
+
+.modalHeaderTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  line-height: 22px;
+}
+
+.modalContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 16px;
+  position: relative;
+  justify-content: space-between;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sectionTitle {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.sectionSubtitle {
+  color: #909090;
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 4px;
+  text-overflow: ellipsis;
+}
+
+.scrollableList {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.btnMultiple {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #888;
+}
+
+.subhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subheading {
+  font-size: 14px;
+  font-weight: 600;
+  padding-top: 8px;
+  padding-bottom: 10px;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+}
+
+.contents {
+  padding: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.filterShortcut {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.titleColor {
+  display: flex;
+  justify-content: center;
+}
+
+.titleColorText {
+  color: rgba(34, 34, 34, 0.8);
+  font-size: 12px;
+}
+
+.colorBox {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.imageStyle {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.sectionContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bubble {
+  display: inline-flex;
+  align-items: center;
+}
+
+.bubble input {
+  display: none;
+}
+
+.filterButton {
+  background-color: transparent;
+  border-radius: 30px;
+  color: #4e4e4e;
+  cursor: pointer;
+  font-size: 13px;
+  border: 1px solid #f0f0f0;
+  padding: 0 8px;
+  height: 30px;
+  margin-left: 5px;
+}
+
+.filterButtonSelected {
+  background-color: black;
+  color: white;
+}
+
+.seeCategory {
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  background: none;
+  color: #4e4e4e;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+  padding: 10px 16px;
+}
+
+.filterTagsList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+
+.filterTag {
+  display: flex;
+  align-items: center;
+  background-color: #f4f4f4;
+  border-radius: 15px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.removeButton {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.modalFooter {
+  border-top: 1px solid #eee;
+  padding: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.btnReset {
+  flex: 0 0 auto;
+  background-color: #f4f4f4;
+  color: #222;
+  border: none;
+  border-radius: 18px;
+  width: 80px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.btnSubmit {
+  flex: 1;
+  border-radius: 18px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  height: 40px;
+  cursor: pointer;
+}
+
+.productCount {
+  font-size: 14px;
+  color: #888;
+  margin-left: 8px;
+}
+
+.item {
+  margin-bottom: 9px;
+  font-size: 14px;
+}
+
+.groupTitle {
+  margin-bottom: 9px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.divider {
+  margin: 9px 0;
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
