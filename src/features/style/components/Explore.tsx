@@ -88,6 +88,7 @@ const MasonryContainer = styled.div`
   width: 100%;
   margin: 0 auto;
 `;
+
 const StyledMasonry = styled(Masonry)`
   display: -webkit-box;
   display: -ms-flexbox;
@@ -169,10 +170,19 @@ const Explore: React.FC = () => {
     setPage(0); // Reset page when sorting changes
     setStyles([]); // Clear existing styles
 
-    // Map the Korean sort options to backend parameters
-    const sortParam = option === "인기순" ? "popular" : undefined;
+    // 새로운 styleService 호출 방식으로 업데이트
+    const filterParams: Record<string, any> = {};
+
+    // 정렬 파라미터 설정
+    if (option === "인기순") {
+      filterParams.sortBy = "popular";
+    } else if (option === "추천순") {
+      filterParams.sortBy = "recommended";
+    }
+    // 최신순은 기본값이므로 설정 필요 없음
+
     styleService
-      .getStyles(0, 10, sortParam)
+      .getStyles(0, 10, filterParams)
       .then((response) => {
         setStyles(response.content);
         setHasMore(!response.last);
@@ -181,6 +191,7 @@ const Explore: React.FC = () => {
         console.error("스타일 로딩 실패:", error);
       });
   };
+
   // 스크롤 감지
   useEffect(() => {
     const handleScroll = () => {
@@ -204,32 +215,21 @@ const Explore: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLoading, hasMore, page, scrollThreshold]);
 
-  // 데이터 fetch
-  // useEffect(() => {
-  //   const fetchStyles = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await styleService.getStyles(page);
-
-  //       setStyles((prev) =>
-  //         page === 0 ? response.content : [...prev, ...response.content]
-  //       );
-  //       setHasMore(!response.last);
-  //     } catch (error) {
-  //       console.error("스타일 목록 로딩 실패:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchStyles();
-  // }, [page]);
+  // 데이터 fetch - 업데이트된 호출 방식 적용
   useEffect(() => {
     const fetchStyles = async () => {
       setIsLoading(true);
       try {
-        const sortParam = activeSort === "인기순" ? "popular" : undefined;
-        const response = await styleService.getStyles(page, 10, sortParam);
+        const filterParams: Record<string, any> = {};
+
+        // 정렬 파라미터 설정
+        if (activeSort === "인기순") {
+          filterParams.sortBy = "popular";
+        } else if (activeSort === "추천순") {
+          filterParams.sortBy = "recommended";
+        }
+
+        const response = await styleService.getStyles(page, 10, filterParams);
 
         setStyles((prev) =>
           page === 0 ? response.content : [...prev, ...response.content]
@@ -245,25 +245,40 @@ const Explore: React.FC = () => {
     fetchStyles();
   }, [page, activeSort]);
 
+  // 단축 키워드 클릭 핸들러
+  const handleShortcutClick = (title: string) => {
+    // 필터 파라미터 설정
+    const filterParams: Record<string, any> = {
+      keyword: title, // 검색 키워드를 백엔드 API에 맞게 설정
+    };
+
+    setIsLoading(true);
+    setPage(0);
+    setStyles([]);
+
+    styleService
+      .getStyles(0, 10, filterParams)
+      .then((response) => {
+        setStyles(response.content);
+        setHasMore(!response.last);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("스타일 로딩 실패:", error);
+        setIsLoading(false);
+      });
+  };
+
   const renderContent = () => {
-    if (isLoading) {
+    if (isLoading && !styles.length) {
       return <LoadingState>로딩 중...</LoadingState>;
     }
 
-    if (!styles.length) {
+    if (!styles.length && !isLoading) {
       return <EmptyState>등록된 스타일이 없습니다.</EmptyState>;
     }
 
     return (
-      // <StyledMasonry
-      //   breakpointCols={breakpointColumns}
-      //   className="masonry-grid"
-      //   columnClassName="masonry-grid_column"
-      // >
-      //   {styles.map((style) => (
-      //     <StylePostItem key={style.id} {...style} />
-      //   ))}
-      // </StyledMasonry>
       <>
         <StyledMasonry
           breakpointCols={breakpointColumns}
@@ -287,7 +302,14 @@ const Explore: React.FC = () => {
       <TagShortcuts>
         <SocialTagShortcuts>
           {shortcuts.map((shortcut, index) => (
-            <ShortcutLink key={index} href="#">
+            <ShortcutLink
+              key={index}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                handleShortcutClick(shortcut.title);
+              }}
+            >
               <Shortcut>
                 <picture className="shortcut_image">
                   <source srcSet={shortcut.imageSrc} type="image/webp" />
@@ -311,18 +333,7 @@ const Explore: React.FC = () => {
         />
       </SortingContainer>
 
-      <ContentContainer>
-        {/* <MasonryContainer ref={containerRef}>
-          {styles.map(style => (
-            <StylePostItem
-              key={style.id}
-              {...style}
-              className="post"
-            />
-          ))}
-        </MasonryContainer> */}
-        {renderContent()}
-      </ContentContainer>
+      <ContentContainer>{renderContent()}</ContentContainer>
     </Container>
   );
 };
