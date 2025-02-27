@@ -8,19 +8,35 @@ import {
 
 const API_BASE_URL = "https://www.pinjun.xyz/api";
 
+// 스타일 필터링 파라미터 인터페이스
+interface StyleFilterParams {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  brandName?: string;
+  collectionName?: string;
+  categoryId?: number;
+  isMainCategory?: boolean;
+  profileName?: string;
+}
+
 export const styleService = {
-  
-  async getStyles(page = 0, size = 10, sortBy?: string) {
+  async getStyles(
+    page = 0,
+    size = 10,
+    filterParams: Partial<StyleFilterParams> = {}
+  ) {
     try {
+      // 모든 필터 파라미터를 포함
+      const params: StyleFilterParams = {
+        page,
+        size,
+        ...filterParams,
+      };
+
       const response = await apiClient.get<PageResponse<StyleResponseDto>>(
         "/styles/queries",
-        {
-          params: { 
-            page, 
-            size,
-            sortBy // Add sortBy parameter - if undefined, backend will use default (latest)
-          },
-        }
+        { params }
       );
 
       return {
