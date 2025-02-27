@@ -25,34 +25,13 @@ const brands: Brand[] = [
   { id: 3, value: "Adidas", label: "Adidas" },
 ];
 
-// 필터링 타입 정의
-type FilterType = "category" | "brand";
-
 const Trend: React.FC = () => {
   const [styleItems, setStyleItems] = useState<StyleResponseDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
-  const [activeFilterType, setActiveFilterType] =
-    useState<FilterType>("category");
-  const [activeCategory, setActiveCategory] = useState<string>("전체");
   const [activeBrand, setActiveBrand] = useState<string>("전체");
   const [activeSort, setActiveSort] = useState<string>("인기순");
-
-  // 카테고리 목록
-  const categories = [
-    "전체",
-    "스트릿",
-    "클래식",
-    "캐주얼",
-    "스포츠",
-    "아메카지",
-    "미니멀",
-    "레트로",
-    "빈티지",
-    "가을룩",
-    "겨울룩",
-  ];
 
   // 브랜드 목록에 "전체" 추가
   const brandOptions = ["전체", ...brands.map((brand) => brand.label)];
@@ -64,35 +43,12 @@ const Trend: React.FC = () => {
     500: 1,
   };
 
-  // 필터 타입 변경 핸들러
-  const handleFilterTypeChange = (type: FilterType) => {
-    setActiveFilterType(type);
-    resetFilters();
-  };
-
-  // 필터 초기화
-  const resetFilters = () => {
-    setPage(0);
-    setStyleItems([]);
-    setActiveCategory("전체");
-    setActiveBrand("전체");
-    fetchStyles(0);
-  };
-
-  // 카테고리 클릭 핸들러
-  const handleCategoryClick = (category: string) => {
-    setActiveCategory(category);
-    setPage(0);
-    setStyleItems([]);
-    fetchStyles(0, category, activeBrand, activeSort);
-  };
-
   // 브랜드 클릭 핸들러
   const handleBrandClick = (brand: string) => {
     setActiveBrand(brand);
     setPage(0);
     setStyleItems([]);
-    fetchStyles(0, activeCategory, brand, activeSort);
+    fetchStyles(0, brand, activeSort);
   };
 
   // 정렬 변경 핸들러
@@ -100,13 +56,12 @@ const Trend: React.FC = () => {
     setActiveSort(sortOption);
     setPage(0);
     setStyleItems([]);
-    fetchStyles(0, activeCategory, activeBrand, sortOption);
+    fetchStyles(0, activeBrand, sortOption);
   };
 
   // 데이터 가져오기 함수
   const fetchStyles = async (
     pageNum: number,
-    category: string = activeCategory,
     brand: string = activeBrand,
     sort: string = activeSort
   ) => {
@@ -118,13 +73,6 @@ const Trend: React.FC = () => {
       // 정렬 파라미터 설정
       if (sort === "인기순") {
         filterParams.sortBy = "popular";
-      }
-
-      // 카테고리 파라미터 설정 (실제 API에 맞게 조정 필요)
-      if (category !== "전체") {
-        // categoryId나 다른 형식으로 변환이 필요할 수 있음
-        // 현재는 예시로 소문자 변환만 적용
-        filterParams.categoryName = category.toLowerCase();
       }
 
       // 브랜드 파라미터 설정
@@ -178,24 +126,6 @@ const Trend: React.FC = () => {
     }
   }, [page]);
 
-  // 필터 타입에 따른 버튼 목록 렌더링
-  const renderFilterButtons = () => {
-    const items = activeFilterType === "category" ? categories : brandOptions;
-    const activeItem =
-      activeFilterType === "category" ? activeCategory : activeBrand;
-    const handleClick =
-      activeFilterType === "category" ? handleCategoryClick : handleBrandClick;
-
-    return items.map((item) => (
-      <StyleButton
-        key={item}
-        label={item}
-        isActive={activeItem === item}
-        onClick={() => handleClick(item)}
-      />
-    ));
-  };
-
   const renderContent = () => {
     if (isLoading && styleItems.length === 0) {
       return <div className={styles.loadingState}>로딩 중...</div>;
@@ -226,30 +156,19 @@ const Trend: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {/* 필터 타입 선택 버튼 */}
-      <div className={styles.filterTypeContainer}>
-        <button
-          className={`${styles.filterTypeButton} ${
-            activeFilterType === "category" ? styles.active : ""
-          }`}
-          onClick={() => handleFilterTypeChange("category")}
-        >
-          카테고리
-        </button>
-        <button
-          className={`${styles.filterTypeButton} ${
-            activeFilterType === "brand" ? styles.active : ""
-          }`}
-          onClick={() => handleFilterTypeChange("brand")}
-        >
-          브랜드
-        </button>
-      </div>
-
-      {/* 필터 버튼 그룹 */}
+      {/* 브랜드 필터 버튼 그룹 */}
       <div className={styles.subgroupContainer}>
         <div className={styles.filterChipGroup}>
-          <div className={styles.filterGroup}>{renderFilterButtons()}</div>
+          <div className={styles.filterGroup}>
+            {brandOptions.map((brand) => (
+              <StyleButton
+                key={brand}
+                label={brand}
+                isActive={activeBrand === brand}
+                onClick={() => handleBrandClick(brand)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 

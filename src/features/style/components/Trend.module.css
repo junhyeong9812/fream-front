@@ -6,40 +6,6 @@
   max-width: 1280px;
 }
 
-/* 필터 타입 선택 버튼 */
-.filterTypeContainer {
-  display: flex;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 8px;
-}
-
-.filterTypeButton {
-  padding: 8px 20px;
-  background: none;
-  border: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
-  cursor: pointer;
-  position: relative;
-  line-height: 1;
-}
-
-.filterTypeButton.active {
-  color: #000;
-  font-weight: 600;
-}
-
-.filterTypeButton.active::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 20%;
-  width: 60%;
-  height: 2px;
-  background-color: #000;
-}
-
 .subgroupContainer {
   padding: 8px 0;
   border-bottom: 1px solid #f0f0f0;
@@ -67,6 +33,8 @@
   gap: 8px;
   padding: 4px 0;
 }
+
+/* 필터 버튼 내부 p 태그 마진 조정 */
 .filterGroup button p {
   margin: 4px 0 !important;
 }
