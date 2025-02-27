@@ -120,8 +120,10 @@ const Trend: React.FC = () => {
         filterParams.sortBy = "popular";
       }
 
-      // 카테고리 파라미터 설정
+      // 카테고리 파라미터 설정 (실제 API에 맞게 조정 필요)
       if (category !== "전체") {
+        // categoryId나 다른 형식으로 변환이 필요할 수 있음
+        // 현재는 예시로 소문자 변환만 적용
         filterParams.categoryName = category.toLowerCase();
       }
 
