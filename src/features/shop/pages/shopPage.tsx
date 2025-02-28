@@ -9,7 +9,7 @@ import {
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useHeader } from "src/global/context/HeaderContext";
 import { ButtonOption, ImageData, SelectedFiltersPayload } from "../types/filterTypes";
 import { fetchShopData, setAdditionalFilters, setDeliveryOption, setSortOption } from "../services/shopService";
@@ -18,6 +18,7 @@ import FilterModal from "../components/filterModal";
 import PopularityModal from "../components/popularityModal";
 
 const ShopPage: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { headerHeight } = useHeader();
   const [searchParams] = useSearchParams();
@@ -131,7 +132,7 @@ const ShopPage: React.FC = () => {
     };
     
     loadProducts();
-  }, [searchParams, appliedFilters, activeTabId]);
+  }, [searchParams, appliedFilters, activeTabId, location.state]);
 
   // Handle delivery button click
   const handleDeliveryButtonClick = async (buttonLabel: string) => {

@@ -68,13 +68,20 @@ const SearchModal: React.FC<SearchModalProps> = ({ closeModal }) => {
     console.log("Trimmed value:", trimmedValue); // 추가
 
     if (trimmedValue) {
-      console.log(
-        "Attempting navigation to:",
-        `/shop?keyword=${encodeURIComponent(trimmedValue)}`
-      ); // 추가
-      navigate(`/shop?keyword=${encodeURIComponent(trimmedValue)}`);
+      // 현재 위치가 /shop인지 확인
+      const isShopPage = window.location.pathname === "/shop";
+
+      if (isShopPage) {
+        // 이미 shop 페이지에 있다면 state 객체를 포함해 강제 리렌더링 유도
+        navigate(`/shop?keyword=${encodeURIComponent(trimmedValue)}`, {
+          replace: true,
+          state: { refresh: Date.now() },
+        });
+      } else {
+        // 다른 페이지에서 온 경우 일반적인
+        navigate(`/shop?keyword=${encodeURIComponent(trimmedValue)}`);
+      }
     } else {
-      console.log("Attempting navigation to /shop"); // 추가
       navigate("/shop");
     }
     closeModal();
