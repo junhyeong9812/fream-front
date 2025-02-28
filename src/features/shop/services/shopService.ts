@@ -55,8 +55,9 @@ export const fetchShopData = async (
     if (filters.maxPrice) {
       params.append("maxPrice", filters.maxPrice.toString());
     }
-
-    const url = `/products/query${
+    //product경로 /products/query 
+    //elastic경로 /es/products 
+    const url = `/es/products${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     const response = await apiClient.get(url);
