@@ -9,6 +9,7 @@ import AppRoutes from "./routers/AppRouters";
 import { AuthProvider } from "./global/context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HeaderProvider, useHeader } from "./global/context/HeaderContext";
+import FloatingButtons from "./global/components/floatingButtons/FloatingButtons";
 
 const AppContainer = styled.div`
   display: flex;
@@ -62,6 +63,8 @@ const AppContent = () => {
         <AppRoutes />
       </ContentWrapper>
       <Footer />
+      {/* 플로팅 버튼 추가 */}
+      <FloatingButtons headerHeight={headerHeight} mobileFooterHeight={64} />
     </AppContainer>
   );
 };
