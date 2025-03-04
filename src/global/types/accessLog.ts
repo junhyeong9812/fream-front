@@ -28,5 +28,3 @@ export interface DailyAccessCountDto {
   dateString: string; // "2025-01-26"
   count: number;
 }
-
-export interface AccessLogResponseDto {
