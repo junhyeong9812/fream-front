@@ -87,11 +87,12 @@ export const styleService = {
   // 프로필별 스타일 목록 조회
   async getProfileStyles(profileId: number) {
     try {
-      const response = await apiClient.get<ProfileStyleResponseDto[]>(
-        `/styles/queries/profile/${profileId}`
-      );
-      // return response.data;
-      return response.data.map((style) => ({
+      const response = await apiClient.get<
+        PageResponse<ProfileStyleResponseDto>
+      >(`/styles/queries/profile/${profileId}`);
+
+      // content 배열에 접근하고 각 아이템의 mediaUrl을 변환
+      return response.data.content.map((style) => ({
         ...style,
         mediaUrl: `${API_BASE_URL}${style.mediaUrl}`,
       }));
