@@ -22,6 +22,7 @@ import { fetchTodayAccessCount } from "./services/accessLogQueryService";
 import { AuthContext } from "src/global/context/AuthContext";
 import { logoutService } from "./services/logoutService";
 import { useWebSocket } from "src/global/hooks/useNotificationWebSocket";
+import { useHeader } from "src/global/context/HeaderContext";
 
 const Header: React.FC = () => {
   // WebSocket 훅
@@ -40,7 +41,7 @@ const Header: React.FC = () => {
   const [currentWeather, setCurrentWeather] = useState<WeatherDataDto | null>(
     null
   );
-  const [todayAccessCount, setTodayAccessCount] = useState<number>(0);
+  const { todayAccessCount } = useHeader();  
   const [currentDateString, setCurrentDateString] = useState<string>("");
 
   // 컴포넌트 마운트 상태 추적
@@ -74,17 +75,14 @@ const Header: React.FC = () => {
       if (!isMounted.current) return;
 
       try {
-        const [weather, count] = await Promise.all([
-          fetchCurrentWeather(),
-          fetchTodayAccessCount(),
-        ]);
+        // 날씨 데이터만 로드
+        const weather = await fetchCurrentWeather();
 
         if (!isMounted.current) return;
 
         if (weather) {
           setCurrentWeather(weather);
         }
-        setTodayAccessCount(count);
 
         // 날짜 설정
         const now = new Date();
@@ -106,6 +104,7 @@ const Header: React.FC = () => {
       isMounted.current = false;
     };
   }, []);
+
 
   // 모달 토글 핸들러
   const toggleNotificationModal = useCallback(() => {

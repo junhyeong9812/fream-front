@@ -42,19 +42,31 @@ const StyledHeader = styled(Header)`
 `;
 
 const AppContent = () => {
-  const { headerHeight } = useHeader();
+  const { headerHeight, refreshAccessCount } = useHeader();
 
   useEffect(() => {
-    // 페이지 접속 로그
-    const logData: UserAccessLogDto = {
-      pageUrl: window.location.pathname,
-      screenWidth: window.screen.width,
-      screenHeight: window.screen.height,
-      devicePixelRatio: window.devicePixelRatio || 1,
-      browserLanguage: navigator.language,
+    const sendLogAndUpdateCount = async () => {
+      // 페이지 접속 로그
+      const logData: UserAccessLogDto = {
+        pageUrl: window.location.pathname,
+        screenWidth: window.screen.width,
+        screenHeight: window.screen.height,
+        devicePixelRatio: window.devicePixelRatio || 1,
+        browserLanguage: navigator.language,
+      };
+
+      try {
+        // 로그 전송
+        await sendAccessLog(logData);
+        // 접속자 수 갱신
+        await refreshAccessCount();
+      } catch (error) {
+        console.error("접속 로그 전송 또는 접속자 수 갱신 실패:", error);
+      }
     };
-    sendAccessLog(logData);
-  }, []);
+
+    sendLogAndUpdateCount();
+  }, [refreshAccessCount]);
 
   return (
     <AppContainer>
