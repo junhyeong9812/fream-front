@@ -74,7 +74,8 @@ export const styleService = {
           : response.data.profileImageUrl,
         productInfos: response.data.productInfos.map((product) => ({
           ...product,
-          thumbnailImageUrl: `${API_BASE_URL}${product.thumbnailImageUrl}`,
+          thumbnailImageUrl: `${product.thumbnailImageUrl}`,
+          // ${API_BASE_URL}
         })),
       };
     } catch (error) {
