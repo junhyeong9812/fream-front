@@ -1,9 +1,8 @@
-// components/StylePostItem.tsx
 import React, { useContext, useState } from "react";
 import styles from "./StylePostItem.module.css";
 import { useNavigate } from "react-router-dom";
 import { StyleResponseDto } from "../types/styleTypes";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaImage, FaPlay } from "react-icons/fa";
 import { AuthContext } from "src/global/context/AuthContext";
 import LoginModal from "../../common/components/LoginModal";
 import styleLikeService from "../services/StyleLikeService";
@@ -29,6 +28,12 @@ const StylePostItem: React.FC<StylePostItemProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // 미디어 타입 확인 (간단한 방법: 확장자로 판단)
+  const isVideo =
+    mediaUrl?.toLowerCase().endsWith(".mp4") ||
+    mediaUrl?.toLowerCase().endsWith(".mov") ||
+    mediaUrl?.toLowerCase().endsWith(".webm");
 
   const handleClick = () => {
     navigate(`/style/${id}`);
@@ -66,7 +71,13 @@ const StylePostItem: React.FC<StylePostItemProps> = ({
         className={`${styles.postContainer} ${className || ""}`}
         onClick={handleClick}
       >
-        <img src={mediaUrl} alt="Style post" className={styles.postImage} />
+        <div className={styles.mediaContainer}>
+          <img src={mediaUrl} alt="Style post" className={styles.postImage} />
+          {/* 미디어 타입에 따른 아이콘 표시 */}
+          <div className={styles.mediaIcon}>
+            {isVideo ? <FaPlay color="white" /> : <FaImage color="white" />}
+          </div>
+        </div>
         <div className={styles.profileSection}>
           <img
             src={profileImageUrl}
