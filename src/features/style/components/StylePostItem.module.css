@@ -64,6 +64,8 @@
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-height: 40px; /* 명시적으로 최대 높이 설정 (20px * 2줄) */
+  word-break: break-word; /* 긴 단어가 있을 때 줄바꿈 허용 */
 }
 
 .mediaContainer {
