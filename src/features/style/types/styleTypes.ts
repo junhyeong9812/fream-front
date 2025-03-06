@@ -7,7 +7,9 @@ export interface StyleResponseDto {
   mediaUrl: string;
   viewCount: number;
   likeCount: number;
+  liked?: boolean;
 }
+
 export interface PageResponse<T> {
   content: T[];
   pageable: {
@@ -46,6 +48,7 @@ export interface StyleDetailResponseDto {
   mediaUrls: string[];
   likeCount: number;
   commentCount: number;
+  liked?: boolean;
   productInfos: ProductInfoDto[];
   createdDate: string;
 }
@@ -62,4 +65,5 @@ export interface ProfileStyleResponseDto {
   mediaUrl: string;
   likeCount: number;
   commentCount: number;
+  liked?: boolean;
 }

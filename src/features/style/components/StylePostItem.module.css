@@ -6,12 +6,19 @@
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.postContainer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .postImage {
   width: 100%;
   display: block;
   height: 100%;
+  object-fit: cover;
 }
 
 .profileSection {
@@ -25,16 +32,26 @@
   height: 30px;
   border-radius: 50%;
   margin-right: 10px;
+  object-fit: cover;
 }
 
 .username {
   flex: 1;
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .content {
   padding: 10px;
   font-size: 14px;
+  max-height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .likeButton {
@@ -42,4 +59,23 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s;
+}
+
+.likeButton:hover {
+  transform: scale(1.1);
+}
+
+.likeButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.likeCount {
+  font-size: 12px;
+  color: #666;
+  margin-left: 2px;
 }
