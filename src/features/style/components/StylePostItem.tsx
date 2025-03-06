@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { StyleResponseDto } from "../types/styleTypes";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { AuthContext } from "src/global/context/AuthContext";
-import styleLikeService from "../services/StyleLikeService";
 import LoginModal from "../../common/components/LoginModal";
+import styleLikeService from "../services/StyleLikeService";
 
 interface StylePostItemProps extends StyleResponseDto {
   className?: string;
@@ -80,6 +80,7 @@ const StylePostItem: React.FC<StylePostItemProps> = ({
             disabled={isProcessing}
           >
             {isLiked ? <FaHeart color="red" /> : <FaRegHeart />}
+            <span className={styles.likeCount}>{likeCount}</span>
           </button>
         </div>
         <div className={styles.content}>{content}</div>
