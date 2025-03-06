@@ -9,6 +9,7 @@
   z-index: 1000;
   background-color: #fff;
   height: 100px;
+  min-width: 1200px;
 }
 
 /* 데스크탑 전용 헤더 */
@@ -17,7 +18,7 @@
   margin-left: auto;
   margin-right: auto;
   max-width: 1280px;
-  min-width: 960px;
+  min-width: 1200px;
   position: fixed; /* 상단 고정 */
   left: 50%;
   transform: translateX(-50%);
@@ -80,6 +81,8 @@
 
 .top-nav li {
   margin-left: 15px;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
 .top-nav li a {
@@ -183,6 +186,7 @@
     left: 0;
     right: 0;
     min-width: 320px;
+    z-index: 1000;
   }
 }
 
