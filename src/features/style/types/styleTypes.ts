@@ -49,6 +49,7 @@ export interface StyleDetailResponseDto {
   likeCount: number;
   commentCount: number;
   liked?: boolean;
+  interested?: boolean;
   productInfos: ProductInfoDto[];
   createdDate: string;
 }

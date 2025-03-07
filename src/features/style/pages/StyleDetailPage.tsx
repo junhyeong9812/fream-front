@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import {
   Heart,
@@ -12,7 +12,11 @@ import {
   ProfileStyleResponseDto,
 } from "../types/styleTypes";
 import styleService from "../services/styleService";
+import styleLikeService from "../services/StyleLikeService";
+import styleBookmarkService from "../services/StyleBookmarkService";
 import { formatRelativeTime } from "src/global/utils/timeUtils";
+import { AuthContext } from "src/global/context/AuthContext";
+import LoginModal from "../../common/components/LoginModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -188,7 +192,6 @@ const StyleCard = styled.div`
   }
 `;
 
-
 const StyleDetailPage = () => {
   const [styleDetail, setStyleDetail] = useState<StyleDetailResponseDto | null>(
     null
@@ -197,6 +200,9 @@ const StyleDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const { isLoggedIn } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -212,6 +218,10 @@ const StyleDetailPage = () => {
         const detailData = await styleService.getStyleDetail(styleId);
         setStyleDetail(detailData);
 
+        // 백엔드에서 제공한 좋아요 및 북마크 초기 상태 설정
+        setIsLiked(detailData.liked || false);
+        setIsBookmarked(detailData.interested || false);
+
         const profileData = await styleService.getProfileStyles(
           detailData.profileId
         );
@@ -226,6 +236,68 @@ const StyleDetailPage = () => {
 
     fetchData();
   }, []);
+
+  // 좋아요 토글 함수
+  const toggleLike = async () => {
+    if (isProcessing) return; // 이미 처리 중이면 중복 요청 방지
+
+    if (!isLoggedIn) {
+      setLoginModalOpen(true);
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      if (styleDetail) {
+        const success = await styleLikeService.toggleLike(styleDetail.id);
+
+        if (success) {
+          setIsLiked((prev) => !prev);
+          // 좋아요 수도 업데이트
+          setStyleDetail((prev) => {
+            if (!prev) return null;
+            return {
+              ...prev,
+              likeCount: isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
+            };
+          });
+        }
+      }
+    } catch (error) {
+      console.error("좋아요 처리 실패", error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // 북마크(관심) 토글 함수
+  const toggleBookmark = async () => {
+    if (isProcessing) return;
+
+    if (!isLoggedIn) {
+      setLoginModalOpen(true);
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      if (styleDetail) {
+        const success = await styleBookmarkService.toggleBookmark(
+          styleDetail.id
+        );
+
+        if (success) {
+          setIsBookmarked((prev) => !prev);
+        }
+      }
+    } catch (error) {
+      console.error("북마크 처리 실패", error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (isLoading || !styleDetail) {
     return (
@@ -245,9 +317,7 @@ const StyleDetailPage = () => {
           </ProfileImage>
           <ProfileInfo>
             <Username>{styleDetail.profileName}</Username>
-            <TimeStamp>
-    {formatRelativeTime(styleDetail.createdDate)}
-  </TimeStamp>
+            <TimeStamp>{formatRelativeTime(styleDetail.createdDate)}</TimeStamp>
           </ProfileInfo>
           <IconButton>
             <MoreHorizontal size={20} />
@@ -263,7 +333,7 @@ const StyleDetailPage = () => {
             <Download size={24} />
           </IconButton>
           <IconGroup>
-            <IconButton onClick={() => setIsLiked(!isLiked)}>
+            <IconButton onClick={toggleLike} disabled={isProcessing}>
               <Heart
                 size={24}
                 fill={isLiked ? "#ff3040" : "none"}
@@ -275,7 +345,7 @@ const StyleDetailPage = () => {
               <MessageCircle size={24} />
               <span>{styleDetail.commentCount}</span>
             </IconButton>
-            <IconButton onClick={() => setIsBookmarked(!isBookmarked)}>
+            <IconButton onClick={toggleBookmark} disabled={isProcessing}>
               <Bookmark
                 size={24}
                 fill={isBookmarked ? "currentColor" : "none"}
@@ -334,6 +404,13 @@ const StyleDetailPage = () => {
           </StyleGrid>
         </OtherStylesSection>
       )}
+
+      {/* 로그인 모달 */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        message="좋아요/북마크 기능은 로그인 후 이용 가능합니다."
+      />
     </Wrapper>
   );
 };
