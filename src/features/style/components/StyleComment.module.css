@@ -6,7 +6,7 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 1300;
 }
 
 .modalOverlayHidden {
@@ -20,7 +20,7 @@
   width: 400px;
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  z-index: 1301;
   transition: right 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
@@ -64,6 +64,7 @@
 .profileImage {
   width: 40px;
   height: 40px;
+  min-width: 40px;
   border-radius: 50%;
   overflow: hidden;
   background: #f0f0f0;
@@ -92,6 +93,98 @@
 .timeStamp {
   font-size: 12px;
   color: #8e8e8e;
+}
+
+.inputSection {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.replyIndicator {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  right: 0;
+  padding: 8px 16px;
+  background-color: #f8f8f8;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancelReplyButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #007bff;
+}
+
+.inputBox {
+  flex: 1;
+  border: 1px solid #f0f0f0;
+  border-radius: 20px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.commentInput {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.commentInput::placeholder {
+  color: #8e8e8e;
+}
+
+.postButton {
+  background: none;
+  border: none;
+  padding: 0 0 0 8px;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.postButtonActive {
+  color: #007bff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.postButtonInactive {
+  color: #8e8e8e;
+  font-weight: 400;
+  cursor: default;
+}
+
+.quickReplyContainer {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0 8px 0;
+  margin-bottom: 8px;
+}
+
+.quickReplyButton {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 12px;
+  white-space: nowrap;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.quickReplyButton:hover {
+  background: #e0e0e0;
 }
 
 .commentsContainer {
@@ -149,94 +242,6 @@
   display: flex;
   gap: 12px;
   margin-bottom: 8px;
-}
-
-.inputSection {
-  padding: 16px;
-  border-top: 1px solid #f0f0f0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: relative;
-}
-
-.replyIndicator {
-  position: absolute;
-  top: -30px;
-  left: 0;
-  right: 0;
-  padding: 8px 16px;
-  background-color: #f8f8f8;
-  font-size: 12px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.cancelReplyButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #007bff;
-}
-
-.inputBox {
-  flex: 1;
-  border: 1px solid #f0f0f0;
-  border-radius: 20px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-}
-
-.commentInput {
-  width: 100%;
-  border: none;
-  outline: none;
-  font-size: 14px;
-}
-
-.commentInput::placeholder {
-  color: #8e8e8e;
-}
-
-.postButton {
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-.postButtonActive {
-  color: #007bff;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.postButtonInactive {
-  color: #8e8e8e;
-  font-weight: 400;
-  cursor: default;
-}
-
-.quickReplyContainer {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 0 0 8px 0;
-  margin-bottom: 8px;
-}
-
-.quickReplyButton {
-  background: #f0f0f0;
-  border: none;
-  border-radius: 16px;
-  padding: 6px 12px;
-  white-space: nowrap;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.quickReplyButton:hover {
-  background: #e0e0e0;
 }
 
 .emptyComments {

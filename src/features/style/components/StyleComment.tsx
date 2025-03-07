@@ -318,6 +318,76 @@ const StyleComment: React.FC<StyleCommentProps> = ({
           </div>
         </div>
 
+        {/* 댓글 입력 영역을 상단으로 이동 */}
+        <div className={styles.inputSection}>
+          {replyTo && (
+            <div className={styles.replyIndicator}>
+              <span>
+                <b>{replyTo.name}</b>님에게 답글 작성 중
+              </span>
+              <button
+                className={styles.cancelReplyButton}
+                onClick={cancelReplyMode}
+              >
+                취소
+              </button>
+            </div>
+          )}
+
+          <div className={styles.profileImage}>
+            <img
+              src={
+                isLoggedIn && userProfileImage
+                  ? userProfileImage
+                  : "/api/placeholder/40/40"
+              }
+              alt="프로필"
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div className={styles.quickReplyContainer}>
+              {quickReplies.map((text, index) => (
+                <button
+                  key={index}
+                  className={styles.quickReplyButton}
+                  onClick={() => handleQuickReplyClick(text)}
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
+            <div className={styles.inputBox}>
+              <input
+                className={styles.commentInput}
+                ref={commentInputRef}
+                placeholder="댓글을 남기세요..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onFocus={handleCommentInputFocus}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handlePostComment();
+                  }
+                }}
+              />
+              {commentText.trim() && (
+                <button
+                  className={`${styles.postButton} ${
+                    isLoggedIn
+                      ? styles.postButtonActive
+                      : styles.postButtonInactive
+                  }`}
+                  onClick={handlePostComment}
+                  disabled={!isLoggedIn}
+                >
+                  등록
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className={styles.commentsContainer} ref={commentsContainerRef}>
           {isLoading ? (
             <div style={{ textAlign: "center", padding: "20px" }}>
@@ -450,67 +520,6 @@ const StyleComment: React.FC<StyleCommentProps> = ({
               )}
             </>
           )}
-        </div>
-
-        <div className={styles.inputSection}>
-          {replyTo && (
-            <div className={styles.replyIndicator}>
-              <span>
-                <b>{replyTo.name}</b>님에게 답글 작성 중
-              </span>
-              <button
-                className={styles.cancelReplyButton}
-                onClick={cancelReplyMode}
-              >
-                취소
-              </button>
-            </div>
-          )}
-
-          <div className={styles.profileImage}>
-            <img
-              src={
-                isLoggedIn && userProfileImage
-                  ? userProfileImage
-                  : "/api/placeholder/40/40"
-              }
-              alt="프로필"
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div className={styles.quickReplyContainer}>
-              {quickReplies.map((text, index) => (
-                <button
-                  key={index}
-                  className={styles.quickReplyButton}
-                  onClick={() => handleQuickReplyClick(text)}
-                >
-                  {text}
-                </button>
-              ))}
-            </div>
-            <div className={styles.inputBox}>
-              <input
-                className={styles.commentInput}
-                ref={commentInputRef}
-                placeholder="댓글을 남기세요..."
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                onFocus={handleCommentInputFocus}
-              />
-              <button
-                className={`${styles.postButton} ${
-                  commentText.trim() && isLoggedIn
-                    ? styles.postButtonActive
-                    : styles.postButtonInactive
-                }`}
-                onClick={handlePostComment}
-                disabled={!commentText.trim() || !isLoggedIn}
-              >
-                등록
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
