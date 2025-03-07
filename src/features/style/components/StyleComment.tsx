@@ -1,4 +1,3 @@
-// StyleComment.tsx
 import React, {
   useState,
   useEffect,
@@ -50,6 +49,7 @@ const StyleComment: React.FC<StyleCommentProps> = ({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
+  const [shouldShowCommentModal, setShouldShowCommentModal] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
   const commentInputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -63,15 +63,47 @@ const StyleComment: React.FC<StyleCommentProps> = ({
     "평소 사이즈가 궁금해요 👀",
   ];
 
-  // 댓글 데이터 초기 로드
+  // isOpen 값이 변경되면 로그인 상태 확인
   useEffect(() => {
     if (isOpen) {
+      if (!isLoggedIn) {
+        // 로그인되어 있지 않으면 로그인 모달 표시
+        setLoginModalOpen(true);
+        // 댓글 모달은 표시하지 않음
+        setShouldShowCommentModal(false);
+      } else {
+        // 로그인되어 있으면 댓글 모달 표시
+        setShouldShowCommentModal(true);
+        setLoginModalOpen(false);
+        // 댓글 데이터 로드
+        setPage(0);
+        setComments([]);
+        setHasMore(true);
+        fetchComments(0, true);
+      }
+    } else {
+      // 모달이 닫히면 상태 초기화
+      setShouldShowCommentModal(false);
+      setLoginModalOpen(false);
+    }
+  }, [isOpen, isLoggedIn, styleId]);
+
+  // 로그인 모달 닫힐 때 처리
+  const handleLoginModalClose = () => {
+    setLoginModalOpen(false);
+    // 로그인 모달이 닫히고 로그인 되어 있으면 댓글 모달 표시
+    if (isLoggedIn) {
+      setShouldShowCommentModal(true);
+      // 댓글 데이터 로드
       setPage(0);
       setComments([]);
       setHasMore(true);
       fetchComments(0, true);
+    } else {
+      // 로그인 되어 있지 않으면 부모 컴포넌트의 onClose 호출
+      onClose();
     }
-  }, [isOpen, styleId]);
+  };
 
   // 모달 외부 클릭 시 닫기
   useEffect(() => {
@@ -84,14 +116,14 @@ const StyleComment: React.FC<StyleCommentProps> = ({
       }
     };
 
-    if (isOpen) {
+    if (shouldShowCommentModal) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, onClose]);
+  }, [shouldShowCommentModal, onClose]);
 
   // 무한 스크롤 구현
   const handleScroll = useCallback(() => {
@@ -191,6 +223,7 @@ const StyleComment: React.FC<StyleCommentProps> = ({
   const handleReplyClick = (commentId: number, userName: string) => {
     if (!isLoggedIn) {
       setLoginModalOpen(true);
+      setShouldShowCommentModal(false);
       return;
     }
 
@@ -209,6 +242,7 @@ const StyleComment: React.FC<StyleCommentProps> = ({
   const handleToggleLike = async (commentId: number) => {
     if (!isLoggedIn) {
       setLoginModalOpen(true);
+      setShouldShowCommentModal(false);
       return;
     }
 
@@ -266,6 +300,7 @@ const StyleComment: React.FC<StyleCommentProps> = ({
   const handleQuickReplyClick = (text: string) => {
     if (!isLoggedIn) {
       setLoginModalOpen(true);
+      setShouldShowCommentModal(false);
       return;
     }
     setCommentText(text);
@@ -276,22 +311,23 @@ const StyleComment: React.FC<StyleCommentProps> = ({
   const handleCommentInputFocus = () => {
     if (!isLoggedIn) {
       setLoginModalOpen(true);
+      setShouldShowCommentModal(false);
       return;
     }
   };
 
-  // 모달 콘텐츠 정의
-  const modalContent = (
+  // 댓글 모달 콘텐츠 정의
+  const commentModalContent = (
     <>
       <div
         className={`${styles.modalOverlay} ${
-          isOpen ? "" : styles.modalOverlayHidden
+          shouldShowCommentModal ? "" : styles.modalOverlayHidden
         }`}
         onClick={onClose}
       />
       <div
         className={`${styles.commentModal} ${
-          isOpen ? styles.commentModalOpen : ""
+          shouldShowCommentModal ? styles.commentModalOpen : ""
         }`}
         ref={modalRef}
       >
@@ -524,20 +560,26 @@ const StyleComment: React.FC<StyleCommentProps> = ({
           )}
         </div>
       </div>
-
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        message="댓글 기능은 로그인 후 이용 가능합니다."
-      />
     </>
   );
 
-  // 모달이 닫혀있으면 아무것도 렌더링하지 않음
-  if (!isOpen) return null;
+  // isOpen이 true지만 로그인이 되어 있지 않은 경우에는 로그인 모달만 표시
+  if (isOpen) {
+    return ReactDOM.createPortal(
+      <>
+        {shouldShowCommentModal && commentModalContent}
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={handleLoginModalClose}
+          message="댓글 기능은 로그인 후 이용 가능합니다."
+        />
+      </>,
+      document.body
+    );
+  }
 
-  // React Portal을 사용하여 모달을 document.body에 직접 렌더링
-  return ReactDOM.createPortal(modalContent, document.body);
+  // 모달이 닫혀있으면 아무것도 렌더링하지 않음
+  return null;
 };
 
 export default StyleComment;
