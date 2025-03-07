@@ -17,6 +17,7 @@ import styleBookmarkService from "../services/StyleBookmarkService";
 import { formatRelativeTime } from "src/global/utils/timeUtils";
 import { AuthContext } from "src/global/context/AuthContext";
 import LoginModal from "../../common/components/LoginModal";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -193,6 +194,7 @@ const StyleCard = styled.div`
 `;
 
 const StyleDetailPage = () => {
+  const navigate = useNavigate();
   const [styleDetail, setStyleDetail] = useState<StyleDetailResponseDto | null>(
     null
   );
@@ -304,6 +306,10 @@ const StyleDetailPage = () => {
       <div style={{ textAlign: "center", padding: "40px" }}>로딩중...</div>
     );
   }
+  // 제품 카드 클릭 핸들러
+  const handleProductClick = (productId: number, colorName: string) => {
+    navigate(`/products/${productId}?color=${colorName}`);
+  };
 
   return (
     <Wrapper>
@@ -361,7 +367,13 @@ const StyleDetailPage = () => {
             <ProductTitle>스타일 제품</ProductTitle>
             <ProductGrid>
               {styleDetail.productInfos.map((product, index) => (
-                <ProductCard key={index}>
+                <ProductCard
+                  key={index}
+                  onClick={() =>
+                    handleProductClick(product.productId, product.colorName)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
                   <ProductImage
                     src={product.thumbnailImageUrl || "/api/placeholder/60/60"}
                     alt={product.productName}

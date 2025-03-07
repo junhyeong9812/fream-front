@@ -55,8 +55,10 @@ export interface StyleDetailResponseDto {
 }
 
 export interface ProductInfoDto {
+  productId: number;
   productName: string;
   productEnglishName: string;
+  colorName: string;
   thumbnailImageUrl: string;
   minSalePrice: number;
 }
