@@ -6,6 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
+import ReactDOM from "react-dom";
 import { Heart, X } from "lucide-react";
 import { formatRelativeTime } from "src/global/utils/timeUtils";
 import { AuthContext } from "src/global/context/AuthContext";
@@ -279,7 +280,8 @@ const StyleComment: React.FC<StyleCommentProps> = ({
     }
   };
 
-  return (
+  // 모달 콘텐츠 정의
+  const modalContent = (
     <>
       <div
         className={`${styles.modalOverlay} ${
@@ -530,6 +532,12 @@ const StyleComment: React.FC<StyleCommentProps> = ({
       />
     </>
   );
+
+  // 모달이 닫혀있으면 아무것도 렌더링하지 않음
+  if (!isOpen) return null;
+
+  // React Portal을 사용하여 모달을 document.body에 직접 렌더링
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default StyleComment;
