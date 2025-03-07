@@ -70,3 +70,35 @@ export interface ProfileStyleResponseDto {
   commentCount: number;
   liked?: boolean;
 }
+
+// 댓글 응답 DTO
+export interface StyleCommentResponseDto {
+  id: number;
+  profileId: number;
+  profileName: string;
+  profileImageUrl: string;
+  content: string;
+  likeCount: number;
+  liked?: boolean;
+  createdDate: string;
+  replies: StyleCommentResponseDto[];
+}
+
+// 댓글 목록 응답 DTO
+export interface StyleCommentsResponseDto {
+  comments: StyleCommentResponseDto[];
+  totalComments: number;
+  userProfileImageUrl: string | null;
+}
+
+// 댓글 추가 요청 DTO
+export interface AddCommentRequestDto {
+  styleId: number;
+  content: string;
+  parentCommentId?: number;
+}
+
+// 댓글 수정 요청 DTO
+export interface UpdateCommentRequestDto {
+  updatedContent: string;
+}

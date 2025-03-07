@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import styled from "styled-components";
+// StyleComment.tsx
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
 import { Heart, X } from "lucide-react";
 import { formatRelativeTime } from "src/global/utils/timeUtils";
 import { AuthContext } from "src/global/context/AuthContext";
 import LoginModal from "../../common/components/LoginModal";
-
-// 타입 정의
-interface Comment {
-  id: number;
-  profileId: number;
-  profileName: string;
-  profileImageUrl: string;
-  content: string;
-  likeCount: number;
-  liked?: boolean;
-  createdDate: string;
-  replies?: Comment[];
-}
+import styleCommentService from "../services/StyleCommentService";
+import styleCommentLikeService from "../services/StyleCommentLikeService";
+import {
+  StyleCommentResponseDto,
+  AddCommentRequestDto,
+} from "../types/styleTypes";
+import styles from "./StyleComment.module.css";
 
 interface StyleCommentProps {
   isOpen: boolean;
@@ -28,209 +28,6 @@ interface StyleCommentProps {
   authorProfileImage: string;
 }
 
-// 스타일 컴포넌트 정의
-const ModalOverlay = styled.div<{ isOpen: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-`;
-
-const CommentModal = styled.div<{ isOpen: boolean }>`
-  position: fixed;
-  top: 0;
-  right: ${({ isOpen }) => (isOpen ? "0" : "-400px")};
-  width: 400px;
-  height: 100%;
-  background-color: white;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-  transition: right 0.3s ease-in-out;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-`;
-
-const Title = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-`;
-
-const CommentTop = styled.div`
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-`;
-
-const AuthorComment = styled.div`
-  display: flex;
-  gap: 12px;
-`;
-
-const ProfileImage = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #f0f0f0;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const CommentContent = styled.div`
-  flex: 1;
-`;
-
-const ProfileName = styled.div`
-  font-weight: 600;
-  margin-bottom: 4px;
-`;
-
-const Content = styled.div`
-  font-size: 14px;
-  margin-bottom: 8px;
-`;
-
-const TimeStamp = styled.div`
-  font-size: 12px;
-  color: #8e8e8e;
-`;
-
-const CommentsContainer = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-`;
-
-const CommentItem = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-`;
-
-const CommentInfo = styled.div`
-  flex: 1;
-`;
-
-const CommentActions = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-top: 4px;
-  font-size: 12px;
-  color: #8e8e8e;
-`;
-
-const ActionButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  color: #8e8e8e;
-  font-size: 12px;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const LikeButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-`;
-
-const ReplySection = styled.div`
-  margin-left: 52px;
-  margin-top: 8px;
-`;
-
-const ReplyItem = styled(CommentItem)`
-  margin-bottom: 8px;
-`;
-
-const InputSection = styled.div`
-  padding: 16px;
-  border-top: 1px solid #f0f0f0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const InputBox = styled.div`
-  flex: 1;
-  border: 1px solid #f0f0f0;
-  border-radius: 20px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-`;
-
-const CommentInput = styled.input`
-  width: 100%;
-  border: none;
-  outline: none;
-  font-size: 14px;
-
-  &::placeholder {
-    color: #8e8e8e;
-  }
-`;
-
-const PostButton = styled.button<{ active: boolean }>`
-  background: none;
-  border: none;
-  color: ${({ active }) => (active ? "#007bff" : "#8e8e8e")};
-  font-weight: ${({ active }) => (active ? "600" : "400")};
-  cursor: ${({ active }) => (active ? "pointer" : "default")};
-  padding: 0;
-`;
-
-const QuickReplyContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 0 0 8px 0;
-  margin-bottom: 8px;
-`;
-
-const QuickReplyButton = styled.button`
-  background: #f0f0f0;
-  border: none;
-  border-radius: 16px;
-  padding: 6px 12px;
-  white-space: nowrap;
-  font-size: 12px;
-  cursor: pointer;
-
-  &:hover {
-    background: #e0e0e0;
-  }
-`;
-
 const StyleComment: React.FC<StyleCommentProps> = ({
   isOpen,
   onClose,
@@ -240,13 +37,22 @@ const StyleComment: React.FC<StyleCommentProps> = ({
   authorProfileName,
   authorProfileImage,
 }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<StyleCommentResponseDto[]>([]);
   const [commentText, setCommentText] = useState("");
+  const [replyTo, setReplyTo] = useState<{ id: number; name: string } | null>(
+    null
+  );
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalComments, setTotalComments] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
   const { isLoggedIn } = useContext(AuthContext);
   const commentInputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const commentsContainerRef = useRef<HTMLDivElement>(null);
 
   // 예시 퀵 리플라이 텍스트
   const quickReplies = [
@@ -256,14 +62,17 @@ const StyleComment: React.FC<StyleCommentProps> = ({
     "평소 사이즈가 궁금해요 👀",
   ];
 
+  // 댓글 데이터 초기 로드
   useEffect(() => {
     if (isOpen) {
-      // 댓글 데이터 로드
-      fetchComments();
+      setPage(0);
+      setComments([]);
+      setHasMore(true);
+      fetchComments(0, true);
     }
   }, [isOpen, styleId]);
 
-  // 클릭 이벤트 처리 - 모달 외부 클릭 시 닫기
+  // 모달 외부 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -283,139 +92,173 @@ const StyleComment: React.FC<StyleCommentProps> = ({
     };
   }, [isOpen, onClose]);
 
-  // 댓글 데이터 가져오기 (API 호출 예시)
-  const fetchComments = async () => {
-    setIsLoading(true);
-    try {
-      // API 호출로 교체
-      // const response = await commentService.getComments(styleId);
-      // setComments(response.data);
+  // 무한 스크롤 구현
+  const handleScroll = useCallback(() => {
+    if (!commentsContainerRef.current || isLoadingMore || !hasMore) return;
 
-      // 예시 데이터
-      setTimeout(() => {
-        setComments([
-          {
-            id: 1,
-            profileId: 101,
-            profileName: "user1",
-            profileImageUrl: "/images/account_img_default.png",
-            content: "멋진 스타일이네요!",
-            likeCount: 5,
-            liked: false,
-            createdDate: "2024-02-25T12:30:00",
-            replies: [
-              {
-                id: 3,
-                profileId: 103,
-                profileName: authorProfileName,
-                profileImageUrl: authorProfileImage,
-                content: "감사합니다 🙏",
-                likeCount: 2,
-                liked: false,
-                createdDate: "2024-02-25T13:10:00",
-              },
-            ],
-          },
-          {
-            id: 2,
-            profileId: 102,
-            profileName: "user2",
-            profileImageUrl: "/images/account_img_default.png",
-            content: "상품 정보 알 수 있을까요?",
-            likeCount: 3,
-            liked: true,
-            createdDate: "2024-02-24T18:45:00",
-          },
-        ]);
-        setIsLoading(false);
-      }, 500);
+    const { scrollTop, scrollHeight, clientHeight } =
+      commentsContainerRef.current;
+    if (scrollTop + clientHeight >= scrollHeight - 100) {
+      // 스크롤이 거의 바닥에 도달하면 다음 페이지 로드
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchComments(nextPage, false);
+    }
+  }, [isLoadingMore, hasMore, page]);
+
+  // 스크롤 이벤트 리스너 등록
+  useEffect(() => {
+    const currentRef = commentsContainerRef.current;
+    if (currentRef) {
+      currentRef.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [handleScroll]);
+
+  // 댓글 데이터 가져오기
+  const fetchComments = async (pageNumber: number, isInitialLoad: boolean) => {
+    if (isInitialLoad) {
+      setIsLoading(true);
+    } else {
+      setIsLoadingMore(true);
+    }
+
+    try {
+      const response = await styleCommentService.getComments(
+        styleId,
+        pageNumber,
+        10
+      );
+
+      setTotalComments(response.totalComments);
+
+      // 사용자 프로필 이미지 설정
+      if (response.userProfileImageUrl) {
+        setUserProfileImage(response.userProfileImageUrl);
+      }
+
+      if (isInitialLoad) {
+        setComments(response.comments);
+      } else {
+        setComments((prev) => [...prev, ...response.comments]);
+      }
+
+      // 더 불러올 댓글이 있는지 확인
+      setHasMore(response.comments.length === 10);
     } catch (error) {
       console.error("Failed to fetch comments:", error);
-      setIsLoading(false);
+    } finally {
+      if (isInitialLoad) {
+        setIsLoading(false);
+      } else {
+        setIsLoadingMore(false);
+      }
     }
   };
 
   // 댓글 작성 함수
-  const handlePostComment = () => {
+  const handlePostComment = async () => {
     if (!commentText.trim() || !isLoggedIn) return;
 
-    // API 호출로 교체
-    // commentService.postComment(styleId, commentText)
-    //   .then((response) => {
-    //     setComments([...comments, response.data]);
-    //     setCommentText('');
-    //   })
-    //   .catch((error) => {
-    //     console.error('Failed to post comment:', error);
-    //   });
+    try {
+      const requestDto: AddCommentRequestDto = {
+        styleId,
+        content: commentText,
+        parentCommentId: replyTo?.id,
+      };
 
-    // 예시 구현
-    const newComment = {
-      id: Date.now(),
-      profileId: 999, // 현재 사용자 ID
-      profileName: "현재 사용자",
-      profileImageUrl: "/images/account_img_default.png",
-      content: commentText,
-      likeCount: 0,
-      liked: false,
-      createdDate: new Date().toISOString(),
-    };
+      await styleCommentService.addComment(requestDto);
 
-    setComments([...comments, newComment]);
-    setCommentText("");
+      // 댓글 추가 후 목록 새로고침
+      setPage(0);
+      fetchComments(0, true);
+
+      // 입력 필드 및 답글 상태 초기화
+      setCommentText("");
+      setReplyTo(null);
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+    }
   };
 
-  // 댓글 좋아요 토글
-  const handleToggleLike = (commentId: number) => {
+  // 답글 작성 모드 설정
+  const handleReplyClick = (commentId: number, userName: string) => {
     if (!isLoggedIn) {
       setLoginModalOpen(true);
       return;
     }
 
-    // API 호출로 교체
-    // commentService.toggleLike(commentId)
-    //   .then(() => {
-    //     // 상태 업데이트
-    //   })
-    //   .catch((error) => {
-    //     console.error('Failed to toggle like:', error);
-    //   });
+    setReplyTo({ id: commentId, name: userName });
+    setCommentText(`@${userName} `);
+    commentInputRef.current?.focus();
+  };
 
-    // 예시 구현
-    setComments(
-      comments.map((comment) => {
-        if (comment.id === commentId) {
-          const newLiked = !comment.liked;
-          return {
-            ...comment,
-            liked: newLiked,
-            likeCount: newLiked ? comment.likeCount + 1 : comment.likeCount - 1,
-          };
-        }
+  // 답글 모드 취소
+  const cancelReplyMode = () => {
+    setReplyTo(null);
+    setCommentText("");
+  };
 
-        // 중첩된 댓글도 확인
-        if (comment.replies) {
-          return {
-            ...comment,
-            replies: comment.replies.map((reply) => {
-              if (reply.id === commentId) {
-                const newLiked = !reply.liked;
-                return {
-                  ...reply,
-                  liked: newLiked,
-                  likeCount: newLiked
-                    ? reply.likeCount + 1
-                    : reply.likeCount - 1,
-                };
-              }
-              return reply;
-            }),
-          };
-        }
+  // 댓글 좋아요 토글
+  const handleToggleLike = async (commentId: number) => {
+    if (!isLoggedIn) {
+      setLoginModalOpen(true);
+      return;
+    }
 
-        return comment;
-      })
-    );
+    try {
+      const success = await styleCommentLikeService.toggleCommentLike(
+        commentId
+      );
+
+      if (success) {
+        // 좋아요 상태 로컬에서 업데이트
+        setComments((prevComments) =>
+          prevComments.map((comment) => {
+            // 루트 댓글인 경우
+            if (comment.id === commentId) {
+              const newLiked = !comment.liked;
+              return {
+                ...comment,
+                liked: newLiked,
+                likeCount: newLiked
+                  ? comment.likeCount + 1
+                  : comment.likeCount - 1,
+              };
+            }
+
+            // 대댓글인 경우
+            if (comment.replies) {
+              return {
+                ...comment,
+                replies: comment.replies.map((reply) => {
+                  if (reply.id === commentId) {
+                    const newLiked = !reply.liked;
+                    return {
+                      ...reply,
+                      liked: newLiked,
+                      likeCount: newLiked
+                        ? reply.likeCount + 1
+                        : reply.likeCount - 1,
+                    };
+                  }
+                  return reply;
+                }),
+              };
+            }
+
+            return comment;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+    }
   };
 
   // 퀵 리플라이 선택
@@ -438,157 +281,238 @@ const StyleComment: React.FC<StyleCommentProps> = ({
 
   return (
     <>
-      <ModalOverlay isOpen={isOpen} onClick={onClose} />
-      <CommentModal isOpen={isOpen} ref={modalRef}>
-        <ModalHeader>
-          <Title>댓글</Title>
-          <CloseButton onClick={onClose}>
+      <div
+        className={`${styles.modalOverlay} ${
+          isOpen ? "" : styles.modalOverlayHidden
+        }`}
+        onClick={onClose}
+      />
+      <div
+        className={`${styles.commentModal} ${
+          isOpen ? styles.commentModalOpen : ""
+        }`}
+        ref={modalRef}
+      >
+        <div className={styles.modalHeader}>
+          <h2 className={styles.title}>댓글</h2>
+          <button className={styles.closeButton} onClick={onClose}>
             <X size={24} />
-          </CloseButton>
-        </ModalHeader>
+          </button>
+        </div>
 
-        <CommentTop>
-          <AuthorComment>
-            <ProfileImage>
+        <div className={styles.commentTop}>
+          <div className={styles.authorComment}>
+            <div className={styles.profileImage}>
               <img
                 src={authorProfileImage || "/api/placeholder/40/40"}
                 alt="프로필"
               />
-            </ProfileImage>
-            <CommentContent>
-              <ProfileName>{authorProfileName}</ProfileName>
-              <Content>{styleContent}</Content>
-              <TimeStamp>{formatRelativeTime(styleCreatedDate)}</TimeStamp>
-            </CommentContent>
-          </AuthorComment>
-        </CommentTop>
+            </div>
+            <div className={styles.commentContent}>
+              <div className={styles.profileName}>{authorProfileName}</div>
+              <div className={styles.content}>{styleContent}</div>
+              <div className={styles.timeStamp}>
+                {formatRelativeTime(styleCreatedDate)}
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <CommentsContainer>
+        <div className={styles.commentsContainer} ref={commentsContainerRef}>
           {isLoading ? (
             <div style={{ textAlign: "center", padding: "20px" }}>
               로딩 중...
             </div>
+          ) : comments.length === 0 ? (
+            <div className={styles.emptyComments}>
+              <div className={styles.emptyCommentsIcon}>💬</div>
+              <div className={styles.emptyCommentsText}>
+                아직 댓글이 없습니다
+              </div>
+              <div className={styles.emptyCommentsSubText}>
+                첫 댓글을 남겨보세요!
+              </div>
+            </div>
           ) : (
-            comments.map((comment) => (
-              <React.Fragment key={comment.id}>
-                <CommentItem>
-                  <ProfileImage>
-                    <img
-                      src={comment.profileImageUrl || "/api/placeholder/40/40"}
-                      alt="프로필"
-                    />
-                  </ProfileImage>
-                  <CommentInfo>
-                    <ProfileName>{comment.profileName}</ProfileName>
-                    <Content>{comment.content}</Content>
-                    <CommentActions>
-                      <TimeStamp>
-                        {formatRelativeTime(comment.createdDate)}
-                      </TimeStamp>
-                      <span>•</span>
-                      <ActionButton>좋아요 {comment.likeCount}개</ActionButton>
-                      <ActionButton>답글쓰기</ActionButton>
-                    </CommentActions>
-                  </CommentInfo>
-                  <LikeButton onClick={() => handleToggleLike(comment.id)}>
-                    <Heart
-                      size={16}
-                      fill={comment.liked ? "#ff3040" : "none"}
-                      color={comment.liked ? "#ff3040" : "currentColor"}
-                    />
-                  </LikeButton>
-                </CommentItem>
+            <>
+              {comments.map((comment) => (
+                <React.Fragment key={comment.id}>
+                  <div className={styles.commentItem}>
+                    <div className={styles.profileImage}>
+                      <img
+                        src={
+                          comment.profileImageUrl || "/api/placeholder/40/40"
+                        }
+                        alt="프로필"
+                      />
+                    </div>
+                    <div className={styles.commentInfo}>
+                      <div className={styles.profileName}>
+                        {comment.profileName}
+                      </div>
+                      <div className={styles.content}>{comment.content}</div>
+                      <div className={styles.commentActions}>
+                        <span className={styles.timeStamp}>
+                          {formatRelativeTime(comment.createdDate)}
+                        </span>
+                        <span>•</span>
+                        <button className={styles.actionButton}>
+                          좋아요 {comment.likeCount}개
+                        </button>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() =>
+                            handleReplyClick(comment.id, comment.profileName)
+                          }
+                        >
+                          답글쓰기
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      className={styles.likeButton}
+                      onClick={() => handleToggleLike(comment.id)}
+                    >
+                      <Heart
+                        size={16}
+                        fill={comment.liked ? "#ff3040" : "none"}
+                        color={comment.liked ? "#ff3040" : "currentColor"}
+                      />
+                    </button>
+                  </div>
 
-                {comment.replies && comment.replies.length > 0 && (
-                  <ReplySection>
-                    {comment.replies.map((reply) => (
-                      <ReplyItem key={reply.id}>
-                        <ProfileImage>
-                          <img
-                            src={
-                              reply.profileImageUrl || "/api/placeholder/40/40"
-                            }
-                            alt="프로필"
-                          />
-                        </ProfileImage>
-                        <CommentInfo>
-                          <ProfileName>{reply.profileName}</ProfileName>
-                          <Content>
-                            <span
-                              style={{ color: "#007bff", marginRight: "4px" }}
-                            >
-                              @{comment.profileName}
-                            </span>
-                            {reply.content}
-                          </Content>
-                          <CommentActions>
-                            <TimeStamp>
-                              {formatRelativeTime(reply.createdDate)}
-                            </TimeStamp>
-                            <span>•</span>
-                            <ActionButton>
-                              좋아요 {reply.likeCount}개
-                            </ActionButton>
-                            <ActionButton>답글쓰기</ActionButton>
-                          </CommentActions>
-                        </CommentInfo>
-                        <LikeButton onClick={() => handleToggleLike(reply.id)}>
-                          <Heart
-                            size={16}
-                            fill={reply.liked ? "#ff3040" : "none"}
-                            color={reply.liked ? "#ff3040" : "currentColor"}
-                          />
-                        </LikeButton>
-                      </ReplyItem>
-                    ))}
-                  </ReplySection>
-                )}
-              </React.Fragment>
-            ))
+                  {comment.replies && comment.replies.length > 0 && (
+                    <div className={styles.replySection}>
+                      {comment.replies.map((reply) => (
+                        <div className={styles.replyItem} key={reply.id}>
+                          <div className={styles.profileImage}>
+                            <img
+                              src={
+                                reply.profileImageUrl ||
+                                "/api/placeholder/40/40"
+                              }
+                              alt="프로필"
+                            />
+                          </div>
+                          <div className={styles.commentInfo}>
+                            <div className={styles.profileName}>
+                              {reply.profileName}
+                            </div>
+                            <div className={styles.content}>
+                              <span className={styles.mentionText}>
+                                @{comment.profileName}
+                              </span>
+                              {reply.content.replace(
+                                `@${comment.profileName}`,
+                                ""
+                              )}
+                            </div>
+                            <div className={styles.commentActions}>
+                              <span className={styles.timeStamp}>
+                                {formatRelativeTime(reply.createdDate)}
+                              </span>
+                              <span>•</span>
+                              <button className={styles.actionButton}>
+                                좋아요 {reply.likeCount}개
+                              </button>
+                              <button
+                                className={styles.actionButton}
+                                onClick={() =>
+                                  handleReplyClick(
+                                    comment.id,
+                                    reply.profileName
+                                  )
+                                }
+                              >
+                                답글쓰기
+                              </button>
+                            </div>
+                          </div>
+                          <button
+                            className={styles.likeButton}
+                            onClick={() => handleToggleLike(reply.id)}
+                          >
+                            <Heart
+                              size={16}
+                              fill={reply.liked ? "#ff3040" : "none"}
+                              color={reply.liked ? "#ff3040" : "currentColor"}
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+
+              {isLoadingMore && (
+                <div className={styles.loadingMore}>댓글 불러오는 중...</div>
+              )}
+            </>
           )}
-        </CommentsContainer>
+        </div>
 
-        <InputSection>
-          <ProfileImage>
+        <div className={styles.inputSection}>
+          {replyTo && (
+            <div className={styles.replyIndicator}>
+              <span>
+                <b>{replyTo.name}</b>님에게 답글 작성 중
+              </span>
+              <button
+                className={styles.cancelReplyButton}
+                onClick={cancelReplyMode}
+              >
+                취소
+              </button>
+            </div>
+          )}
+
+          <div className={styles.profileImage}>
             <img
               src={
-                isLoggedIn
-                  ? "/images/account_img_default.png"
+                isLoggedIn && userProfileImage
+                  ? userProfileImage
                   : "/api/placeholder/40/40"
               }
               alt="프로필"
             />
-          </ProfileImage>
+          </div>
           <div style={{ flex: 1 }}>
-            <QuickReplyContainer>
+            <div className={styles.quickReplyContainer}>
               {quickReplies.map((text, index) => (
-                <QuickReplyButton
+                <button
                   key={index}
+                  className={styles.quickReplyButton}
                   onClick={() => handleQuickReplyClick(text)}
                 >
                   {text}
-                </QuickReplyButton>
+                </button>
               ))}
-            </QuickReplyContainer>
-            <InputBox>
-              <CommentInput
+            </div>
+            <div className={styles.inputBox}>
+              <input
+                className={styles.commentInput}
                 ref={commentInputRef}
                 placeholder="댓글을 남기세요..."
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 onFocus={handleCommentInputFocus}
               />
-              <PostButton
-                active={!!commentText.trim() && isLoggedIn}
+              <button
+                className={`${styles.postButton} ${
+                  commentText.trim() && isLoggedIn
+                    ? styles.postButtonActive
+                    : styles.postButtonInactive
+                }`}
                 onClick={handlePostComment}
                 disabled={!commentText.trim() || !isLoggedIn}
               >
                 등록
-              </PostButton>
-            </InputBox>
+              </button>
+            </div>
           </div>
-        </InputSection>
-      </CommentModal>
+        </div>
+      </div>
 
       <LoginModal
         isOpen={isLoginModalOpen}

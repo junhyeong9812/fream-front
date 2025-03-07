@@ -353,7 +353,7 @@ const StyleDetailPage = () => {
               />
               <span>{styleDetail.likeCount}</span>
             </IconButton>
-            <IconButton>
+            <IconButton onClick={toggleCommentModal}>
               <MessageCircle size={24} />
               <span>{styleDetail.commentCount}</span>
             </IconButton>
@@ -429,7 +429,7 @@ const StyleDetailPage = () => {
         onClose={() => setLoginModalOpen(false)}
         message="좋아요/북마크 기능은 로그인 후 이용 가능합니다."
       />
-      {/* 댓글 모달 추가 */}
+      {/* 댓글 모달 */}
       {styleDetail && (
         <StyleComment
           isOpen={isCommentModalOpen}
