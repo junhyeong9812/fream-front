@@ -18,6 +18,7 @@ import { formatRelativeTime } from "src/global/utils/timeUtils";
 import { AuthContext } from "src/global/context/AuthContext";
 import LoginModal from "../../common/components/LoginModal";
 import { useNavigate } from "react-router-dom";
+import StyleComment from "../components/StyleComment";
 
 const Wrapper = styled.div`
   display: flex;
@@ -198,6 +199,7 @@ const StyleDetailPage = () => {
   const [styleDetail, setStyleDetail] = useState<StyleDetailResponseDto | null>(
     null
   );
+  const [isCommentModalOpen, setCommentModalOpen] = useState(false);
   const [otherStyles, setOtherStyles] = useState<ProfileStyleResponseDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
@@ -309,6 +311,10 @@ const StyleDetailPage = () => {
   // 제품 카드 클릭 핸들러
   const handleProductClick = (productId: number, colorName: string) => {
     navigate(`/products/${productId}?color=${colorName}`);
+  };
+  // 댓글 모달 토글 함수
+  const toggleCommentModal = () => {
+    setCommentModalOpen(!isCommentModalOpen);
   };
 
   return (
@@ -423,6 +429,18 @@ const StyleDetailPage = () => {
         onClose={() => setLoginModalOpen(false)}
         message="좋아요/북마크 기능은 로그인 후 이용 가능합니다."
       />
+      {/* 댓글 모달 추가 */}
+      {styleDetail && (
+        <StyleComment
+          isOpen={isCommentModalOpen}
+          onClose={() => setCommentModalOpen(false)}
+          styleId={styleDetail.id}
+          styleContent={styleDetail.content}
+          styleCreatedDate={styleDetail.createdDate}
+          authorProfileName={styleDetail.profileName}
+          authorProfileImage={styleDetail.profileImageUrl}
+        />
+      )}
     </Wrapper>
   );
 };
