@@ -180,15 +180,15 @@
   cursor: default;
 }
 
-.quickReplyContainer {
+/* .quickReplyContainer {
   display: flex;
   gap: 8px;
   overflow-x: auto;
   padding: 0 0 8px 0;
   margin-bottom: 8px;
-}
+} */
 
-/* .quickReplyButton {
+.quickReplyButton {
   background: #f0f0f0;
   border: none;
   border-radius: 16px;
@@ -196,7 +196,7 @@
   white-space: nowrap;
   font-size: 12px;
   cursor: pointer;
-} */
+}
 .quickReplyContainer {
   display: flex;
   gap: 8px;
