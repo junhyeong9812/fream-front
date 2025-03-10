@@ -60,6 +60,9 @@ export const styleService = {
   // 스타일 상세 조회
   async getStyleDetail(styleId: number) {
     try {
+      // 조회 요청과 함께 뷰 카운트 증가 호출
+      await this.incrementViewCount(styleId);
+
       const response = await apiClient.get<StyleDetailResponseDto>(
         `/styles/queries/${styleId}`
       );
@@ -81,6 +84,16 @@ export const styleService = {
     } catch (error) {
       console.error("스타일 상세 조회 실패:", error);
       throw error;
+    }
+  },
+
+  // 뷰 카운트 증가
+  async incrementViewCount(styleId: number) {
+    try {
+      await apiClient.post(`/styles/commands/${styleId}/view`);
+    } catch (error) {
+      console.error("뷰 카운트 증가 실패:", error);
+      // 에러가 발생해도 상세 조회는 계속 진행하기 위해 throw하지 않음
     }
   },
 
