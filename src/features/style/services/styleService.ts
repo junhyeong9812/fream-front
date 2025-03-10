@@ -60,9 +60,6 @@ export const styleService = {
   // 스타일 상세 조회
   async getStyleDetail(styleId: number) {
     try {
-      // 조회 요청과 함께 뷰 카운트 증가 호출
-      await this.incrementViewCount(styleId);
-
       const response = await apiClient.get<StyleDetailResponseDto>(
         `/styles/queries/${styleId}`
       );
