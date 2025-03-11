@@ -208,7 +208,7 @@
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
-  max-width: 100%; /* 컨테이너 넓이를 넘지 않도록 */
+  max-width: 100%; 
 }
 
 .commentInfo {
@@ -299,4 +299,3 @@
   color: #007bff;
   margin-right: 4px;
 }
-g
