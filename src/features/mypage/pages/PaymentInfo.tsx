@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import AddCardModal from "../components/AddCardModal";
+import { PaymentInfoDto } from "../types/paymentInfoTypes";
+import { getPaymentInfos, deletePaymentInfo } from "../services/paymentService";
 
 const PageContainer = styled.div`
   padding: 0 20px;
@@ -156,82 +158,115 @@ const DeleteButton = styled.a`
   }
 `;
 
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 40px 0;
+  color: #888;
+  font-size: 16px;
+`;
+
+const ErrorMessage = styled.div`
+  text-align: center;
+  padding: 40px 0;
+  color: #ef6253;
+  font-size: 16px;
+`;
+
+const EmptyCardList = styled.div`
+  text-align: center;
+  padding: 40px 0;
+  color: #888;
+  font-size: 16px;
+`;
+
 const PaymentInfo: React.FC = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
-  const [cardList, setCardList] = useState([
-    {
-      cardNumber: "1234-5678-****-****", // 마스킹된 카드 번호
-      cardName: "Visa", // 카드 이름 (예: Visa, MasterCard)
-      expiryDate: "12/25", // 유효기간
-      birthDate: "2000/01/01", // 생년월일
-      password: "12", // 비밀번호 앞 2자리
-      isDefault: true, // 기본 결제 카드 여부
-      originalCardNumber: "1234-5678-1234-5678", // 원본 카드 번호
-    },
-  ]);
-  const getCardName = (cardNumber: string): string => {
-    const prefix = cardNumber.slice(0, 4);
-    switch (prefix) {
-      case "1234":
-        return "Visa";
-      case "5678":
-        return "MasterCard";
-      case "4321":
-        return "Amex";
-      default:
-        return "Unknown";
+  const [cards, setCards] = useState<PaymentInfoDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 결제 정보 목록 불러오기
+  const fetchCards = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getPaymentInfos();
+      setCards(data);
+    } catch (err) {
+      setError("결제 정보를 불러오는 데 실패했습니다.");
+      console.error("결제 정보 불러오기 실패:", err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchCards();
+  }, []);
 
   const openModal = () => setIsModalOpened(true);
+
   // 모달 닫기 및 데이터 처리
-  const closeModal = (card?: {
-    cardNumber: string;
-    password: string;
-    expiryDate: string;
-    birthDate: string;
-  }) => {
+  const closeModal = () => {
     setIsModalOpened(false);
+    // 카드 추가 후 목록 다시 불러오기
+    fetchCards();
+  };
 
-    if (card) {
-      const cardName = getCardName(card.cardNumber); // 카드사 결정
-      const maskedCardNumber = card.cardNumber.replace(
-        /(\d{4})-(\d{4})-(\d{4})-(\d{4})/,
-        "$1-$2-****-****"
-      );
-
-      setCardList((prev) => [
-        ...prev,
-        {
-          cardNumber: maskedCardNumber, // 마스킹된 카드 번호
-          cardName, // 카드 이름
-          expiryDate: card.expiryDate,
-          birthDate: card.birthDate,
-          password: card.password,
-          isDefault: prev.length === 0, // 첫 번째 카드는 기본 결제 카드로 설정
-          originalCardNumber: card.cardNumber, // 원본 카드 번호 저장
-        },
-      ]);
+  // 카드 삭제 처리
+  const handleDeleteCard = async (id: number) => {
+    if (window.confirm("정말로 이 카드를 삭제하시겠습니까?")) {
+      try {
+        await deletePaymentInfo(id);
+        // 삭제 후 목록 다시 불러오기
+        fetchCards();
+      } catch (err) {
+        alert("카드 삭제에 실패했습니다.");
+        console.error("카드 삭제 실패:", err);
+      }
     }
   };
-  // 새로운 카드 추가
 
-  const CardNumberWrapper = styled.div`
-    display: flex;
-    flex-direction: column; /* 세로 방향으로 배치 */
-    align-items: flex-start; /* 왼쪽 정렬 */
-    margin-top: 8px; /* 카드 번호와 기본결제 간격 조정 */
-  `;
+  // 카드 종류 결정 함수
+  const getCardName = (cardNumber: string): string => {
+    const firstDigit = cardNumber.charAt(0);
 
-  const removeCard = (index: number) => {
-    setCardList((prev) => prev.filter((_, i) => i !== index));
+    switch (firstDigit) {
+      case "3":
+        return "AMEX";
+      case "4":
+        return "VISA";
+      case "5":
+        return "MasterCard";
+      case "6":
+        return "Discover";
+      default:
+        return "신용카드";
+    }
   };
+
+  // 마스킹된 카드 번호 반환
+  const formatCardNumber = (cardNumber: string): string => {
+    // 이미 마스킹 처리된 번호일 경우
+    if (cardNumber.includes("*")) {
+      return cardNumber;
+    }
+
+    // 마스킹 처리
+    const parts = cardNumber.split("-");
+    if (parts.length === 4) {
+      return `${parts[0]}-${parts[1]}-****-${parts[3].slice(-3)}*`;
+    }
+
+    return cardNumber;
+  };
+
   return (
     <PageContainer>
       {/* 페이지 헤더 */}
       <PageHeader>
         <TitleContainer>
-          결제 정보
+          <Title>결제 정보</Title>
           <SubTitle>
             수수료(페널티, 착불배송비 등)가 정산되지 않을 경우, 별도 고지 없이
             해당 금액을 결제 시도할 수 있습니다.
@@ -247,13 +282,22 @@ const PaymentInfo: React.FC = () => {
       {isModalOpened && (
         <AddCardModal isOpened={isModalOpened} onClose={closeModal} />
       )}
+
       <MyList>
-        {cardList.map((card, index) => (
-          <CardItem key={index}>
-            <InfoBind>
-              <CardInfo>
-                <CardName>{card.cardName}</CardName>
-                <CardNumberWrapper>
+        {loading ? (
+          <LoadingMessage>결제 정보를 불러오는 중입니다...</LoadingMessage>
+        ) : error ? (
+          <ErrorMessage>{error}</ErrorMessage>
+        ) : cards.length === 0 ? (
+          <EmptyCardList>
+            등록된 결제 정보가 없습니다. 새 카드를 추가해주세요.
+          </EmptyCardList>
+        ) : (
+          cards.map((card, index) => (
+            <CardItem key={card.id}>
+              <InfoBind>
+                <CardInfo>
+                  <CardName>{getCardName(card.cardNumber)}</CardName>
                   <CardNumber>
                     ••••
                     <Hyphen />
@@ -261,19 +305,19 @@ const PaymentInfo: React.FC = () => {
                     <Hyphen />
                     ••••
                     <Hyphen />
-                    <span>{card.originalCardNumber.slice(15, 18)}</span>•
+                    <span>{card.cardNumber.slice(-4, -1)}</span>•
                   </CardNumber>
-                  {card.isDefault && <Mark>기본결제</Mark>}
-                </CardNumberWrapper>
-              </CardInfo>
-            </InfoBind>
-            <ButtonBind>
-              <DeleteButton onClick={() => removeCard(index)}>
-                삭제
-              </DeleteButton>
-            </ButtonBind>
-          </CardItem>
-        ))}
+                  {index === 0 && <Mark>기본결제</Mark>}
+                </CardInfo>
+              </InfoBind>
+              <ButtonBind>
+                <DeleteButton onClick={() => handleDeleteCard(card.id)}>
+                  삭제
+                </DeleteButton>
+              </ButtonBind>
+            </CardItem>
+          ))
+        )}
       </MyList>
     </PageContainer>
   );

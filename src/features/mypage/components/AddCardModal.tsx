@@ -1,15 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { AiOutlineClose } from "react-icons/ai";
+import { createPaymentInfo } from "../services/paymentService";
+import { PaymentInfoCreateDto } from "../types/paymentInfoTypes";
 
 interface AddCardModalProps {
   isOpened: boolean;
-  onClose: (data?: {
-    cardNumber: string;
-    password: string;
-    expiryDate: string;
-    birthDate: string;
-  }) => void; // 매개변수 타입 추가
+  onClose: () => void; // 매개변수 없이 단순히 모달을 닫는 함수로 변경
 }
 
 const Layer = styled.div`
@@ -168,7 +165,6 @@ const KeypadContainer = styled.div`
   width: 100%;
   background-color: #000;
   border-radius: 8px;
-
   z-index: 1020;
 `;
 
@@ -184,7 +180,6 @@ const KeyButton = styled.a`
   align-items: center;
   width: 100%;
   height: 60px;
-
   color: #fff;
   font-size: 24px;
   text-decoration: none;
@@ -207,27 +202,13 @@ const PasswordInput = styled.input<{ hasError: boolean }>`
   border: 1px solid ${({ hasError }) => (hasError ? "#ef6253" : "#ebebeb")};
   border-radius: 10px;
   caret-color: #222;
-  
-  
+
   ::placeholder {
     color: rgba(34, 34, 34, 0.5);
   }
   position: relative;
-
-  &::after {
-    content: "••";
-  position: absolute;
-  top: 50%; /* 부모 요소의 세로 중앙 */
-  right: 12px; /* 오른쪽으로 여유 공간 */
-  transform: translateY(-50%); /* 세로 축 중앙으로 이동 */
-  font-size: 14px;
-  color: rgba(34, 34, 34, 0.5);
-  pointer-events: none; /* 클릭 불가 */
-  box-sizing: border-box;
-  z-index: 1030; /* 다른 요소 위에 렌더링 
-  
-  }
 `;
+
 // 버튼 컨테이너 스타일
 const NextButtonContainer = styled.div`
   display: flex;
@@ -264,6 +245,30 @@ const NextButton = styled.button<{ disabled?: boolean }>`
   }
 `;
 
+// 로딩 인디케이터
+const LoadingContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1060;
+  border-radius: 16px;
+`;
+
+const LoadingText = styled.div`
+  background-color: #222;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+`;
+
 const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
   const [inputs, setInputs] = useState(["", "", "0000", "0000"]);
   const [passwordInput, setPasswordInput] = useState(""); // 비밀번호 입력 상태 추가
@@ -280,11 +285,13 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
   const [keypadNumbers, setKeypadNumbers] = useState<number[]>([]);
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const [keypadVisible, setKeypadVisible] = useState(false); // 키패드 표시 여부
+  const [isSubmitting, setIsSubmitting] = useState(false); // 제출 중 상태
 
   const validateCardNumber = () => {
     const isValid = inputs.every((input) => /^\d{4}$/.test(input)); // 각 필드가 4자리 숫자인지 확인
     setHasError(!isValid);
   };
+
   const handleExpiryDateChange = (value: string) => {
     const sanitizedValue = value.replace(/\D/g, "").slice(0, 4); // 숫자만 허용
     let formattedValue = sanitizedValue;
@@ -385,6 +392,7 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
       }
     }
   };
+
   useEffect(() => {
     if (keypadVisible) {
       generateRandomNumbers(); // 키패드 표시 시 무작위 숫자 생성
@@ -416,6 +424,7 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
       }
     }
   };
+
   useEffect(() => {
     const handleGlobalFocus = (event: FocusEvent) => {
       const activeElement = document.activeElement as HTMLElement;
@@ -467,33 +476,45 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
     setHasError(false);
     setPasswordError(false);
   };
+
   const isFormValid =
     inputs.every((input) => /^\d{4}$/.test(input)) &&
     passwordInput.length === 2 &&
     /^\d{2}\/\d{2}$/.test(expiryDate) &&
     /^\d{4}\/\d{2}\/\d{2}$/.test(birthDate);
 
-  const handleNextButtonClick = () => {
-    const isFormValid =
-      inputs.every((input) => /^\d{4}$/.test(input)) &&
-      passwordInput.length === 2 &&
-      /^\d{2}\/\d{2}$/.test(expiryDate) &&
-      /^\d{4}\/\d{2}\/\d{2}$/.test(birthDate);
-
-    if (isFormValid) {
-      onClose({
-        cardNumber: inputs.join("-"),
-        password: passwordInput,
-        expiryDate,
-        birthDate,
-      });
-    } else {
+  const handleNextButtonClick = async () => {
+    if (!isFormValid) {
       alert("입력값을 확인해주세요.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // API 요청 데이터 준비
+      const cardData: PaymentInfoCreateDto = {
+        cardNumber: inputs.join("-"),
+        cardPassword: passwordInput,
+        expirationDate: expiryDate,
+        birthDate: birthDate,
+      };
+
+      // API 호출
+      await createPaymentInfo(cardData);
+
+      // 성공 시 모달 닫기
+      onClose();
+    } catch (error) {
+      console.error("카드 등록 실패:", error);
+      alert("카드 등록에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleCloseModal = () => {
-    onClose(); // 아무 데이터 없이 호출
+    onClose(); // 모달 닫기
   };
 
   if (!isOpened) return null;
@@ -522,7 +543,7 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
                   onBlur={validateBirthDate} // 입력 후 포커스가 빠질 때 검증
                   onChange={(e) => handleBirthDateChange(e.target.value)}
                   placeholder="YYYY/MM/DD"
-                  style={{ border: "none", outline: "none" }} // 기본 테두리 제거
+                  style={{ border: "none", outline: "none", width: "100%" }} // 기본 테두리 제거
                   ref={(el) => (inputRefs.current[6] = el!)}
                 />
               </LabelContainer>
@@ -545,7 +566,7 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
                   onBlur={validateExpiryDate} // 입력 후 포커스가 빠질 때 검증
                   onChange={(e) => handleExpiryDateChange(e.target.value)}
                   placeholder="MM/YY"
-                  style={{ border: "none", outline: "none" }} // 기본 테두리 제거
+                  style={{ border: "none", outline: "none", width: "100%" }} // 기본 테두리 제거
                   ref={(el) => (inputRefs.current[5] = el!)}
                 />
               </LabelContainer>
@@ -573,13 +594,13 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
                   style={{
                     position: "absolute",
                     top: "46%",
-                    right: "380px",
+                    right: "12px",
                     transform: "translateY(-50%)",
                     fontSize: "14px",
                     color: "rgba(34, 34, 34, 0.5)",
                   }}
                 >
-                  ••
+                  비밀번호 앞 2자리
                 </span>
               </PasswordContainer>
               <FormFeedback isError={passwordError}>
@@ -675,7 +696,7 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
                   >
                     {num}
                   </KeyButton>
-                ))}{" "}
+                ))}
               <KeyButton
                 className="keypad-button"
                 onMouseDown={(e) => e.preventDefault()} // 기본 동작 차단
@@ -688,12 +709,18 @@ const AddCardModal: React.FC<AddCardModalProps> = ({ isOpened, onClose }) => {
         )}
         <NextButtonContainer>
           <NextButton
-            disabled={!isFormValid} // 버튼 활성화 조건
+            disabled={!isFormValid || isSubmitting} // 버튼 활성화 조건
             onClick={handleNextButtonClick} // 버튼 클릭 핸들러
           >
-            다음
+            {isSubmitting ? "처리 중..." : "다음"}
           </NextButton>
         </NextButtonContainer>
+
+        {isSubmitting && (
+          <LoadingContainer>
+            <LoadingText>카드 정보를 검증하는 중입니다...</LoadingText>
+          </LoadingContainer>
+        )}
       </LayerContainer>
     </Layer>
   );
