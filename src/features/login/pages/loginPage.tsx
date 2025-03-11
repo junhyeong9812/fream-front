@@ -134,7 +134,7 @@ const LoginPage: React.FC = () => {
               navigate("/");
             }}
             className="login_form_logo"
-            src={`${process.env.PUBLIC_URL}/img/kream-login-logo.png`}
+            src={`/Fream.png`}
             alt=""
           ></img>
         </div>
