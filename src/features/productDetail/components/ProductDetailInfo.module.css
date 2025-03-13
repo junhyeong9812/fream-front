@@ -149,12 +149,24 @@
   margin-top: 40px;
 }
 
-.chartLoginPrompt {
+/* .chartLoginPrompt {
   position: relative;
   height: 300px;
+} */
+.chartLoginPrompt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7); /* 반투명 흰색 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
-.chartOverlay {
+/* .chartOverlay {
   width: 300px;
   height: 140px;
   border: 1px solid rgba(0, 0, 0, 0.3);
@@ -168,12 +180,36 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+} */
+.chartOverlay {
+  width: 300px;
+  height: 140px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: white;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chartOverlay p {
   font-size: 14px;
   margin: 0;
 }
+/* 
+.chartOverlay button {
+  width: 80px;
+  height: 40px;
+  border-radius: 10px;
+  color: white;
+  background-color: black;
+  border: none;
+  margin-top: 5px;
+  cursor: pointer;
+} */
 
 .chartOverlay button {
   width: 80px;
@@ -184,4 +220,9 @@
   border: none;
   margin-top: 5px;
   cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chartOverlay button:hover {
+  background-color: #333;
 }
