@@ -9,6 +9,8 @@ import {
 import ProductDetailHeader from "../components/ProductdetailHeader";
 import ProductDetailImage from "../components/ProductDetailImage";
 import ProductDetailInfo from "../components/ProductDetailInfo";
+import DetailSize from "../components/DetailSize";
+import RelatedStyles from "../components/RelatedStyles";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -85,11 +87,11 @@ const ProductDetailPage = () => {
         </div>
 
         <div className={styles.detailSecondContainer}>
-          {/* Additional Product Details Component will go here */}
+          <DetailSize />
         </div>
 
         <div className={styles.detailThirdContainer}>
-          {/* Size Information Component will go here */}
+          <RelatedStyles brandName={productDetail.brandName} />
         </div>
 
         <div className={styles.detailFourthContainer}>

@@ -1,0 +1,77 @@
+.relatedStylesContainer {
+  margin: 40px 0;
+  padding: 0 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.stylesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.loadMoreButton {
+  padding: 10px 30px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.loadMoreButton:hover {
+  background-color: #333;
+}
+
+.loading {
+  font-size: 16px;
+  color: #666;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.error {
+  color: #e53e3e;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #e53e3e;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+.noMoreItems {
+  color: #666;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 14px;
+}
+
+.noItems {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .stylesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}

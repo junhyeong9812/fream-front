@@ -1,0 +1,119 @@
+.chartContainer {
+  width: 100%;
+  margin-top: 40px;
+}
+
+.chartTitle {
+  font-size: 19px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.periodFilter {
+  display: flex;
+  background-color: #f6f6f6;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.periodButton {
+  flex: 1;
+  padding: 12px 0;
+  text-align: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.periodButton.active {
+  font-weight: bold;
+  color: #222;
+}
+
+.chartWrapper {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.tabMenu {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 15px 0;
+  text-align: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  border-bottom: 2px solid transparent;
+}
+
+.tabButton.active {
+  font-weight: bold;
+  color: #222;
+  border-bottom: 2px solid #222;
+}
+
+.tradesTable {
+  width: 100%;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 15px 0;
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 15px 0;
+  font-size: 14px;
+  text-align: center;
+  border-top: 1px solid #f4f4f4;
+}
+
+.customTooltip {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.customTooltip p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.highPrice {
+  color: #31b46e;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .periodButton {
+    font-size: 12px;
+    padding: 10px 0;
+  }
+
+  .tableHeader,
+  .tableRow {
+    font-size: 12px;
+  }
+}

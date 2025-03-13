@@ -1,0 +1,47 @@
+.detailSize {
+  margin: 20px 0;
+  font-family: "Arial", sans-serif;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+
+.tab {
+  overflow-x: auto;
+}
+
+.sizeTable {
+  margin-top: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.headerRow {
+  background-color: #fafafa;
+}
+
+.rowHeader {
+  background-color: #fafafa;
+  font-weight: bold;
+}
+
+.sizeTable tr {
+  text-align: center;
+}
+
+.sizeTable th,
+.sizeTable td {
+  text-align: center;
+  padding: 20px;
+}
+
+.disclaimer {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}

@@ -12,6 +12,7 @@ import {
   SizeDetailDto,
 } from "../services/productDetailServices";
 import { AuthContext } from "src/global/context/AuthContext";
+import PriceChart from "./PriceChart";
 
 interface ProductDetailInfoProps {
   productDetail: {
@@ -174,16 +175,23 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
           )}
         </div> */}
         <div className={styles.chartContainer}>
-          <LineChart
-            productId={productDetail.id.toString()}
-            colorName={productDetail.colorName}
-          />
-          {!isLoggedIn && (
+          {isLoggedIn ? (
+            <PriceChart
+              productId={productDetail.id.toString()}
+              colorName={productDetail.colorName}
+            />
+          ) : (
             <div className={styles.chartLoginPrompt}>
+              <PriceChart
+                productId={productDetail.id.toString()}
+                colorName={productDetail.colorName}
+              />
               <div className={styles.chartOverlay}>
-                <p>모든 체결 거래는</p>
-                <p>로그인 후 확인 가능합니다.</p>
-                <button onClick={() => navigate("/login")}>로그인</button>
+                <div className={styles.overlayContent}>
+                  <p>모든 체결 거래는</p>
+                  <p>로그인 후 확인 가능합니다.</p>
+                  <button onClick={() => navigate("/login")}>로그인</button>
+                </div>
               </div>
             </div>
           )}
