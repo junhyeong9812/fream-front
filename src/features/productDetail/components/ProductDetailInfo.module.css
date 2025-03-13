@@ -1,12 +1,11 @@
 .detailInfoForm {
   width: 599px;
-  height: 1800px;
+  min-height: 1800px; /* 높이를 고정하지 않고 최소 높이만 지정 */
 }
 
 .detailInfo {
   margin-left: 40px;
   width: 560px;
-  height: 560px;
 }
 
 .priceContainer {
@@ -146,70 +145,36 @@
 
 .chartContainer {
   position: relative;
-  margin-top: 40px;
+  margin-top: 60px; /* 차트 위 여백 증가 */
+  margin-bottom: 500px; /* 차트 아래 여백 증가 */
+  width: 100%; /* 기본 너비 설정 */
 }
 
-/* .chartLoginPrompt {
-  position: relative;
-  height: 300px;
-} */
 .chartLoginPrompt {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  position: relative;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.7); /* 반투명 흰색 배경 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
 }
 
-/* .chartOverlay {
+.chartOverlay {
   width: 300px;
   height: 140px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   margin: 0 auto;
   margin-top: -250px;
   background-color: white;
-  z-index: 1;
+  z-index: 10;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-} */
-.chartOverlay {
-  width: 300px;
-  height: 140px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  background-color: white;
-  z-index: 11;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chartOverlay p {
   font-size: 14px;
   margin: 0;
 }
-/* 
-.chartOverlay button {
-  width: 80px;
-  height: 40px;
-  border-radius: 10px;
-  color: white;
-  background-color: black;
-  border: none;
-  margin-top: 5px;
-  cursor: pointer;
-} */
 
 .chartOverlay button {
   width: 80px;
@@ -220,9 +185,4 @@
   border: none;
   margin-top: 5px;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.chartOverlay button:hover {
-  background-color: #333;
 }

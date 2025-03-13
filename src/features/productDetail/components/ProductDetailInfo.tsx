@@ -158,22 +158,6 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
           <span>관심상품 ({productDetail.interestCount})</span>
         </button>
 
-        {/* <div className={styles.chartContainer}>
-          {isLoggedIn ? (
-            <LineChart
-              productId={productDetail.id.toString()}
-              colorName={productDetail.colorName}
-            />
-          ) : (
-            <div className={styles.chartLoginPrompt}>
-              <div className={styles.chartOverlay}>
-                <p>모든 체결 거래는</p>
-                <p>로그인 후 확인 가능합니다.</p>
-                <button onClick={() => navigate("/login")}>로그인</button>
-              </div>
-            </div>
-          )}
-        </div> */}
         <div className={styles.chartContainer}>
           {isLoggedIn ? (
             <PriceChart
@@ -187,11 +171,9 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
                 colorName={productDetail.colorName}
               />
               <div className={styles.chartOverlay}>
-                <div className={styles.overlayContent}>
-                  <p>모든 체결 거래는</p>
-                  <p>로그인 후 확인 가능합니다.</p>
-                  <button onClick={() => navigate("/login")}>로그인</button>
-                </div>
+                <p>모든 체결 거래는</p>
+                <p>로그인 후 확인 가능합니다.</p>
+                <button onClick={() => navigate("/login")}>로그인</button>
               </div>
             </div>
           )}

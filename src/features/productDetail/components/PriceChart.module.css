@@ -8,6 +8,7 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .periodFilter {
@@ -16,6 +17,7 @@
   border-radius: 8px;
   margin-bottom: 20px;
   margin-top: 10px;
+  width: 560px; /* 너비 고정 */
 }
 
 .periodButton {
@@ -39,12 +41,15 @@
   margin-bottom: 20px;
   border-bottom: 1px solid #eee;
   padding-bottom: 20px;
+  width: 560px; /* 너비 고정 */
+  height: 300px; /* 높이 고정 */
 }
 
 .tabMenu {
   display: flex;
   border-bottom: 1px solid #eee;
   margin-bottom: 20px;
+  width: 560px; /* 너비 고정 */
 }
 
 .tabButton {
@@ -66,7 +71,7 @@
 }
 
 .tradesTable {
-  width: 100%;
+  width: 560px; /* 너비 고정 */
 }
 
 .tableHeader {
@@ -106,7 +111,23 @@
   font-weight: bold;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #999;
+}
+
+/* 모바일 대응 */
 @media (max-width: 768px) {
+  .periodFilter,
+  .chartWrapper,
+  .tabMenu,
+  .tradesTable {
+    width: 100%;
+  }
+
   .periodButton {
     font-size: 12px;
     padding: 10px 0;
