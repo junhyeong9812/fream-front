@@ -6,30 +6,30 @@
 .title {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* 제목과 그리드 사이 간격 줄임 */
 }
 
 .stylesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 8px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .loadMoreContainer {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin-top: 10px; /* 상단 마진 줄임 */
+  margin-bottom: 20px; /* 하단 마진 줄임 */
 }
 
 .loadMoreButton {
-  padding: 10px 30px;
+  padding: 8px 25px; /* 패딩 약간 줄임 */
   background-color: #000;
   color: #fff;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px; /* 폰트 크기 줄임 */
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -39,39 +39,40 @@
 }
 
 .loading {
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
-  margin: 20px 0;
+  margin: 15px 0;
   text-align: center;
 }
 
 .error {
   color: #e53e3e;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
   border: 1px solid #e53e3e;
   border-radius: 5px;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .noMoreItems {
   color: #666;
   text-align: center;
-  margin: 20px 0;
-  font-size: 14px;
+  margin: 15px 0;
+  font-size: 13px;
 }
 
 .noItems {
-  padding: 40px;
+  padding: 30px;
   text-align: center;
   color: #666;
   border: 1px dashed #ccc;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {
   .stylesGrid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 2열로 */
+    gap: 8px;
   }
 }
