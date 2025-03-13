@@ -54,7 +54,8 @@ const PriceChart: React.FC<PriceChartProps> = ({ productId, colorName }) => {
       let price = 0;
       if (i < 180) {
         // 6개월 전부터 거래 데이터 생성
-        price = Math.floor(Math.random() * (350000 - 280000) + 280000);
+        // 상품 거래가 150원을 기준으로 100-300원 사이의 랜덤 가격 생성
+        price = Math.floor(Math.random() * (300 - 100 + 1)) + 100;
       }
 
       const formattedDate = `${date.getFullYear()}-${String(
@@ -73,9 +74,17 @@ const PriceChart: React.FC<PriceChartProps> = ({ productId, colorName }) => {
     const sizes = ["255", "270", "260", "280", "285"];
     const recentTradesData = sizes.map((size) => ({
       size,
-      price: Math.floor(Math.random() * (335000 - 280000) + 280000),
+      // 최근 거래 내역도 100-300원 사이로 조정
+      price: Math.floor(Math.random() * (300 - 100 + 1)) + 100,
       date: "25/03/13",
     }));
+
+    // 150원을 기준으로 하는 거래 추가
+    recentTradesData[2] = {
+      size: "270",
+      price: 150,
+      date: "25/03/13",
+    };
 
     setRecentTrades(recentTradesData);
   };
@@ -178,7 +187,7 @@ const PriceChart: React.FC<PriceChartProps> = ({ productId, colorName }) => {
             <YAxis
               tickFormatter={formatPrice}
               tick={{ fontSize: 11, fill: "#999" }}
-              domain={[0, "dataMax + 50000"]}
+              domain={[0, 400]} // Y축 범위를 0-400원으로 설정
               orientation="right"
             />
             <Tooltip content={<CustomTooltip />} />
