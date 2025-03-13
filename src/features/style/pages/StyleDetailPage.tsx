@@ -19,6 +19,7 @@ import { AuthContext } from "src/global/context/AuthContext";
 import LoginModal from "../../common/components/LoginModal";
 import { useNavigate } from "react-router-dom";
 import StyleComment from "../components/StyleComment";
+import StyleImageCarousel from "../components/StyleImageCarousel";
 
 const Wrapper = styled.div`
   display: flex;
@@ -336,9 +337,11 @@ const StyleDetailPage = () => {
           </IconButton>
         </ProfileSection>
 
-        <StyleImage>
+        {/* <StyleImage>
           <img src={styleDetail.mediaUrls[0]} alt="스타일 이미지" />
-        </StyleImage>
+        </StyleImage> */}
+        <StyleImageCarousel mediaUrls={styleDetail.mediaUrls} />
+
 
         <IconSection>
           <IconButton>

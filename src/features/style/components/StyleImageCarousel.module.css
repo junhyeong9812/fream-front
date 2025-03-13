@@ -1,0 +1,94 @@
+.styleImageContainer {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.carouselWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.imageSlide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+}
+
+.imageItem {
+  min-width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.imageItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.controlButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.controlButton:hover {
+  opacity: 1;
+}
+
+.controlButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.prevButton {
+  composes: controlButton;
+  left: 10px;
+}
+
+.nextButton {
+  composes: controlButton;
+  right: 10px;
+}
+
+.indicators {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.activeIndicator {
+  composes: indicator;
+  background: white;
+}
