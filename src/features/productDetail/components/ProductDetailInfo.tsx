@@ -159,17 +159,12 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         </button>
 
         <div className={styles.chartContainer}>
-          {isLoggedIn ? (
-            <PriceChart
-              productId={productDetail.id.toString()}
-              colorName={productDetail.colorName}
-            />
-          ) : (
+          <PriceChart
+            productId={productDetail.id.toString()}
+            colorName={productDetail.colorName}
+          />
+          {!isLoggedIn && (
             <div className={styles.chartLoginPrompt}>
-              <PriceChart
-                productId={productDetail.id.toString()}
-                colorName={productDetail.colorName}
-              />
               <div className={styles.chartOverlay}>
                 <p>모든 체결 거래는</p>
                 <p>로그인 후 확인 가능합니다.</p>
