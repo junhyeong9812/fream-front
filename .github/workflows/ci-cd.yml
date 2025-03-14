@@ -38,6 +38,7 @@ jobs:
             --build-arg REACT_APP_IMP_CHANNEL_KEY=${{ secrets.REACT_APP_IMP_CHANNEL_KEY }} \
             --build-arg REACT_APP_NICE_CHANNEL_KEY=${{ secrets.REACT_APP_NICE_CHANNEL_KEY }} \
             --build-arg REACT_APP_PORTONE_CHANNEL_KEY=${{ secrets.REACT_APP_PORTONE_CHANNEL_KEY }} \
+            --build-arg REACT_APP_INICIS_CHANNEL_KEY=${{ secrets.REACT_APP_INICIS_CHANNEL_KEY }} \
             -t ghcr.io/junhyeong9812/fream-front:latest .
 
       # 5) Docker Push

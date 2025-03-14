@@ -18,6 +18,9 @@ const JoinPage: React.FC = () => {
     code: "",
   });
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   useEffect(() => {
     console.log("이메일 : ", joinData.email);
     console.log("비밀번호 : ", joinData.password);
@@ -45,7 +48,7 @@ const JoinPage: React.FC = () => {
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setJoinData((prevData) => ({
       ...prevData, // 기존 값 복사
-      code: e.target.value, // password만 업데이트
+      code: e.target.value, // code만 업데이트
     }));
   };
 
@@ -159,13 +162,14 @@ const JoinPage: React.FC = () => {
       setPasswordWarn(false);
     }
 
-    // 최종 로그인
+    // 최종 가입 버튼 활성화 여부
     if (
       emailSuccess &&
       passwordSuccess &&
       agreementAge &&
       agreementTerms &&
-      agreementPrivacyRequired
+      agreementPrivacyRequired &&
+      selectedSize !== "선택하세요"
     ) {
       setSignupBtn(true);
     } else {
@@ -178,32 +182,42 @@ const JoinPage: React.FC = () => {
     passwordWarn,
     emailSuccess,
     passwordSuccess,
-    signupBtn,
     agreementAge,
     agreementTerms,
     agreementPrivacyRequired,
+    selectedSize,
   ]);
 
   const handleSignupFetch = async () => {
-    const result = await fetchJoinData(
-      joinData.email,
-      joinData.password,
-      joinData.size,
-      joinData.code,
-      agreementAge,
-      agreementTerms,
-      agreementPrivacyRequired,
-      agreementPrivacyOptional,
-      agreementAdvertisement
-    );
-    console.log("회원가입 결과 : ", result);
-    if (result !== "no") {
-      navigate("/login");
-      alert("회원가입이 완료되었습니다.");
-    }
-    if (result === "no") {
-      navigate("/join");
-      alert("회원가입에 실패하였습니다.");
+    if (!signupBtn) return;
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      const result = await fetchJoinData(
+        joinData.email,
+        joinData.password,
+        joinData.size,
+        joinData.code,
+        agreementAge,
+        agreementTerms,
+        agreementPrivacyRequired,
+        agreementPrivacyOptional,
+        agreementAdvertisement
+      );
+
+      if (result.success) {
+        navigate("/login");
+        alert("회원가입이 완료되었습니다.");
+      } else {
+        setErrorMessage(result.message || "회원가입에 실패하였습니다.");
+      }
+    } catch (error) {
+      console.error("회원가입 처리 중 오류 발생:", error);
+      setErrorMessage("회원가입 처리 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -308,9 +322,7 @@ const JoinPage: React.FC = () => {
                 setSize={setSelectedSize}
                 size={selectedSize}
               />
-            ) : (
-              <></>
-            )}
+            ) : null}
           </div>
 
           <div className="signup_form_agreement_input_container">
@@ -338,7 +350,7 @@ const JoinPage: React.FC = () => {
               </div>
             </div>
             {agreementTexts.map((item, index) => (
-              <div className="signup_form_agreement_input_content">
+              <div className="signup_form_agreement_input_content" key={index}>
                 {index === 0 &&
                   (agreementAge ? (
                     <div
@@ -425,7 +437,16 @@ const JoinPage: React.FC = () => {
               </div>
             ))}
           </div>
-          {signupBtn ? (
+
+          {errorMessage && (
+            <div className="signup_form_error_message">{errorMessage}</div>
+          )}
+
+          {isLoading ? (
+            <div className="signup_form_signup_btn_loading_content">
+              본인인증 및 가입 처리 중...
+            </div>
+          ) : signupBtn ? (
             <div
               onClick={handleSignupFetch}
               className="signup_form_signup_btn_content"
