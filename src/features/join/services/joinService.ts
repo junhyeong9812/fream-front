@@ -7,6 +7,7 @@ declare global {
       requestIdentityVerification: (config: {
         identityVerificationId?: string;
         channelKey: string;
+        storeId: string;
         customer?: {
           fullName?: string;
           phoneNumber?: string;
@@ -38,6 +39,7 @@ export const requestIdentityVerification = async () => {
     // KG이니시스 본인인증 요청
     const response = await window.PortOne.requestIdentityVerification({
       channelKey: process.env.REACT_APP_INICIS_CHANNEL_KEY || "imp_channel_key", // 환경변수에서 채널 키 가져오기
+      storeId: process.env.REACT_APP_IMP_STOREID || "your_store_id",
       bypass: {
         inicisUnified: {
           flgFixedUser: "N", // 사용자 직접 입력 모드
