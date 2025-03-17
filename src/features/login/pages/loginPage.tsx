@@ -11,12 +11,15 @@ import { useHeader } from "src/global/context/HeaderContext";
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { headerHeight } = useHeader();
-  const { setIsLoggedIn } = useContext(AuthContext); // ← 로그인 성공 시 Context 갱신
+  const { setIsLoggedIn } = useContext(AuthContext);
 
   const [loginData, setLoginData] = useState<LoginData>({
     email: "user1@example.com",
     password: "password123!",
   });
+
+  // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     // console.log("이메일 : ", loginData.email);
@@ -26,16 +29,16 @@ const LoginPage: React.FC = () => {
   // 이메일 변경 함수
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData((prevData) => ({
-      ...prevData, // 기존 값 복사
-      email: e.target.value, // email만 업데이트
+      ...prevData,
+      email: e.target.value,
     }));
   };
 
   // 비밀번호 변경 함수
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData((prevData) => ({
-      ...prevData, // 기존 값 복사
-      password: e.target.value, // password만 업데이트
+      ...prevData,
+      password: e.target.value,
     }));
   };
 
@@ -98,26 +101,49 @@ const LoginPage: React.FC = () => {
   ]);
 
   const handleLoginFetch = async () => {
-    const result = await fetchLoginData(loginData.email, loginData.password);
-    if (result !== "no") {
-      // 로그인 성공 시
-      const now = Date.now();
-      const expire = now + 30 * 60 * 1000; // 30분 후 (ms)
+    // 로딩 중이거나 버튼이 비활성화된 경우 요청 방지
+    if (isLoading || !loginBtn) return;
 
-      const loginData = {
-        value: "true",
-        expire,
-      };
-      localStorage.setItem("IsLoggedIn", JSON.stringify(loginData));
+    // 로딩 상태 시작
+    setIsLoading(true);
 
-      setIsLoggedIn(true);
-      alert("로그인 성공");
-      navigate("/");
-    } else {
-      alert("로그인 실패");
-      navigate("/login");
+    try {
+      const result = await fetchLoginData(loginData.email, loginData.password);
+
+      if (result !== "no") {
+        // 로그인 성공 시
+        const now = Date.now();
+        const expire = now + 30 * 60 * 1000; // 30분 후 (ms)
+
+        const loginData = {
+          value: "true",
+          expire,
+        };
+        localStorage.setItem("IsLoggedIn", JSON.stringify(loginData));
+
+        setIsLoggedIn(true);
+        alert("로그인 성공");
+        navigate("/");
+      } else {
+        alert("로그인 실패");
+        setIsLoading(false); // 오류 시 로딩 상태 종료
+      }
+    } catch (error) {
+      console.error("로그인 처리 중 오류:", error);
+      alert("로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsLoading(false); // 오류 시 로딩 상태 종료
     }
   };
+
+  // 로딩 버튼 컴포넌트
+  const LoadingButton = () => (
+    <div className="login_form_loading_container">
+      <span className="login_form_loading_text">로그인 중</span>
+      <span className="login_form_loading_dot"></span>
+      <span className="login_form_loading_dot"></span>
+      <span className="login_form_loading_dot"></span>
+    </div>
+  );
 
   return (
     <div
@@ -131,9 +157,11 @@ const LoginPage: React.FC = () => {
         <div className="login_form_logo_content">
           <img
             onClick={() => {
-              navigate("/");
+              if (!isLoading) navigate("/");
             }}
-            className="login_form_logo"
+            className={`login_form_logo ${
+              isLoading ? "login_form_disabled" : ""
+            }`}
             src={`/Fream.png`}
             alt=""
           ></img>
@@ -156,6 +184,7 @@ const LoginPage: React.FC = () => {
             onChange={handleEmailChange}
             type="text"
             placeholder="예) kream@kream.co.kr"
+            disabled={isLoading} // 로딩 중 입력 방지
           ></input>
           <div
             className={`login_form_email_input_bottom ${
@@ -184,6 +213,7 @@ const LoginPage: React.FC = () => {
             onChange={handlePasswordChange}
             type="password"
             maxLength={16}
+            disabled={isLoading} // 로딩 중 입력 방지
           ></input>
           <div
             className={`login_form_password_input_bottom ${
@@ -196,7 +226,10 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        {loginBtn ? (
+        {/* 로딩 상태에 따른 버튼 렌더링 */}
+        {isLoading ? (
+          <LoadingButton />
+        ) : loginBtn ? (
           <div
             onClick={handleLoginFetch}
             className="login_form_login_btn_container"
@@ -206,40 +239,55 @@ const LoginPage: React.FC = () => {
         ) : (
           <div className="login_form_login_none_btn_container">로그인</div>
         )}
+
         <div className="login_form_category_container">
           <div
             onClick={() => {
-              navigate("/join");
+              if (!isLoading) navigate("/join");
             }}
-            className="login_form_category1"
+            className={`login_form_category1 ${
+              isLoading ? "login_form_disabled" : ""
+            }`}
           >
             이메일 가입
           </div>
           <div
             onClick={() => {
-              navigate("/login/find_email");
+              if (!isLoading) navigate("/login/find_email");
             }}
-            className="login_form_category2"
+            className={`login_form_category2 ${
+              isLoading ? "login_form_disabled" : ""
+            }`}
           >
             이메일 찾기
           </div>
           <div
             onClick={() => {
-              navigate("/login/find_password");
+              if (!isLoading) navigate("/login/find_password");
             }}
-            className="login_form_category3"
+            className={`login_form_category3 ${
+              isLoading ? "login_form_disabled" : ""
+            }`}
           >
             비밀번호 찾기
           </div>
         </div>
         <div className="login_form_sns_conatiner">
-          <div className="login_form_sns_content">
+          <div
+            className={`login_form_sns_content ${
+              isLoading ? "login_form_disabled" : ""
+            }`}
+          >
             <div className="login_form_sns_icon_content">
               <SiNaver className="login_form_sns_naver" />
             </div>
             <div className="login_form_sns_text">네이버로 로그인</div>
           </div>
-          <div className="login_form_sns_content">
+          <div
+            className={`login_form_sns_content ${
+              isLoading ? "login_form_disabled" : ""
+            }`}
+          >
             <div className="login_form_sns_icon_content">
               <FaApple className="login_form_sns_apple" />
             </div>

@@ -1,202 +1,271 @@
-.login_form_container{
-    font-family: "Noto Sans KR", sans-serif;
-    width: 1200px;
-    margin: auto;
+.login_form_container {
+  font-family: "Noto Sans KR", sans-serif;
+  width: 1200px;
+  margin: auto;
 }
-.login_form_content{
-    margin: 60px auto 160px auto;
-    width: 400px;
+.login_form_content {
+  margin: 60px auto 160px auto;
+  width: 400px;
 }
 
 /* 로고 */
-.login_form_logo_content{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 50px;
+.login_form_logo_content {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
 }
-.login_form_logo{
-    width: 250px;
-    height: 56px;
-    cursor: pointer;
+.login_form_logo {
+  width: 250px;
+  height: 56px;
+  cursor: pointer;
 }
 
 /* 이메일 */
-.login_form_email_input_container{
-    padding-top: 10px;
-    position: relative;
+.login_form_email_input_container {
+  padding-top: 10px;
+  position: relative;
 }
-.login_form_email_input_title{
-    font-size: 13px;
-    font-weight: 700;
-    color: #222;
+.login_form_email_input_title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
 }
-.login_form_email_input_title_warn{
-    color: #ef6253;
+.login_form_email_input_title_warn {
+  color: #ef6253;
 }
-.login_form_email_input{
-    width: 400px;
-    height: 38px;
-    font-size: 15px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 0px;
-    padding-right: 30px;
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    outline: none;
-    color: #222;
-    box-sizing: border-box;
-    font-family: "Noto Sans KR", sans-serif;    
+.login_form_email_input {
+  width: 400px;
+  height: 38px;
+  font-size: 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 0px;
+  padding-right: 30px;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  outline: none;
+  color: #222;
+  box-sizing: border-box;
+  font-family: "Noto Sans KR", sans-serif;
 }
-.login_form_email_input_none_warn{
-    border-bottom: 1px solid #ebebeb;
+.login_form_email_input_none_warn {
+  border-bottom: 1px solid #ebebeb;
 }
-.login_form_email_input_warn{
-    border-bottom: 1px solid #ef6253;
+.login_form_email_input_warn {
+  border-bottom: 1px solid #ef6253;
 }
-.login_form_email_input_none_warn:focus{
-    border-bottom: 2px solid black;
+.login_form_email_input_none_warn:focus {
+  border-bottom: 2px solid black;
 }
-.login_form_email_input_none_warn:focus::placeholder{
-    opacity: 0;
+.login_form_email_input_none_warn:focus::placeholder {
+  opacity: 0;
 }
-.login_form_email_input_none_warn::placeholder{
-    color: rgba(34, 34, 34, 0.3);
+.login_form_email_input_none_warn::placeholder {
+  color: rgba(34, 34, 34, 0.3);
 }
 
-.login_form_email_input_bottom{
-    height: 14px;
+.login_form_email_input_bottom {
+  height: 14px;
 }
-.login_form_email_input_bottom_warn{
-    font-size: 11px;
-    color: #f15746;
+.login_form_email_input_bottom_warn {
+  font-size: 11px;
+  color: #f15746;
 }
 
 /* 비밀번호 */
-.login_form_password_input_container{
-    padding-top: 10px;
-    padding-bottom: 14px;
-    position: relative;
+.login_form_password_input_container {
+  padding-top: 10px;
+  padding-bottom: 14px;
+  position: relative;
 }
-.login_form_password_input_title{
-    font-size: 13px;
-    font-weight: 700;
-    color: #222;
+.login_form_password_input_title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
 }
-.login_form_password_input_title_warn{
-    color: #ef6253;
+.login_form_password_input_title_warn {
+  color: #ef6253;
 }
-.login_form_password_input{
-    width: 400px;
-    height: 38px;
-    font-size: 15px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 0px;
-    padding-right: 30px;
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    outline: none;
-    color: #222;
-    box-sizing: border-box;
-    letter-spacing: 2px;
-    font-family: "Noto Sans KR", sans-serif; 
+.login_form_password_input {
+  width: 400px;
+  height: 38px;
+  font-size: 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 0px;
+  padding-right: 30px;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  outline: none;
+  color: #222;
+  box-sizing: border-box;
+  letter-spacing: 2px;
+  font-family: "Noto Sans KR", sans-serif;
 }
-.login_form_password_input_none_warn{
-    border-bottom: 1px solid #ebebeb;
+.login_form_password_input_none_warn {
+  border-bottom: 1px solid #ebebeb;
 }
-.login_form_password_input_warn{
-    border-bottom: 1px solid #ef6253;
+.login_form_password_input_warn {
+  border-bottom: 1px solid #ef6253;
 }
-.login_form_password_input_none_warn:focus{
-    border-bottom: 2px solid black;
+.login_form_password_input_none_warn:focus {
+  border-bottom: 2px solid black;
 }
-.login_form_password_input_bottom{
-    height: 14px;
+.login_form_password_input_bottom {
+  height: 14px;
 }
-.login_form_password_input_bottom_warn{
-    font-size: 11px;
-    color: #ef6253;
+.login_form_password_input_bottom_warn {
+  font-size: 11px;
+  color: #ef6253;
 }
 
 /* 로그인 버튼 */
-.login_form_login_none_btn_container{
-    height: 52px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    background-color: rgba(34, 34, 34, 0.2);
-    color: #fff;
-    font-size: 16px;
-    font-weight: 400;
-    border-radius: 10px;
+.login_form_login_none_btn_container {
+  height: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  background-color: rgba(34, 34, 34, 0.2);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 10px;
 }
-.login_form_login_btn_container{
-    height: 52px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    background-color: #222;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    border-radius: 10px;
-    cursor: pointer;
+.login_form_login_btn_container {
+  height: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  background-color: #222;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 /* 이메일 가입, 이메일 찾기, 비밀번호 찾기 */
-.login_form_category_container{
-    display: flex;
-    margin-top: 20px;
-    font-size: 13px;
-    color: #222;
+.login_form_category_container {
+  display: flex;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #222;
 }
-.login_form_category1, .login_form_category2, .login_form_category3{
-    width: 133.33px;
-    display: flex;
-    justify-content: center;
-    border-right: 1px solid rgba(0,0,0,0.3);
-    cursor: pointer;
+.login_form_category1,
+.login_form_category2,
+.login_form_category3 {
+  width: 133.33px;
+  display: flex;
+  justify-content: center;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
-.login_form_category3{
-    border: none;
+.login_form_category3 {
+  border: none;
 }
 
 /* sns 로그인 */
-.login_form_sns_conatiner{
-    margin-top: 40px;
+.login_form_sns_conatiner {
+  margin-top: 40px;
 }
-.login_form_sns_content{
-    height: 50px;
-    border: 1px solid #ebebeb;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    display: flex;
-    cursor: pointer;
+.login_form_sns_content {
+  height: 50px;
+  border: 1px solid #ebebeb;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  cursor: pointer;
 }
-.login_form_sns_icon_content{
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.login_form_sns_icon_content {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.login_form_sns_naver{
-    color: #03C75A;
-    font-size: 16px;
+.login_form_sns_naver {
+  color: #03c75a;
+  font-size: 16px;
 }
-.login_form_sns_apple{
-    font-size: 19px;
+.login_form_sns_apple {
+  font-size: 19px;
 }
-.login_form_sns_text{
-    font-size: 16px;
-    font-weight: 700;
-    color: #222;
-    display: flex;
-    align-items: center;
-    margin-left: 96.5px;
+.login_form_sns_text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  display: flex;
+  align-items: center;
+  margin-left: 96.5px;
+}
+
+/* 로딩 애니메이션 스타일 - 기존 CSS 파일에 추가 */
+
+/* 로딩 버튼 컨테이너 */
+.login_form_loading_container {
+  height: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  background-color: #222;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: default;
+}
+
+/* 로딩 텍스트 */
+.login_form_loading_text {
+  margin-right: 10px;
+}
+
+/* 로딩 애니메이션 점 스타일 */
+.login_form_loading_dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin: 0 3px;
+  background-color: white;
+  animation: dot-pulse 1.4s infinite ease-in-out;
+}
+
+/* 각 점마다 다른 애니메이션 타이밍 */
+.login_form_loading_dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.login_form_loading_dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.login_form_loading_dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* 점 애니메이션 키프레임 */
+@keyframes dot-pulse {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 로딩 중일 때 비활성화될 요소들에 대한 스타일 */
+.login_form_disabled {
+  opacity: 0.6;
+  cursor: default !important;
+  pointer-events: none;
 }
