@@ -186,7 +186,7 @@
     left: 0;
     right: 0;
     min-width: 320px;
-    z-index: 1000;
+    z-index: 1200;
   }
 }
 
@@ -212,6 +212,7 @@
     box-shadow: 0 -0.5px 0 0 rgba(34, 34, 34, 0.1);
     padding-bottom: env(safe-area-inset-bottom);
     min-width: 320px;
+    z-index: 1200;
   }
 
   .mobile-nav ul {
