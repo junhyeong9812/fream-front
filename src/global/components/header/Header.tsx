@@ -41,7 +41,7 @@ const Header: React.FC = () => {
   const [currentWeather, setCurrentWeather] = useState<WeatherDataDto | null>(
     null
   );
-  const { todayAccessCount } = useHeader();  
+  const { todayAccessCount } = useHeader();
   const [currentDateString, setCurrentDateString] = useState<string>("");
 
   // 컴포넌트 마운트 상태 추적
@@ -104,7 +104,6 @@ const Header: React.FC = () => {
       isMounted.current = false;
     };
   }, []);
-
 
   // 모달 토글 핸들러
   const toggleNotificationModal = useCallback(() => {
@@ -260,7 +259,7 @@ const Header: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link to="/mypage">
+            <Link to="/my">
               <FiUser />
               MY
             </Link>
