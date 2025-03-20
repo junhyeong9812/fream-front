@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { SiNaver } from "react-icons/si";
 import { FaApple } from "react-icons/fa";
 import { LoginData } from "../types/loginTypes";
-import { fetchLoginData } from "../services/loginService";
+import { fetchLoginData, checkLoginStatus } from "../services/loginService";
 import { AuthContext } from "src/global/context/AuthContext";
 import { useHeader } from "src/global/context/HeaderContext";
 
@@ -20,11 +20,16 @@ const LoginPage: React.FC = () => {
 
   // 로딩 상태 추가
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // 에러 메시지 상태 추가
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // 이미 로그인 상태라면 홈으로 리다이렉트
   useEffect(() => {
-    // console.log("이메일 : ", loginData.email);
-    // console.log("비밀번호 : ", loginData.password);
-  }, [loginData]);
+    if (checkLoginStatus()) {
+      setIsLoggedIn(true);
+      navigate("/");
+    }
+  }, [navigate, setIsLoggedIn]);
 
   // 이메일 변경 함수
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +37,7 @@ const LoginPage: React.FC = () => {
       ...prevData,
       email: e.target.value,
     }));
+    setErrorMessage(null); // 입력 변경 시 에러 메시지 초기화
   };
 
   // 비밀번호 변경 함수
@@ -40,6 +46,7 @@ const LoginPage: React.FC = () => {
       ...prevData,
       password: e.target.value,
     }));
+    setErrorMessage(null); // 입력 변경 시 에러 메시지 초기화
   };
 
   let [emailWarn, setEmailWarn] = useState<boolean>(true);
@@ -57,11 +64,9 @@ const LoginPage: React.FC = () => {
       if (emailRegex.test(loginData.email)) {
         setEmailWarn(false);
         setEmailSuccess(true);
-        // console.log("이메일 완성");
       } else {
         setEmailWarn(true);
         setEmailSuccess(false);
-        // console.log("이메일 미완성");
       }
     } else {
       setEmailWarn(false);
@@ -74,31 +79,21 @@ const LoginPage: React.FC = () => {
       if (passwordRegex.test(loginData.password)) {
         setPasswordWarn(false);
         setPasswordSuccess(true);
-        // console.log("비밀번호 완성");
       } else {
         setPasswordWarn(true);
         setPasswordSuccess(false);
-        // console.log("비밀번호 미완성")
       }
     } else {
       setPasswordWarn(false);
     }
 
-    // 최종 로그인
+    // 최종 로그인 버튼 활성화 여부
     if (emailSuccess && passwordSuccess) {
       setLoginBtn(true);
     } else {
       setLoginBtn(false);
     }
-  }, [
-    loginData.email,
-    loginData.password,
-    emailWarn,
-    passwordWarn,
-    emailSuccess,
-    passwordSuccess,
-    loginBtn,
-  ]);
+  }, [loginData.email, loginData.password, emailSuccess, passwordSuccess]);
 
   const handleLoginFetch = async () => {
     // 로딩 중이거나 버튼이 비활성화된 경우 요청 방지
@@ -106,32 +101,23 @@ const LoginPage: React.FC = () => {
 
     // 로딩 상태 시작
     setIsLoading(true);
+    setErrorMessage(null);
 
     try {
       const result = await fetchLoginData(loginData.email, loginData.password);
 
       if (result !== "no") {
-        // 로그인 성공 시
-        const now = Date.now();
-        const expire = now + 30 * 60 * 1000; // 30분 후 (ms)
-
-        const loginData = {
-          value: "true",
-          expire,
-        };
-        localStorage.setItem("IsLoggedIn", JSON.stringify(loginData));
-
+        // 로그인 성공 시 (이제 토큰과 로컬 스토리지는 서비스에서 처리됨)
         setIsLoggedIn(true);
-        alert("로그인 성공");
         navigate("/");
       } else {
-        alert("로그인 실패");
-        setIsLoading(false); // 오류 시 로딩 상태 종료
+        setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("로그인 처리 중 오류:", error);
-      alert("로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
-      setIsLoading(false); // 오류 시 로딩 상태 종료
+      setErrorMessage("로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsLoading(false);
     }
   };
 
@@ -163,9 +149,15 @@ const LoginPage: React.FC = () => {
               isLoading ? "login_form_disabled" : ""
             }`}
             src={`/Fream.png`}
-            alt=""
-          ></img>
+            alt="로고"
+          />
         </div>
+
+        {/* 에러 메시지 표시 */}
+        {errorMessage && (
+          <div className="login_form_error_message">{errorMessage}</div>
+        )}
+
         <div className="login_form_email_input_container">
           <div
             className={`login_form_email_input_title ${
@@ -184,8 +176,8 @@ const LoginPage: React.FC = () => {
             onChange={handleEmailChange}
             type="text"
             placeholder="예) kream@kream.co.kr"
-            disabled={isLoading} // 로딩 중 입력 방지
-          ></input>
+            disabled={isLoading}
+          />
           <div
             className={`login_form_email_input_bottom ${
               emailWarn ? "login_form_email_input_bottom_warn" : ""
@@ -213,8 +205,8 @@ const LoginPage: React.FC = () => {
             onChange={handlePasswordChange}
             type="password"
             maxLength={16}
-            disabled={isLoading} // 로딩 중 입력 방지
-          ></input>
+            disabled={isLoading}
+          />
           <div
             className={`login_form_password_input_bottom ${
               passwordWarn ? "login_form_password_input_bottom_warn" : ""
@@ -272,6 +264,7 @@ const LoginPage: React.FC = () => {
             비밀번호 찾기
           </div>
         </div>
+
         <div className="login_form_sns_conatiner">
           <div
             className={`login_form_sns_content ${
