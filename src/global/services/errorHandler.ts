@@ -50,6 +50,26 @@ export class ErrorHandler {
       case ErrorCodes.FILE_UPLOAD_ERROR:
         toast.error("파일 업로드 중 오류가 발생했습니다.");
         break;
+        
+      // 날씨 관련 에러
+      case ErrorCodes.WEATHER_DATA_NOT_FOUND:
+        toast.info("요청한 시간대의 날씨 데이터를 찾을 수 없습니다.");
+        break;
+        
+      case ErrorCodes.WEATHER_API_ERROR:
+      case ErrorCodes.WEATHER_API_PARSING_ERROR:
+        toast.error("날씨 정보를 가져오는 중 오류가 발생했습니다.");
+        break;
+        
+      case ErrorCodes.WEATHER_DATA_SAVE_ERROR:
+      case ErrorCodes.WEATHER_DATA_QUERY_ERROR:
+        toast.error("날씨 데이터 처리 중 오류가 발생했습니다.");
+        break;
+        
+      case ErrorCodes.WEATHER_INVALID_DATETIME_FORMAT:
+      case ErrorCodes.WEATHER_INVALID_TIME_RANGE:
+        toast.warning("잘못된 날짜/시간 형식입니다.");
+        break;
 
       // 기타 에러는 기본 메시지 표시
       default:

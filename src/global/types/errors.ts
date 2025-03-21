@@ -58,6 +58,20 @@ export const ErrorCodes = {
   WS_MESSAGE_SEND_ERROR: "W003",
   WS_INVALID_DESTINATION: "W004",
   WS_SESSION_NOT_FOUND: "W005",
+
+  // 날씨 관련 에러 코드 - 'WE' 접두사 사용 (Weather)
+  // API 관련 에러
+  WEATHER_API_ERROR: "WE001",
+  WEATHER_API_PARSING_ERROR: "WE002",
+
+  // 데이터 관련 에러
+  WEATHER_DATA_NOT_FOUND: "WE101",
+  WEATHER_DATA_SAVE_ERROR: "WE102",
+  WEATHER_DATA_QUERY_ERROR: "WE103",
+
+  // 파라미터 관련 에러
+  WEATHER_INVALID_DATETIME_FORMAT: "WE201",
+  WEATHER_INVALID_TIME_RANGE: "WE202",
 } as const;
 
 export type ErrorCodeType = (typeof ErrorCodes)[keyof typeof ErrorCodes];
