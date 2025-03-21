@@ -72,6 +72,25 @@ export const ErrorCodes = {
   // 파라미터 관련 에러
   WEATHER_INVALID_DATETIME_FORMAT: "WE201",
   WEATHER_INVALID_TIME_RANGE: "WE202",
+
+  // 접근 로그 관련 에러 코드 - 'AL' 접두사 사용 (AccessLog)
+  // API 관련 에러
+  ACCESS_LOG_SAVE_ERROR: "AL001",
+  KAFKA_SEND_ERROR: "AL002",
+  KAFKA_RECEIVE_ERROR: "AL003",
+
+  // 조회 관련 에러
+  ACCESS_LOG_QUERY_ERROR: "AL101",
+  STATISTICS_QUERY_ERROR: "AL102",
+
+  // 지리정보 관련 에러
+  GEO_IP_LOOKUP_ERROR: "AL201",
+  GEO_IP_DATABASE_ERROR: "AL202",
+
+  // 파라미터 관련 에러
+  INVALID_ACCESS_LOG_DATA: "AL301",
+  INVALID_IP_ADDRESS: "AL302",
+  INVALID_DATE_RANGE: "AL303",
 } as const;
 
 export type ErrorCodeType = (typeof ErrorCodes)[keyof typeof ErrorCodes];

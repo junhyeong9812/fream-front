@@ -50,25 +50,49 @@ export class ErrorHandler {
       case ErrorCodes.FILE_UPLOAD_ERROR:
         toast.error("파일 업로드 중 오류가 발생했습니다.");
         break;
-        
+
       // 날씨 관련 에러
       case ErrorCodes.WEATHER_DATA_NOT_FOUND:
         toast.info("요청한 시간대의 날씨 데이터를 찾을 수 없습니다.");
         break;
-        
+
       case ErrorCodes.WEATHER_API_ERROR:
       case ErrorCodes.WEATHER_API_PARSING_ERROR:
         toast.error("날씨 정보를 가져오는 중 오류가 발생했습니다.");
         break;
-        
+
       case ErrorCodes.WEATHER_DATA_SAVE_ERROR:
       case ErrorCodes.WEATHER_DATA_QUERY_ERROR:
         toast.error("날씨 데이터 처리 중 오류가 발생했습니다.");
         break;
-        
+
       case ErrorCodes.WEATHER_INVALID_DATETIME_FORMAT:
       case ErrorCodes.WEATHER_INVALID_TIME_RANGE:
         toast.warning("잘못된 날짜/시간 형식입니다.");
+        break;
+
+      // 접근 로그 관련 에러
+      case ErrorCodes.ACCESS_LOG_SAVE_ERROR:
+      case ErrorCodes.KAFKA_SEND_ERROR:
+      case ErrorCodes.KAFKA_RECEIVE_ERROR:
+        toast.error("접근 정보를 기록하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.ACCESS_LOG_QUERY_ERROR:
+      case ErrorCodes.STATISTICS_QUERY_ERROR:
+        toast.error("접근 통계를 조회하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.GEO_IP_LOOKUP_ERROR:
+      case ErrorCodes.GEO_IP_DATABASE_ERROR:
+        // 위치 정보 에러는 사용자에게 표시하지 않고 로깅만 처리
+        console.error(`위치정보 처리 오류: ${error.message}`);
+        break;
+
+      case ErrorCodes.INVALID_ACCESS_LOG_DATA:
+      case ErrorCodes.INVALID_IP_ADDRESS:
+      case ErrorCodes.INVALID_DATE_RANGE:
+        toast.warning("잘못된 접근 정보가 제공되었습니다.");
         break;
 
       // 기타 에러는 기본 메시지 표시
