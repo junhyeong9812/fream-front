@@ -139,52 +139,165 @@ export class ErrorHandler {
         );
         break;
 
-      
-        // FAQ 관련 에러 처리
-    case ErrorCodes.FAQ_NOT_FOUND:
-      toast.warning("요청하신 FAQ를 찾을 수 없습니다.");
-      break;
+      // FAQ 관련 에러 처리
+      case ErrorCodes.FAQ_NOT_FOUND:
+        toast.warning("요청하신 FAQ를 찾을 수 없습니다.");
+        break;
 
-    case ErrorCodes.FAQ_QUERY_ERROR:
-      toast.error("FAQ 정보를 불러오는 중 오류가 발생했습니다.");
-      break;
+      case ErrorCodes.FAQ_QUERY_ERROR:
+        toast.error("FAQ 정보를 불러오는 중 오류가 발생했습니다.");
+        break;
 
-    case ErrorCodes.FAQ_SAVE_ERROR:
-    case ErrorCodes.FAQ_UPDATE_ERROR:
-      toast.error("FAQ를 저장하는 중 오류가 발생했습니다.");
-      break;
+      case ErrorCodes.FAQ_SAVE_ERROR:
+      case ErrorCodes.FAQ_UPDATE_ERROR:
+        toast.error("FAQ를 저장하는 중 오류가 발생했습니다.");
+        break;
 
-    case ErrorCodes.FAQ_DELETE_ERROR:
-      toast.error("FAQ를 삭제하는 중 오류가 발생했습니다.");
-      break;
+      case ErrorCodes.FAQ_DELETE_ERROR:
+        toast.error("FAQ를 삭제하는 중 오류가 발생했습니다.");
+        break;
 
-    case ErrorCodes.FAQ_FILE_SAVE_ERROR:
-      toast.error("FAQ 이미지를 저장하는 중 오류가 발생했습니다.");
-      break;
+      case ErrorCodes.FAQ_FILE_SAVE_ERROR:
+        toast.error("FAQ 이미지를 저장하는 중 오류가 발생했습니다.");
+        break;
 
-    case ErrorCodes.FAQ_FILE_DELETE_ERROR:
-      toast.error("FAQ 이미지를 삭제하는 중 오류가 발생했습니다.");
-      break;
+      case ErrorCodes.FAQ_FILE_DELETE_ERROR:
+        toast.error("FAQ 이미지를 삭제하는 중 오류가 발생했습니다.");
+        break;
 
-    case ErrorCodes.FAQ_FILE_NOT_FOUND:
-      toast.warning("요청하신 FAQ 이미지를 찾을 수 없습니다.");
-      break;
+      case ErrorCodes.FAQ_FILE_NOT_FOUND:
+        toast.warning("요청하신 FAQ 이미지를 찾을 수 없습니다.");
+        break;
 
-    case ErrorCodes.FAQ_UNSUPPORTED_FILE_TYPE:
-      toast.warning("지원하지 않는 이미지 형식입니다. (지원: jpg, jpeg, png, gif)");
-      break;
+      case ErrorCodes.FAQ_UNSUPPORTED_FILE_TYPE:
+        toast.warning(
+          "지원하지 않는 이미지 형식입니다. (지원: jpg, jpeg, png, gif)"
+        );
+        break;
 
-    case ErrorCodes.FAQ_ADMIN_PERMISSION_REQUIRED:
-      toast.warning("FAQ 관리는 관리자만 가능합니다.");
-      break;
+      case ErrorCodes.FAQ_ADMIN_PERMISSION_REQUIRED:
+        toast.warning("FAQ 관리는 관리자만 가능합니다.");
+        break;
 
-    case ErrorCodes.FAQ_INVALID_CATEGORY:
-      toast.warning("유효하지 않은 FAQ 카테고리입니다.");
-      break;
+      case ErrorCodes.FAQ_INVALID_CATEGORY:
+        toast.warning("유효하지 않은 FAQ 카테고리입니다.");
+        break;
 
-    case ErrorCodes.FAQ_INVALID_REQUEST_DATA:
-      toast.warning("FAQ 정보가 올바르지 않습니다. 필수 항목을 모두 입력해주세요.");
-      break;
+      case ErrorCodes.FAQ_INVALID_REQUEST_DATA:
+        toast.warning(
+          "FAQ 정보가 올바르지 않습니다. 필수 항목을 모두 입력해주세요."
+        );
+        break;
+
+      // 검수 기준 관련 에러 처리
+      case ErrorCodes.INSPECTION_NOT_FOUND:
+        toast.warning("요청하신 검수 기준을 찾을 수 없습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_QUERY_ERROR:
+        toast.error("검수 기준 정보를 불러오는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_SAVE_ERROR:
+        toast.error("검수 기준을 저장하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_UPDATE_ERROR:
+        toast.error("검수 기준을 수정하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_DELETE_ERROR:
+        toast.error("검수 기준을 삭제하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_FILE_SAVE_ERROR:
+        toast.error("검수 기준 이미지를 저장하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_FILE_DELETE_ERROR:
+        toast.error("검수 기준 이미지를 삭제하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_FILE_NOT_FOUND:
+        toast.warning("요청하신 검수 기준 이미지를 찾을 수 없습니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_UNSUPPORTED_FILE_TYPE:
+        toast.warning(
+          "지원하지 않는 이미지 형식입니다. (지원: jpg, jpeg, png, gif)"
+        );
+        break;
+
+      case ErrorCodes.INSPECTION_ADMIN_PERMISSION_REQUIRED:
+        toast.warning("검수 기준 관리는 관리자만 가능합니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_INVALID_CATEGORY:
+        toast.warning("유효하지 않은 검수 기준 카테고리입니다.");
+        break;
+
+      case ErrorCodes.INSPECTION_INVALID_REQUEST_DATA:
+        toast.warning(
+          "검수 기준 정보가 올바르지 않습니다. 필수 항목을 모두 입력해주세요."
+        );
+        break;
+
+      // 공지사항 관련 에러 처리
+      case ErrorCodes.NOTICE_NOT_FOUND:
+        toast.warning("요청하신 공지사항을 찾을 수 없습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_QUERY_ERROR:
+        toast.error("공지사항 정보를 불러오는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_SAVE_ERROR:
+        toast.error("공지사항을 저장하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_UPDATE_ERROR:
+        toast.error("공지사항을 수정하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_DELETE_ERROR:
+        toast.error("공지사항을 삭제하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_FILE_SAVE_ERROR:
+        toast.error("공지사항 파일을 저장하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_FILE_DELETE_ERROR:
+        toast.error("공지사항 파일을 삭제하는 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_FILE_NOT_FOUND:
+        toast.warning("요청하신 공지사항 파일을 찾을 수 없습니다.");
+        break;
+
+      case ErrorCodes.NOTICE_UNSUPPORTED_FILE_TYPE:
+        toast.warning(
+          "지원하지 않는 파일 형식입니다. (지원: jpg, jpeg, png, gif, mp4, avi, mov)"
+        );
+        break;
+
+      case ErrorCodes.NOTICE_ADMIN_PERMISSION_REQUIRED:
+        toast.warning("공지사항 관리는 관리자만 가능합니다.");
+        break;
+
+      case ErrorCodes.NOTICE_INVALID_CATEGORY:
+        toast.warning("유효하지 않은 공지사항 카테고리입니다.");
+        break;
+
+      case ErrorCodes.NOTICE_INVALID_REQUEST_DATA:
+        toast.warning(
+          "공지사항 정보가 올바르지 않습니다. 필수 항목을 모두 입력해주세요."
+        );
+        break;
+
+      case ErrorCodes.NOTICE_NOTIFICATION_ERROR:
+        toast.error("공지사항 알림 발송 중 오류가 발생했습니다.");
+        break;
 
       // 기타 에러는 기본 메시지 표시
       default:
