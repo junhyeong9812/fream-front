@@ -139,6 +139,53 @@ export class ErrorHandler {
         );
         break;
 
+      
+        // FAQ 관련 에러 처리
+    case ErrorCodes.FAQ_NOT_FOUND:
+      toast.warning("요청하신 FAQ를 찾을 수 없습니다.");
+      break;
+
+    case ErrorCodes.FAQ_QUERY_ERROR:
+      toast.error("FAQ 정보를 불러오는 중 오류가 발생했습니다.");
+      break;
+
+    case ErrorCodes.FAQ_SAVE_ERROR:
+    case ErrorCodes.FAQ_UPDATE_ERROR:
+      toast.error("FAQ를 저장하는 중 오류가 발생했습니다.");
+      break;
+
+    case ErrorCodes.FAQ_DELETE_ERROR:
+      toast.error("FAQ를 삭제하는 중 오류가 발생했습니다.");
+      break;
+
+    case ErrorCodes.FAQ_FILE_SAVE_ERROR:
+      toast.error("FAQ 이미지를 저장하는 중 오류가 발생했습니다.");
+      break;
+
+    case ErrorCodes.FAQ_FILE_DELETE_ERROR:
+      toast.error("FAQ 이미지를 삭제하는 중 오류가 발생했습니다.");
+      break;
+
+    case ErrorCodes.FAQ_FILE_NOT_FOUND:
+      toast.warning("요청하신 FAQ 이미지를 찾을 수 없습니다.");
+      break;
+
+    case ErrorCodes.FAQ_UNSUPPORTED_FILE_TYPE:
+      toast.warning("지원하지 않는 이미지 형식입니다. (지원: jpg, jpeg, png, gif)");
+      break;
+
+    case ErrorCodes.FAQ_ADMIN_PERMISSION_REQUIRED:
+      toast.warning("FAQ 관리는 관리자만 가능합니다.");
+      break;
+
+    case ErrorCodes.FAQ_INVALID_CATEGORY:
+      toast.warning("유효하지 않은 FAQ 카테고리입니다.");
+      break;
+
+    case ErrorCodes.FAQ_INVALID_REQUEST_DATA:
+      toast.warning("FAQ 정보가 올바르지 않습니다. 필수 항목을 모두 입력해주세요.");
+      break;
+
       // 기타 에러는 기본 메시지 표시
       default:
         toast.error(error.message);

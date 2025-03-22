@@ -112,6 +112,29 @@ export const ErrorCodes = {
   CQ_INVALID_DATE_RANGE: "CQ302",
   QUESTION_LENGTH_EXCEEDED: "CQ303",
   GPT_USAGE_LIMIT_EXCEEDED: "CQ304",
+
+  // FAQ 관련 에러 코드 - 'FAQ' 접두사 사용
+  // 데이터 조회 관련 에러
+  FAQ_NOT_FOUND: "FAQ001",
+  FAQ_QUERY_ERROR: "FAQ002",
+
+  // 데이터 수정 관련 에러
+  FAQ_SAVE_ERROR: "FAQ003",
+  FAQ_DELETE_ERROR: "FAQ004",
+  FAQ_UPDATE_ERROR: "FAQ005",
+
+  // 파일 관련 에러
+  FAQ_FILE_SAVE_ERROR: "FAQ101",
+  FAQ_FILE_DELETE_ERROR: "FAQ102",
+  FAQ_FILE_NOT_FOUND: "FAQ103",
+  FAQ_UNSUPPORTED_FILE_TYPE: "FAQ104",
+
+  // 권한 관련 에러
+  FAQ_ADMIN_PERMISSION_REQUIRED: "FAQ201",
+
+  // 요청 데이터 관련 에러
+  FAQ_INVALID_CATEGORY: "FAQ301",
+  FAQ_INVALID_REQUEST_DATA: "FAQ302",
 } as const;
 
 export type ErrorCodeType = (typeof ErrorCodes)[keyof typeof ErrorCodes];
