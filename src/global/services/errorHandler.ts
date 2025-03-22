@@ -95,6 +95,50 @@ export class ErrorHandler {
         toast.warning("잘못된 접근 정보가 제공되었습니다.");
         break;
 
+      // 채팅 질문 관련 에러
+      case ErrorCodes.GPT_API_ERROR:
+      case ErrorCodes.GPT_RESPONSE_PROCESSING_ERROR:
+        toast.error(
+          "AI 서비스 연결에 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
+        );
+        break;
+
+      case ErrorCodes.GPT_USAGE_LOG_ERROR:
+      case ErrorCodes.USAGE_STATS_QUERY_ERROR:
+        toast.error("사용량 기록 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.CHAT_QUESTION_SAVE_ERROR:
+      case ErrorCodes.CHAT_HISTORY_QUERY_ERROR:
+        toast.error("채팅 데이터 처리 중 오류가 발생했습니다.");
+        break;
+
+      case ErrorCodes.ADMIN_PERMISSION_REQUIRED:
+        toast.warning("관리자 권한이 필요한 기능입니다.");
+        break;
+
+      case ErrorCodes.QUESTION_PERMISSION_DENIED:
+        toast.warning("질문 및 채팅 기록 조회는 로그인 후 이용 가능합니다.");
+        break;
+
+      case ErrorCodes.INVALID_QUESTION_DATA:
+        toast.warning("질문 내용을 입력해주세요.");
+        break;
+
+      case ErrorCodes.CQ_INVALID_DATE_RANGE:
+        toast.warning("유효하지 않은 날짜 범위입니다.");
+        break;
+
+      case ErrorCodes.QUESTION_LENGTH_EXCEEDED:
+        toast.warning("질문 길이가 너무 깁니다. 2000자 이내로 작성해주세요.");
+        break;
+
+      case ErrorCodes.GPT_USAGE_LIMIT_EXCEEDED:
+        toast.warning(
+          "GPT 사용량 한도를 초과했습니다. 잠시 후 다시 시도해주세요."
+        );
+        break;
+
       // 기타 에러는 기본 메시지 표시
       default:
         toast.error(error.message);

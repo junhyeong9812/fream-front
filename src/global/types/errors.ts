@@ -91,6 +91,27 @@ export const ErrorCodes = {
   INVALID_ACCESS_LOG_DATA: "AL301",
   INVALID_IP_ADDRESS: "AL302",
   INVALID_DATE_RANGE: "AL303",
+
+  // 채팅 질문 관련 에러 코드 - 'CQ' 접두사 사용 (ChatQuestion)
+  // API 관련 에러
+  GPT_API_ERROR: "CQ001",
+  GPT_RESPONSE_PROCESSING_ERROR: "CQ002",
+  GPT_USAGE_LOG_ERROR: "CQ003",
+
+  // 데이터 관련 에러
+  CHAT_QUESTION_SAVE_ERROR: "CQ101",
+  CHAT_HISTORY_QUERY_ERROR: "CQ102",
+  USAGE_STATS_QUERY_ERROR: "CQ103",
+
+  // 권한 관련 에러
+  ADMIN_PERMISSION_REQUIRED: "CQ201",
+  QUESTION_PERMISSION_DENIED: "CQ202",
+
+  // 파라미터 관련 에러
+  INVALID_QUESTION_DATA: "CQ301",
+  CQ_INVALID_DATE_RANGE: "CQ302",
+  QUESTION_LENGTH_EXCEEDED: "CQ303",
+  GPT_USAGE_LIMIT_EXCEEDED: "CQ304",
 } as const;
 
 export type ErrorCodeType = (typeof ErrorCodes)[keyof typeof ErrorCodes];
