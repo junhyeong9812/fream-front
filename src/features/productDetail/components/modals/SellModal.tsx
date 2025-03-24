@@ -26,7 +26,8 @@ export const SellModal = ({
 
   const handleSell = (size: string) => {
     setSelectedSize(size);
-    navigate(`/sell/${product.id}/${size}`);
+    // 여기서 colorName도 같이 전달합니다
+    navigate(`/sell/${product.id}/${size}?color=${encodeURIComponent(product.colorName)}`);
   };
 
   const getSizeSalePrice = (size: string) => {

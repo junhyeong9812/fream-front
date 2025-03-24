@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./SellForm.module.css";
 import { ProductDetailDto, SizeDetailDto } from "../types/product";
 import { AddressResponseDto } from "../types/address";
@@ -24,6 +24,8 @@ const arrowImg = "/img/detail-page/arrow.png";
 
 const SellForm: React.FC = () => {
   const { productId, size } = useParams<{ productId: string; size: string }>();
+  const [searchParams] = useSearchParams();
+  const colorName = searchParams.get("color") || "";
   const navigate = useNavigate();
 
   // 상태 관리
@@ -61,7 +63,10 @@ const SellForm: React.FC = () => {
         setIsProductLoading(true);
 
         // 상품 정보 가져오기 (colorName이 필요한 경우 추가)
-        const productData = await productService.getProductDetail(productId);
+        const productData = await productService.getProductDetail(
+          productId,
+          colorName
+        );
         setProduct(productData);
 
         // 사이즈 정보 찾기
@@ -85,7 +90,7 @@ const SellForm: React.FC = () => {
     };
 
     fetchProductData();
-  }, [productId, size]);
+  }, [productId, size, colorName]);
 
   // 주소 및 계좌 정보 불러오기
   useEffect(() => {

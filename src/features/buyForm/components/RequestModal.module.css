@@ -1,0 +1,161 @@
+.requestButton {
+  width: 650px;
+  height: 50px;
+  margin-left: 25px;
+  margin-top: 10px;
+  display: flex;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.requestButtonText {
+  width: 600px;
+  margin-left: 12px;
+  margin-top: 13px;
+  text-align: left;
+}
+
+.arrowContainer {
+  width: 25px;
+  margin-top: 10px;
+  text-align: right;
+  font-weight: bold;
+  float: right;
+}
+
+.arrowIcon {
+  width: 15px;
+}
+
+.modalOverlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContent {
+  z-index: 1001;
+  background-color: white;
+  position: fixed;
+  width: 480px;
+  height: 470px;
+  border-radius: 20px;
+}
+
+.modalHeader {
+  height: 55px;
+  display: flex;
+  align-items: center;
+}
+
+.modalTitle {
+  margin-left: 180px;
+  margin-top: 16px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.closeButton {
+  width: 20px;
+  margin-left: 130px;
+  border: none;
+  background-color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.closeButtonText {
+  font-size: 30px;
+  margin-top: 4px;
+  font-weight: light;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.optionsContainer {
+  width: 400px;
+  height: 320px;
+  margin-left: 40px;
+  margin-top: 20px;
+}
+
+.optionButton {
+  width: 400px;
+  height: 60px;
+  border: none;
+  text-align: left;
+  background-color: white;
+  cursor: pointer;
+}
+
+.optionContent {
+  display: flex;
+  align-items: center;
+}
+
+.optionText {
+  width: 350px;
+  height: 30px;
+  margin-top: 10px;
+}
+
+.optionTextSelected {
+  width: 350px;
+  height: 30px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.checkIcon {
+  width: 50px;
+  height: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.spacer {
+  width: 50px;
+  height: 30px;
+}
+
+.divider {
+  width: 400px;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.buttonContainer {
+  display: flex;
+  margin-top: 10px;
+}
+
+.cancelButton {
+  width: 130px;
+  height: 45px;
+  margin-left: 105px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
+  cursor: pointer;
+}
+
+.applyButton {
+  width: 130px;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  height: 45px;
+  margin-left: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}

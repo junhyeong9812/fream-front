@@ -1,0 +1,569 @@
+.container {
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+.formContainer {
+  margin: auto;
+  width: 700px;
+  text-align: center;
+}
+
+.spacer {
+  height: 15px;
+  background-color: #f4f4f4;
+}
+
+.smallSpacer {
+  height: 5px;
+}
+
+.content {
+  height: 150px;
+  background-color: white;
+  display: flex;
+}
+
+.productImage {
+  width: 100px;
+  border-radius: 15px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  margin-left: 25px;
+  background-color: rgb(244, 244, 244);
+}
+
+.productDetails {
+  margin-top: 25px;
+  margin-left: 15px;
+  width: 400px;
+  text-align: left;
+}
+
+.productId {
+  font-weight: bold;
+}
+
+.productNameEng {
+  margin-top: 5px;
+}
+
+.productNameKor {
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 5px;
+}
+
+.productSize {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.deliverySection {
+  background-color: white;
+}
+
+.sectionTitle {
+  width: 200px;
+  padding-top: 30px;
+  margin-left: 25px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.addressInfo {
+  display: flex;
+}
+
+.addressDetails {
+  width: 610px;
+}
+
+.addressRow {
+  display: flex;
+  padding-top: 10px;
+}
+
+.addressLabel {
+  font-size: 14px;
+  width: 100px;
+  margin-left: 25px;
+  text-align: left;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.addressValue {
+  font-size: 14px;
+}
+
+.changeButton {
+  width: 50px;
+  height: 35px;
+  margin-top: 80px;
+  font-size: 13px;
+  color: rgba(127, 127, 127, 1);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: white;
+  cursor: pointer;
+}
+
+.divider {
+  width: 650px;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-left: 25px;
+  margin-top: 20px;
+}
+
+.shippingMethodsContainer {
+  margin-top: 10px;
+  width: 700px;
+}
+
+.deliveryButton {
+  height: 70px;
+  width: 650px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.deliveryButtonActive {
+  border: 1px solid black;
+}
+
+.deliveryIconContainer {
+  margin-left: 10px;
+}
+
+.deliveryIcon {
+  width: 60px;
+}
+
+.deliveryDetails {
+  margin-left: 15px;
+  margin-top: 10px;
+}
+
+.deliveryTitle {
+  text-align: left;
+  font-size: 14px;
+  display: flex;
+}
+
+.deliveryName {
+  font-weight: bold;
+}
+
+.deliveryPrice {
+  margin-left: 5px;
+}
+
+.deliveryDescription {
+  text-align: left;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+}
+
+.paymentSection {
+  background-color: white;
+  height: 460px;
+}
+
+.paymentTitle {
+  text-align: left;
+  margin-left: 25px;
+  margin-top: 10px;
+  display: flex;
+}
+
+.paymentSubtitle {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 2px;
+  margin-left: 5px;
+}
+
+.paymentOptions {
+  text-align: left;
+  margin-left: 25px;
+  margin-top: 10px;
+}
+
+.paymentRow {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.paymentButton {
+  height: 70px;
+  width: 210px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: relative;
+}
+
+.paymentButtonActive {
+  border: 1px solid black;
+}
+
+.paymentLabel {
+  float: left;
+  margin-left: 15px;
+  line-height: 70px;
+}
+
+.paymentIcon {
+  width: 50px;
+  float: right;
+  margin-right: 13px;
+  margin-top: 4px;
+}
+
+.paymentDisclaimer {
+  font-size: 12px;
+  margin-top: 10px;
+  color: rgba(0, 0, 0, 0.7);
+  width: 650px;
+  text-align: left;
+}
+
+.paymentBenefits {
+  margin-top: 15px;
+}
+
+.benefitRow {
+  display: flex;
+  margin-top: 5px;
+}
+
+.benefitCard {
+  color: rgba(0, 0, 0, 0.7);
+  width: 110px;
+  font-size: 12px;
+  text-align: left;
+}
+
+.benefitDesc {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  text-align: left;
+}
+
+.finalPaymentSection {
+  background-color: white;
+  height: 230px;
+}
+
+.summaryRow {
+  display: flex;
+  margin-top: 15px;
+}
+
+.summaryLabel {
+  margin-left: 25px;
+  width: 500px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.summaryValue {
+  text-align: right;
+  width: 150px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.summaryLabelSubtitle {
+  margin-left: 25px;
+  width: 500px;
+  text-align: left;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.summaryValueSubtitle {
+  text-align: right;
+  width: 150px;
+  font-size: 15px;
+}
+
+.totalPaymentSection {
+  height: 100px;
+  background-color: rgb(250, 250, 250);
+  display: flex;
+}
+
+.totalLabel {
+  width: 200px;
+  padding-top: 30px;
+  margin-left: 25px;
+  text-align: left;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.totalValueContainer {
+  padding-top: 30px;
+}
+
+.warningContainer {
+  display: flex;
+  width: 450px;
+  color: rgb(241, 87, 70);
+  font-size: 13px;
+  padding-left: 247px;
+}
+
+.warningIcon {
+  font-weight: 700;
+}
+
+.warningText {
+  margin-left: 5px;
+}
+
+.totalPrice {
+  text-align: right;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.actionButtonsContainer {
+  height: 100px;
+  background-color: white;
+}
+
+.payButton {
+  width: 630px;
+  height: 58px;
+  background-color: black;
+  color: white;
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 17px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.disabledPayButton {
+  width: 630px;
+  height: 58px;
+  background-color: rgba(127, 127, 127, 0.4);
+  color: white;
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 17px;
+  border-radius: 10px;
+  border: none;
+  cursor: not-allowed;
+}
+
+/* src/features/buy/components/modals/DeliveryAddressModal.module.css */
+.modalOverlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContent {
+  z-index: 1001;
+  background-color: white;
+  position: fixed;
+  width: 520px;
+  height: 620px;
+  border-radius: 20px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.modalTitle {
+  width: 420px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 50px;
+}
+
+.closeButton {
+  width: 30px;
+  height: 30px;
+  border: none;
+  font-size: 30px;
+  font-weight: 100;
+  color: rgba(0, 0, 0, 0.5);
+  margin-left: 8px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.formContainer {
+  width: 460px;
+  height: 450px;
+  margin-left: 30px;
+  margin-top: 10px;
+}
+
+.formLabel {
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.formLabelError {
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+  color: red;
+  margin-bottom: 5px;
+}
+
+.inputContainer {
+  margin-top: 5px;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #ebebeb;
+  font-size: 15px;
+  line-height: 22px;
+  padding: 8px 0;
+}
+
+.inputError {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid red;
+  font-size: 15px;
+  line-height: 22px;
+  padding: 8px 0;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: left;
+  height: 10px;
+}
+
+.spacer {
+  height: 10px;
+}
+
+.postcodeContainer {
+  margin-top: 5px;
+  display: flex;
+}
+
+.name_input_txt {
+  width: 370px;
+  border: none;
+  border-bottom: 1px solid #ebebeb;
+  font-size: 15px;
+  line-height: 22px;
+  padding: 8px 0;
+}
+
+.name_input_null_txt {
+  width: 370px;
+  border: none;
+  border-bottom: 1px solid #ebebeb;
+  font-size: 15px;
+  line-height: 22px;
+  padding: 8px 0;
+  color: rgba(128, 128, 128, 0.7);
+}
+
+.postcodeButton {
+  width: 85px;
+  height: 35px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  background-color: white;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.buttonContainer {
+  display: flex;
+  margin-top: 30px;
+  margin-left: 105px;
+}
+
+.cancelButton {
+  width: 120px;
+  height: 45px;
+  font-size: 14px;
+  color: grey;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
+  cursor: pointer;
+}
+
+.saveButton {
+  width: 120px;
+  height: 45px;
+  font-size: 14px;
+  background-color: black;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.disabledButton {
+  width: 120px;
+  height: 45px;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 10px;
+  margin-left: 10px;
+  cursor: not-allowed;
+}
+
+.addressButton {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 650px;
+  margin-top: 10px;
+  height: 50px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.addressButtonText {
+  color: grey;
+  text-align: left;
+  margin-left: 12px;
+  line-height: 50px;
+}
