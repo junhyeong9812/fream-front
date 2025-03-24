@@ -1,24 +1,28 @@
 export interface ProductDetailDto {
   id: number;
-  prid?: string;
   name: string;
-  nameEng?: string;
-  nameKor?: string;
-  price?: number;
+  englishName: string;
   releasePrice: number;
-  thumbnailImageUrl?: string;
-  imgName?: string;
-  brandName?: string;
+  thumbnailImageUrl: string;
+  brandName: string;
   colorId?: number;
   colorName?: string;
   content?: string;
   interestCount?: number;
   sizes?: SizeDetailDto[];
+  otherColors?: ColorDetailDto[];
 }
 
 export interface SizeDetailDto {
   size: string;
-  purchasePrice: number;
-  salePrice: number;
-  quantity: number;
+  purchasePrice: number; // 구매가
+  salePrice: number; // 판매가
+  quantity: number; // 재고 수량
+}
+
+export interface ColorDetailDto {
+  colorId: number;
+  colorName: string;
+  thumbnailImageUrl: string;
+  content: string;
 }

@@ -1,161 +1,117 @@
-.requestButton {
-  width: 650px;
-  height: 50px;
-  margin-left: 25px;
-  margin-top: 10px;
-  display: flex;
-  background: white;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-}
-
-.requestButtonText {
-  width: 600px;
-  margin-left: 12px;
-  margin-top: 13px;
-  text-align: left;
-}
-
-.arrowContainer {
-  width: 25px;
-  margin-top: 10px;
-  text-align: right;
-  font-weight: bold;
-  float: right;
-}
-
-.arrowIcon {
-  width: 15px;
-}
-
 .modalOverlay {
-  width: 100%;
-  height: 100%;
   position: fixed;
-  z-index: 1000;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .modalContent {
-  z-index: 1001;
   background-color: white;
-  position: fixed;
   width: 480px;
-  height: 470px;
   border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
 }
 
 .modalHeader {
-  height: 55px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .modalTitle {
-  margin-left: 180px;
-  margin-top: 16px;
-  font-weight: bold;
   font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
 }
 
 .closeButton {
-  width: 20px;
-  margin-left: 130px;
+  background: none;
   border: none;
-  background-color: white;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.closeButtonText {
   font-size: 30px;
-  margin-top: 4px;
-  font-weight: light;
+  font-weight: 100;
   color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  line-height: 1;
 }
 
-.optionsContainer {
-  width: 400px;
-  height: 320px;
-  margin-left: 40px;
-  margin-top: 20px;
+.modalBody {
+  padding: 10px 0;
 }
 
 .optionButton {
-  width: 400px;
-  height: 60px;
-  border: none;
-  text-align: left;
-  background-color: white;
-  cursor: pointer;
-}
-
-.optionContent {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 20px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  text-align: left;
 }
 
 .optionText {
   width: 350px;
-  height: 30px;
-  margin-top: 10px;
 }
 
-.optionTextSelected {
-  width: 350px;
-  height: 30px;
+.optionLabel {
+  font-size: 14px;
+}
+
+.selectedOption {
   font-weight: bold;
-  margin-top: 10px;
 }
 
-.checkIcon {
-  width: 50px;
-  height: 30px;
+.checkmark {
+  width: 30px;
+  text-align: center;
   font-size: 20px;
   font-weight: bold;
-  margin-top: 5px;
-}
-
-.spacer {
-  width: 50px;
-  height: 30px;
 }
 
 .divider {
-  width: 400px;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
-.buttonContainer {
+.buttonGroup {
   display: flex;
-  margin-top: 10px;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 0;
+}
+
+.cancelButton,
+.saveButton {
+  width: 130px;
+  height: 45px;
+  font-size: 14px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .cancelButton {
-  width: 130px;
-  height: 45px;
-  margin-left: 105px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: white;
-  cursor: pointer;
+  color: grey;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.applyButton {
-  width: 130px;
+.saveButton {
   background-color: black;
   color: white;
-  font-weight: bold;
-  height: 45px;
-  margin-left: 10px;
-  border-radius: 10px;
   border: none;
-  cursor: pointer;
+  font-weight: bold;
 }
