@@ -1,0 +1,499 @@
+.container {
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  padding: 30px 0 60px;
+}
+
+.formContainer {
+  width: 700px;
+  margin: 0 auto;
+  background-color: transparent;
+}
+
+.section {
+  margin-bottom: 15px;
+  border-radius: 12px;
+  background-color: white;
+  overflow: hidden;
+}
+
+.productInfo {
+  display: flex;
+  padding: 25px;
+}
+
+.productImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background-color: #f4f4f4;
+  object-fit: cover;
+}
+
+.productDetails {
+  margin-left: 15px;
+  text-align: left;
+}
+
+.productDetails h4 {
+  font-weight: bold;
+  margin: 0;
+  margin-top: 5px;
+}
+
+.productDetails p {
+  margin: 5px 0;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.productDetails .size {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 25px 20px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.changeButton {
+  width: 60px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: white;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.accountInfo {
+  padding: 0 25px 25px;
+}
+
+.accountRow {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+  font-size: 15px;
+}
+
+.accountLabel {
+  width: 100px;
+  color: rgba(0, 0, 0, 0.4);
+  text-align: left;
+}
+
+.accountValue {
+  flex: 1;
+  text-align: left;
+}
+
+.noAccountMessage {
+  padding: 0 25px 20px;
+  text-align: left;
+}
+
+.noAccountMessage p {
+  margin: 5px 0;
+}
+
+.addAccountButton {
+  padding: 8px 16px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.addressInfo {
+  padding: 0 25px 25px;
+}
+
+.addressRow {
+  display: flex;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.addressLabel {
+  width: 100px;
+  color: rgba(0, 0, 0, 0.4);
+  text-align: left;
+}
+
+.addressValue {
+  flex: 1;
+  text-align: left;
+}
+
+.noAddressButton {
+  width: 650px;
+  height: 50px;
+  margin: 10px 25px 25px;
+  background-color: #f4f4f4;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: left;
+  padding-left: 15px;
+  color: gray;
+  cursor: pointer;
+}
+
+.requestButton {
+  width: 650px;
+  height: 50px;
+  margin: 10px 25px;
+  display: flex;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.requestText {
+  text-align: left;
+}
+
+.arrowIcon {
+  width: 15px;
+  height: 15px;
+}
+
+.shippingMethod {
+  padding: 0 25px 25px;
+}
+
+.deliveryButton {
+  width: 650px;
+  height: 70px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
+  cursor: pointer;
+}
+
+.deliveryButtonActive {
+  border: 1px solid black;
+}
+
+.deliveryIcon {
+  width: 60px;
+  margin-left: 10px;
+}
+
+.deliveryInfo {
+  margin-left: 15px;
+  text-align: left;
+}
+
+.deliveryTitle {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.deliveryTitle strong {
+  margin-right: 5px;
+}
+
+.deliveryDescription {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.paymentMethod {
+  padding: 10px 25px 25px;
+}
+
+.paymentTitle {
+  text-align: left;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.paymentTitle span {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  margin-left: 5px;
+}
+
+.paymentButtonsRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.paymentButton {
+  flex: 1;
+  height: 70px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+}
+
+.paymentButtonActive {
+  border: 1px solid black;
+}
+
+.paymentLabel {
+  margin-left: 15px;
+  text-align: left;
+  line-height: 70px;
+}
+
+.paymentIcon {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+}
+
+.paymentDisclaimer {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: left;
+  margin-top: 10px;
+}
+
+.paymentBenefits {
+  margin-top: 15px;
+}
+
+.benefitRow {
+  display: flex;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.benefitCard {
+  width: 110px;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: left;
+}
+
+.benefitDesc {
+  color: rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+.orderSummary {
+  padding: 20px 25px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.summaryRow:last-child {
+  margin-bottom: 0;
+}
+
+.summaryLabel {
+  text-align: left;
+}
+
+.summaryValue {
+  text-align: right;
+  font-weight: bold;
+}
+
+.feeSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.totalSection {
+  padding: 30px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(250, 250, 250);
+}
+
+.totalLabel {
+  font-size: 17px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.totalAmount {
+  text-align: right;
+}
+
+.warning {
+  color: rgb(241, 87, 70);
+  font-size: 13px;
+  margin-bottom: 5px;
+  display: flex;
+}
+
+.warning strong {
+  margin-right: 5px;
+}
+
+.finalPrice {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.actionSection {
+  padding: 20px 0;
+  background-color: white;
+}
+
+.sellButton {
+  width: 630px;
+  height: 58px;
+  background-color: black;
+  color: white;
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 17px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.disabledSellButton {
+  width: 630px;
+  height: 58px;
+  background-color: rgba(127, 127, 127, 0.4);
+  color: white;
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 17px;
+  border-radius: 10px;
+  border: none;
+  cursor: not-allowed;
+}
+
+/* 로딩 및 에러 스타일 */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid black;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.errorIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #f4f4f4;
+  color: #ef6253;
+  font-size: 40px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.errorContainer h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.errorContainer p {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 24px;
+}
+
+.goBackButton {
+  padding: 12px 24px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+/* 판매가격 섹션 스타일 추가 */
+.priceInfo {
+  padding: 16px 25px 25px;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+  align-items: center;
+}
+
+.priceLabel {
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+  text-align: left;
+}
+
+.priceValue {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.priceSubValue {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+}

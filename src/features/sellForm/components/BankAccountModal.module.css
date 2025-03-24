@@ -1,0 +1,133 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 480px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader h2 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.formGroup input,
+.formGroup select {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: white;
+}
+
+.formGroup select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+.inputError {
+  border-color: #ef6253 !important;
+}
+
+.errorText {
+  color: #ef6253;
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.cancelButton,
+.saveButton {
+  width: 120px;
+  height: 52px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton {
+  background-color: #f4f4f4;
+  color: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.cancelButton:hover {
+  background-color: #ebebeb;
+}
+
+.saveButton {
+  background-color: black;
+  color: white;
+  border: none;
+}
+
+.saveButton:hover {
+  background-color: #333;
+}
+
+.saveButton:disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  cursor: not-allowed;
+}

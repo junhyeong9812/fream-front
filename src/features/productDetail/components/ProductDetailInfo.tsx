@@ -7,6 +7,7 @@ import { SizeModal } from "./modals/SizeModal";
 import { BuyModal } from "./modals/BuyModal";
 import { SellModal } from "./modals/SellModal";
 import { WishModal } from "./modals/WishModal";
+import { LoginPromptModal } from "./modals/LoginPromptModal"; // 로그인 확인 모달 추가
 import {
   ColorDetailDto,
   SizeDetailDto,
@@ -53,9 +54,43 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
   const [isBuyModalOpen, setBuyModalOpen] = useState(false);
   const [isSellModalOpen, setSellModalOpen] = useState(false);
   const [isWishModalOpen, setWishModalOpen] = useState(false);
+  const [isLoginPromptOpen, setLoginPromptOpen] = useState(false); // 로그인 확인 모달
+  const [actionType, setActionType] = useState<"buy" | "sell" | "wish">("buy"); // 로그인 후 액션 타입
 
   const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // 로그인 상태 확인 및 처리
+  const handleAuthAction = (action: "buy" | "sell" | "wish") => {
+    if (!isLoggedIn) {
+      setActionType(action);
+      setLoginPromptOpen(true);
+      return;
+    }
+
+    // 로그인 상태라면 해당 모달 열기
+    switch (action) {
+      case "buy":
+        setBuyModalOpen(true);
+        break;
+      case "sell":
+        setSellModalOpen(true);
+        break;
+      case "wish":
+        setWishModalOpen(true);
+        break;
+    }
+  };
+
+  // 로그인 모달에서 로그인하기 버튼 클릭
+  const handleLoginRedirect = () => {
+    navigate("/login", { 
+      state: { 
+        from: `/products/${productDetail.id}`,
+        action: actionType
+      } 
+    });
+  };
 
   const handleWishSubmit = async (selectedSizes: string[]) => {
     if (!isLoggedIn) {
@@ -120,7 +155,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
 
         <div className={styles.actionButtons}>
           <button
-            onClick={() => setBuyModalOpen(true)}
+            onClick={() => handleAuthAction("buy")}
             className={styles.buyButton}
           >
             <div className={styles.buttonLabel}>구매</div>
@@ -134,7 +169,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
           </button>
 
           <button
-            onClick={() => setSellModalOpen(true)}
+            onClick={() => handleAuthAction("sell")}
             className={styles.sellButton}
           >
             <div className={styles.buttonLabel}>판매</div>
@@ -149,12 +184,10 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         </div>
 
         <button
-          onClick={() =>
-            isLoggedIn ? setWishModalOpen(true) : navigate("/login")
-          }
+          onClick={() => handleAuthAction("wish")}
           className={styles.interestButton}
         >
-          <Bookmark size={22} fill="currentColor" /> {/* fill 속성 추가 */}
+          <Bookmark size={22} fill="currentColor" />
           <span>관심상품 ({productDetail.interestCount})</span>
         </button>
 
@@ -186,7 +219,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         <BuyModal
           isOpen={isBuyModalOpen}
           onClose={() => setBuyModalOpen(false)}
-          product={productDetail} // 전체 productDetail 전달
+          product={productDetail}
           selectedSize={selectedSize}
           setSelectedSize={setSelectedSize}
         />
@@ -194,7 +227,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         <SellModal
           isOpen={isSellModalOpen}
           onClose={() => setSellModalOpen(false)}
-          product={productDetail} // 전체 productDetail 전달
+          product={productDetail}
           selectedSize={selectedSize}
           setSelectedSize={setSelectedSize}
         />
@@ -202,9 +235,17 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         <WishModal
           isOpen={isWishModalOpen}
           onClose={() => setWishModalOpen(false)}
-          productId={productDetail.id} // number 타입으로 변경
+          productId={productDetail.id}
           sizes={productDetail.sizes}
           onWishSubmit={handleWishSubmit}
+        />
+
+        {/* 로그인 확인 모달 */}
+        <LoginPromptModal
+          isOpen={isLoginPromptOpen}
+          onClose={() => setLoginPromptOpen(false)}
+          onLogin={handleLoginRedirect}
+          actionType={actionType}
         />
       </div>
     </div>
