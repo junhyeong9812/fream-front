@@ -30,7 +30,11 @@ export const BuyModal = ({
       return;
     }
     setSelectedSize(size);
-    navigate(`/buy/${product.id}/${size}`);
+    navigate(
+      `/buy/${product.id}/${size}?color=${encodeURIComponent(
+        product.colorName
+      )}`
+    );
   };
 
   const getSizePurchasePrice = (size: string) => {
