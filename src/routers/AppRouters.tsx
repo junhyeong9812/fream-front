@@ -59,6 +59,7 @@ import Shop from "../pages/Shop";
 import ProtectedRoute from "./ProtectedRoute";
 import ProductDetailPage from "../features/productDetail/pages/ProductdetailPage";
 import StyleDetailPage from "../features/style/pages/StyleDetailPage";
+import SellForm from "@features/sellForm/pages/sellForm";
 
 // 스타일드 컴포넌트로 Wrapping
 const AppRoutesContainer = styled.div`
@@ -141,6 +142,23 @@ const AppRoutes: React.FC = () => {
         <Route path="/men" element={<MainMen />} />
         <Route path="/women" element={<MainWomen />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
+         {/* 판매/구매 경로 추가 */}
+         <Route
+          path="/sell/:productId/:size"
+          element={
+            <ProtectedRoute>
+              <SellForm />
+            </ProtectedRoute>
+          }
+        />
+        {/* <Route
+          path="/buy/:productId/:size"
+          element={
+            <ProtectedRoute>
+              <BuyForm />
+            </ProtectedRoute>
+          }
+        /> */}
         {/* 추가 페이지를 여기에 추가 */}
         {/* footerPage */}
         <Route path="/info" element={<InfoPage />} />
