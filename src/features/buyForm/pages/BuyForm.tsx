@@ -9,6 +9,7 @@ import { productService } from "../services/productService";
 import { orderService } from "../services/orderService";
 import RequestModal from "../components/RequestModal";
 import DeliveryAddressModal from "../components/DeliveryAddressModal";
+import DeliveryAddressList from "../components/DeliveryAddressList";
 
 // 이미지 경로
 const deliveryImg = "/img/detail-page/ship_imfo.png";
@@ -37,14 +38,9 @@ const BuyForm: React.FC = () => {
   const [isProductLoading, setIsProductLoading] = useState<boolean>(true);
 
   // 배송 관련 상태
-  const [finalName, setFinalName] = useState<string>("");
-  const [finalNumber, setFinalNumber] = useState<string>("");
-  const [finalZonecode, setFinalZonecode] = useState<string>("");
-  const [finalRoadaddress, setFinalRoadaddress] = useState<string>("");
-  const [finalBname, setFinalBname] = useState<string>("");
-  const [finalBuildingname, setFinalBuildingname] = useState<string>("");
-  const [finalBetterAddress, setFinalBetterAddress] = useState<string>("");
-  const [finalSaveBtn, setFinalSaveBtn] = useState<boolean>(false);
+  const [selectedAddress, setSelectedAddress] =
+    useState<AddressResponseDto | null>(null);
+  const [addressList, setAddressList] = useState<AddressResponseDto[]>([]);
   const [finalCardBtn, setFinalCardBtn] = useState<boolean>(false);
   const [numberVal, setNumberVal] = useState<string>("");
 
@@ -55,10 +51,8 @@ const BuyForm: React.FC = () => {
   const [requestOption, setRequestOption] = useState<string>("요청사항 없음");
   const [isRequestModalOpen, setRequestModalOpen] = useState<boolean>(false);
   const [isAddressModalOpen, setAddressModalOpen] = useState<boolean>(false);
+  const [isAddressListOpen, setAddressListOpen] = useState<boolean>(false);
   const [finalBtn, setFinalBtn] = useState<boolean>(false);
-  const [addressList, setAddressList] = useState<AddressResponseDto[]>([]);
-  const [selectedAddress, setSelectedAddress] =
-    useState<AddressResponseDto | null>(null);
 
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -116,6 +110,11 @@ const BuyForm: React.FC = () => {
           const defaultAddress =
             addresses.find((addr) => addr.isDefault) || addresses[0];
           setSelectedAddress(defaultAddress);
+
+          // 선택된 주소의 전화번호 마스킹 처리
+          if (defaultAddress) {
+            maskPhoneNumber(defaultAddress.phoneNumber);
+          }
         }
       } catch (error) {
         console.error("주소 정보 로딩 실패:", error);
@@ -125,43 +124,36 @@ const BuyForm: React.FC = () => {
     fetchAddresses();
   }, []);
 
-  // 휴대폰 번호 마스킹 처리
+  // 주소가 선택된 경우 해당 주소의 전화번호 마스킹 처리
   useEffect(() => {
-    if (finalNumber.length === 11) {
-      const formatPhoneNumber4 = (number: string): string => {
-        const cleaned = number.replace(/\D/g, "");
-        const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
-        if (match) {
-          const maskedMiddle = match[2][0] + "***";
-          const maskedEnd = "*" + match[3].slice(1);
-          return `${match[1]}-${maskedMiddle}-${maskedEnd}`;
-        }
-        return number;
-      };
-      setNumberVal(formatPhoneNumber4(finalNumber));
-    } else if (finalNumber.length === 10) {
-      const formatPhoneNumber3 = (number: string): string => {
-        const cleaned = number.replace(/\D/g, "");
-        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-        if (match) {
-          const maskedMiddle = match[2][0] + "**";
-          const maskedEnd = "*" + match[3].slice(1);
-          return `${match[1]}-${maskedMiddle}-${maskedEnd}`;
-        }
-        return number;
-      };
-      setNumberVal(formatPhoneNumber3(finalNumber));
+    if (selectedAddress) {
+      const maskedNumber = maskPhoneNumber(selectedAddress.phoneNumber);
+      setNumberVal(maskedNumber);
     }
-  }, [finalNumber]);
+  }, [selectedAddress]);
 
   // 최종 버튼 활성화 여부 체크
   useEffect(() => {
-    if (finalSaveBtn && finalCardBtn) {
+    if (selectedAddress && paymentBtn !== null) {
       setFinalBtn(true);
     } else {
       setFinalBtn(false);
     }
-  }, [finalSaveBtn, finalCardBtn]);
+  }, [selectedAddress, paymentBtn]);
+
+  // 휴대폰 번호 마스킹 함수
+  const maskPhoneNumber = (phoneNumber: string): string => {
+    if (phoneNumber.length === 11) {
+      return phoneNumber
+        .replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3")
+        .replace(/(\d{3})-(\d{1})(\d{3})-(\d{1})(\d{3})/, "$1-$2***-*$5");
+    } else if (phoneNumber.length === 10) {
+      return phoneNumber
+        .replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
+        .replace(/(\d{3})-(\d{1})(\d{2})-(\d{1})(\d{3})/, "$1-$2**-*$5");
+    }
+    return phoneNumber;
+  };
 
   // 이름 마스킹 함수
   const formatName = (str: string): string => {
@@ -175,15 +167,42 @@ const BuyForm: React.FC = () => {
     return new Intl.NumberFormat("ko-KR").format(price);
   };
 
-  // 주소 포맷 변경 함수
-  const formatBtn = () => {
-    setFinalSaveBtn(false);
-    setAddressModalOpen(true);
+  // 주소가 새로 추가된 경우 처리
+  const handleAddressAdded = (
+    name: string,
+    phoneNumber: string,
+    zonecode: string,
+    roadAddress: string,
+    bname: string,
+    buildingName: string,
+    detailAddress: string
+  ) => {
+    // 새로 생성된 주소를 AddressResponseDto 형태로 변환
+    const newAddress: AddressResponseDto = {
+      id: 0, // 실제로는 서버에서 생성된 ID로 대체
+      recipientName: name,
+      phoneNumber: phoneNumber,
+      zipCode: zonecode,
+      address: roadAddress,
+      detailedAddress: detailAddress,
+      isDefault: false, // 필요에 따라 조정 가능
+    };
+
+    setSelectedAddress(newAddress);
+    setAddressModalOpen(false);
+
+    // 주소 목록 다시 불러오기
+    addressService.getAddresses().then(setAddressList);
+  };
+
+  // 주소 선택 처리
+  const handleAddressSelected = (address: AddressResponseDto) => {
+    setSelectedAddress(address);
   };
 
   // 결제 처리 함수
   const handlePayment = () => {
-    if (!product || !sizeInfo || !finalName || !finalNumber) {
+    if (!product || !sizeInfo || !selectedAddress) {
       alert("필수 정보가 누락되었습니다.");
       return;
     }
@@ -204,10 +223,10 @@ const BuyForm: React.FC = () => {
         name: product.name,
         amount: sizeInfo.purchasePrice + 3000, // 상품가격 + 배송비
         buyer_email: "user@example.com", // TODO: 실제 사용자 이메일로 대체
-        buyer_name: finalName,
-        buyer_tel: finalNumber,
-        buyer_addr: `${finalRoadaddress} ${finalBuildingname} ${finalBetterAddress}`,
-        buyer_postcode: finalZonecode,
+        buyer_name: selectedAddress.recipientName,
+        buyer_tel: selectedAddress.phoneNumber,
+        buyer_addr: `${selectedAddress.address} ${selectedAddress.detailedAddress}`,
+        buyer_postcode: selectedAddress.zipCode,
       },
       async (response: any) => {
         if (response.success) {
@@ -238,10 +257,10 @@ const BuyForm: React.FC = () => {
                 impUid: response.imp_uid,
                 merchantUid: response.merchant_uid,
               },
-              receiverName: finalName,
-              receiverPhone: finalNumber,
-              postalCode: finalZonecode,
-              address: `${finalRoadaddress} ${finalBuildingname} ${finalBetterAddress}`,
+              receiverName: selectedAddress.recipientName,
+              receiverPhone: selectedAddress.phoneNumber,
+              postalCode: selectedAddress.zipCode,
+              address: `${selectedAddress.address} ${selectedAddress.detailedAddress}`,
               warehouseStorage: isWarehouseStorage,
             };
 
@@ -320,46 +339,45 @@ const BuyForm: React.FC = () => {
 
           {/* 배송 주소 섹션 */}
           <div className={styles.delivery}>
-            {finalSaveBtn ? (
-              <>
-                <div className={styles.sectionHeader}>
-                  <h3 className={styles.sectionTitle}>배송 주소</h3>
-                  <button onClick={formatBtn} className={styles.changeButton}>
-                    변경
-                  </button>
-                </div>
-                <div className={styles.addressInfo}>
-                  <div className={styles.addressRow}>
-                    <div className={styles.addressLabel}>받는 분</div>
-                    <div className={styles.addressValue}>
-                      {formatName(finalName)}
-                    </div>
-                  </div>
-                  <div className={styles.addressRow}>
-                    <div className={styles.addressLabel}>연락처</div>
-                    <div className={styles.addressValue}>{numberVal}</div>
-                  </div>
-                  <div className={styles.addressRow}>
-                    <div className={styles.addressLabel}>배송 주소</div>
-                    <div className={styles.addressValue}>
-                      ({finalZonecode}) {finalRoadaddress} ({finalBname},{" "}
-                      {finalBuildingname}) {finalBetterAddress}
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={styles.sectionHeader}>
-                  <h3 className={styles.sectionTitle}>배송 주소</h3>
-                </div>
+            <div className={styles.sectionHeader}>
+              <h3 className={styles.sectionTitle}>배송 주소</h3>
+              {selectedAddress && (
                 <button
-                  className={styles.noAddressButton}
-                  onClick={() => setAddressModalOpen(true)}
+                  onClick={() => setAddressListOpen(true)}
+                  className={styles.changeButton}
                 >
-                  주소를 추가해주세요.
+                  변경
                 </button>
-              </>
+              )}
+            </div>
+
+            {selectedAddress ? (
+              <div className={styles.addressInfo}>
+                <div className={styles.addressRow}>
+                  <div className={styles.addressLabel}>받는 분</div>
+                  <div className={styles.addressValue}>
+                    {formatName(selectedAddress.recipientName)}
+                  </div>
+                </div>
+                <div className={styles.addressRow}>
+                  <div className={styles.addressLabel}>연락처</div>
+                  <div className={styles.addressValue}>{numberVal}</div>
+                </div>
+                <div className={styles.addressRow}>
+                  <div className={styles.addressLabel}>배송 주소</div>
+                  <div className={styles.addressValue}>
+                    ({selectedAddress.zipCode}) {selectedAddress.address}{" "}
+                    {selectedAddress.detailedAddress}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button
+                className={styles.noAddressButton}
+                onClick={() => setAddressListOpen(true)}
+              >
+                주소를 추가해주세요.
+              </button>
             )}
 
             {/* 배송 요청사항 */}
@@ -633,33 +651,27 @@ const BuyForm: React.FC = () => {
         </div>
       </div>
 
-      {/* 모달 컴포넌트 */}
+      {/* 주소 목록 모달 */}
+      {isAddressListOpen && (
+        <DeliveryAddressList
+          isOpen={isAddressListOpen}
+          onClose={() => setAddressListOpen(false)}
+          onSelectAddress={handleAddressSelected}
+          selectedAddressId={selectedAddress?.id}
+        />
+      )}
+
+      {/* 주소 추가 모달 */}
       {isAddressModalOpen && (
         <DeliveryAddressModal
           isOpen={isAddressModalOpen}
           onClose={() => setAddressModalOpen(false)}
-          onSave={(
-            name,
-            phoneNumber,
-            zonecode,
-            roadAddress,
-            bname,
-            buildingName,
-            detailAddress
-          ) => {
-            setFinalName(name);
-            setFinalNumber(phoneNumber);
-            setFinalZonecode(zonecode);
-            setFinalRoadaddress(roadAddress);
-            setFinalBname(bname);
-            setFinalBuildingname(buildingName);
-            setFinalBetterAddress(detailAddress);
-            setFinalSaveBtn(true);
-            setAddressModalOpen(false);
-          }}
+          onSave={handleAddressAdded}
+          selectedAddress={selectedAddress || undefined}
         />
       )}
 
+      {/* 요청사항 모달 */}
       {isRequestModalOpen && (
         <RequestModal
           isOpen={isRequestModalOpen}

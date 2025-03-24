@@ -13,6 +13,7 @@ import PriceInputModal from "../components/PriceInputModal";
 import RequestModal from "../components/RequestModal";
 import BankAccountModal from "../components/BankAccountModal";
 import DeliveryAddressModal from "../components/DeliveryAddressModal";
+import DeliveryAddressList from "../components/DeliveryAddressList";
 
 // 이미지 경로
 const deliveryImg = "/img/detail-page/ship_imfo.png";
@@ -42,6 +43,7 @@ const SellForm: React.FC = () => {
   const [requestOption, setRequestOption] = useState<string>("요청사항 없음");
   const [customPrice, setCustomPrice] = useState<number | null>(null); // 사용자 지정 가격
   const [isAddressModalOpen, setAddressModalOpen] = useState<boolean>(false);
+  const [isAddressListOpen, setAddressListOpen] = useState<boolean>(false);
   const [isBankAccountModalOpen, setBankAccountModalOpen] =
     useState<boolean>(false);
   const [isRequestModalOpen, setRequestModalOpen] = useState<boolean>(false);
@@ -157,6 +159,18 @@ const SellForm: React.FC = () => {
   const formatPrice = (price: number | null): string => {
     if (price === null) return "0";
     return new Intl.NumberFormat("ko-KR").format(price);
+  };
+
+  // 주소 선택 처리
+  const handleAddressSelected = (address: AddressResponseDto) => {
+    setSelectedAddress(address);
+  };
+
+  // 새 주소 추가 처리
+  const handleAddressAdded = (address: AddressResponseDto) => {
+    setSelectedAddress(address);
+    // 주소 목록 다시 불러오기
+    addressService.getAddresses();
   };
 
   // 판매 제출 처리
@@ -293,51 +307,47 @@ const SellForm: React.FC = () => {
 
         {/* 반송 주소 섹션 */}
         <div className={styles.section}>
-          {selectedAddress ? (
-            <>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>반송 주소</h3>
-                <button
-                  onClick={() => setAddressModalOpen(true)}
-                  className={styles.changeButton}
-                >
-                  변경
-                </button>
-              </div>
-              <div className={styles.addressInfo}>
-                <div className={styles.addressRow}>
-                  <div className={styles.addressLabel}>받는 분</div>
-                  <div className={styles.addressValue}>
-                    {maskName(selectedAddress.recipientName)}
-                  </div>
-                </div>
-                <div className={styles.addressRow}>
-                  <div className={styles.addressLabel}>연락처</div>
-                  <div className={styles.addressValue}>
-                    {maskPhoneNumber(selectedAddress.phoneNumber)}
-                  </div>
-                </div>
-                <div className={styles.addressRow}>
-                  <div className={styles.addressLabel}>반송 주소</div>
-                  <div className={styles.addressValue}>
-                    ({selectedAddress.zipCode}) {selectedAddress.address}{" "}
-                    {selectedAddress.detailedAddress}
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>반송 주소</h3>
-              </div>
+          <div className={styles.sectionHeader}>
+            <h3 className={styles.sectionTitle}>반송 주소</h3>
+            {selectedAddress && (
               <button
-                className={styles.noAddressButton}
-                onClick={() => setAddressModalOpen(true)}
+                onClick={() => setAddressListOpen(true)}
+                className={styles.changeButton}
               >
-                주소를 추가해주세요.
+                변경
               </button>
-            </>
+            )}
+          </div>
+
+          {selectedAddress ? (
+            <div className={styles.addressInfo}>
+              <div className={styles.addressRow}>
+                <div className={styles.addressLabel}>받는 분</div>
+                <div className={styles.addressValue}>
+                  {maskName(selectedAddress.recipientName)}
+                </div>
+              </div>
+              <div className={styles.addressRow}>
+                <div className={styles.addressLabel}>연락처</div>
+                <div className={styles.addressValue}>
+                  {maskPhoneNumber(selectedAddress.phoneNumber)}
+                </div>
+              </div>
+              <div className={styles.addressRow}>
+                <div className={styles.addressLabel}>반송 주소</div>
+                <div className={styles.addressValue}>
+                  ({selectedAddress.zipCode}) {selectedAddress.address}{" "}
+                  {selectedAddress.detailedAddress}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button
+              className={styles.noAddressButton}
+              onClick={() => setAddressListOpen(true)}
+            >
+              주소를 추가해주세요.
+            </button>
           )}
 
           {/* 배송 요청사항 */}
@@ -581,14 +591,20 @@ const SellForm: React.FC = () => {
       </div>
 
       {/* 모달 컴포넌트 */}
+      {isAddressListOpen && (
+        <DeliveryAddressList
+          isOpen={isAddressListOpen}
+          onClose={() => setAddressListOpen(false)}
+          onSelectAddress={handleAddressSelected}
+          selectedAddressId={selectedAddress?.id}
+        />
+      )}
+
       {isAddressModalOpen && (
         <DeliveryAddressModal
           isOpen={isAddressModalOpen}
           onClose={() => setAddressModalOpen(false)}
-          onSave={(address) => {
-            setSelectedAddress(address);
-            setAddressModalOpen(false);
-          }}
+          onSave={handleAddressAdded}
           selectedAddress={selectedAddress || undefined}
         />
       )}

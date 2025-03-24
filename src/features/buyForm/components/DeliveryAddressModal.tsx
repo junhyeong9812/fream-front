@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./DeliveryAddressModal.module.css";
+import { AddressResponseDto, AddressCreateDto } from "../types/address";
+import { addressService } from "../services/addressService";
 
 interface DeliveryAddressModalProps {
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface DeliveryAddressModalProps {
     buildingName: string,
     detailAddress: string
   ) => void;
+  selectedAddress?: AddressResponseDto;
 }
 
 declare global {
@@ -25,6 +28,7 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
   isOpen,
   onClose,
   onSave,
+  selectedAddress,
 }) => {
   const [inputNameValue, setInputNameValue] = useState<string>("");
   const [showNameWarning, setShowNameWarning] = useState<boolean>(false);
@@ -39,13 +43,47 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
 
   const [inputAddressValue, setInputAddressValue] = useState<string>("");
   const [hasAddressInput, setHasAddressInput] = useState<boolean>(false);
+  const [isDefault, setIsDefault] = useState<boolean>(false);
 
   const [finalBtn, setFinalBtn] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  // 선택된 주소가 있는 경우 폼 초기화
+  useEffect(() => {
+    if (selectedAddress) {
+      setInputNameValue(selectedAddress.recipientName);
+      setInputNumberValue(selectedAddress.phoneNumber);
+      setZonecode(selectedAddress.zipCode);
+      setRoadaddress(selectedAddress.address);
+      setBname(""); // 주소 정보에서 제공하지 않는 경우
+      setBuildingname(""); // 주소 정보에서 제공하지 않는 경우
+      setInputAddressValue(selectedAddress.detailedAddress);
+      setIsDefault(selectedAddress.isDefault);
+      setHasAddressInput(selectedAddress.detailedAddress.length > 0);
+    } else {
+      // 새 주소 추가시 초기화
+      setInputNameValue("");
+      setInputNumberValue("");
+      setZonecode("");
+      setRoadaddress("");
+      setBname("");
+      setBuildingname("");
+      setInputAddressValue("");
+      setIsDefault(false);
+      setHasAddressInput(false);
+    }
+
+    // 경고 메시지 초기화
+    setShowNameWarning(false);
+    setShowNumberWarning(false);
+  }, [selectedAddress, isOpen]);
 
   // 주소 표시 값 계산
   const inputValue = zonecode ? zonecode : "우편 번호를 검색하세요";
   const inputValue2 = zonecode
-    ? `${roadaddress} (${bname}, ${buildingname})`
+    ? bname || buildingname
+      ? `${roadaddress} (${bname || ""}, ${buildingname || ""})`
+      : roadaddress
     : "우편 번호 검색 후, 자동입력 됩니다";
   const inputClassName = zonecode
     ? styles.nameInputTxt
@@ -61,20 +99,26 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
   // 주소 검색 팝업 열기
   const handleAddressSearch = () => {
-    new window.daum.Postcode({
-      oncomplete: function (data: any) {
-        setZonecode(data.zonecode);
-        setRoadaddress(data.roadAddress);
-        setBname(data.bname || "");
-        setBuildingname(data.buildingName || "");
-      },
-    }).open();
+    if (window.daum && window.daum.Postcode) {
+      new window.daum.Postcode({
+        oncomplete: function (data: any) {
+          setZonecode(data.zonecode);
+          setRoadaddress(data.roadAddress);
+          setBname(data.bname || "");
+          setBuildingname(data.buildingName || "");
+        },
+      }).open();
+    } else {
+      alert("주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+    }
   };
 
   // 이름 입력 처리
@@ -90,9 +134,9 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
 
   // 전화번호 입력 처리
   const handleInputNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 입력 가능
     setInputNumberValue(value);
-    if (value.length < 10 || value.length > 11 || isNaN(Number(value))) {
+    if (value.length < 10 || value.length > 11) {
       setShowNumberWarning(true);
     } else {
       setShowNumberWarning(false);
@@ -106,18 +150,102 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
     setHasAddressInput(value.length > 0);
   };
 
+  // 기본 배송지 체크박스 처리
+  const handleDefaultAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsDefault(e.target.checked);
+  };
+
   // 저장 버튼 활성화 여부 체크
   useEffect(() => {
-    if (zonecode && !showNameWarning && !showNumberWarning && hasAddressInput) {
+    if (
+      zonecode &&
+      !showNameWarning &&
+      !showNumberWarning &&
+      hasAddressInput &&
+      inputNameValue.length >= 2
+    ) {
       setFinalBtn(true);
     } else {
       setFinalBtn(false);
     }
-  }, [zonecode, showNameWarning, showNumberWarning, hasAddressInput]);
+  }, [
+    zonecode,
+    showNameWarning,
+    showNumberWarning,
+    hasAddressInput,
+    inputNameValue,
+  ]);
+
+  // 폼 유효성 검사
+  const validateForm = (): boolean => {
+    let isValid = true;
+
+    if (!inputNameValue || inputNameValue.length < 2) {
+      setShowNameWarning(true);
+      isValid = false;
+    }
+
+    if (
+      !inputNumberValue ||
+      inputNumberValue.length < 10 ||
+      inputNumberValue.length > 11
+    ) {
+      setShowNumberWarning(true);
+      isValid = false;
+    }
+
+    if (!zonecode || !roadaddress) {
+      alert("주소를 검색해주세요.");
+      isValid = false;
+    }
+
+    if (!inputAddressValue || inputAddressValue.trim() === "") {
+      setHasAddressInput(false);
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   // 저장 처리
-  const handleSave = () => {
-    if (finalBtn) {
+  const handleSave = async () => {
+    if (!finalBtn || isSubmitting) return;
+
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      if (selectedAddress) {
+        // 주소 업데이트
+        const updateData = {
+          addressId: selectedAddress.id,
+          recipientName: inputNameValue,
+          phoneNumber: inputNumberValue,
+          zipCode: zonecode,
+          address: roadaddress,
+          detailedAddress: inputAddressValue,
+          isDefault: isDefault,
+        };
+
+        await addressService.updateAddress(updateData);
+      } else {
+        // 새 주소 생성
+        const createData: AddressCreateDto = {
+          recipientName: inputNameValue,
+          phoneNumber: inputNumberValue,
+          zipCode: zonecode,
+          address: roadaddress,
+          detailedAddress: inputAddressValue,
+          isDefault: isDefault,
+        };
+
+        await addressService.createAddress(createData);
+      }
+
+      // 기존 onSave 호출
       onSave(
         inputNameValue,
         inputNumberValue,
@@ -127,6 +255,11 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
         buildingname,
         inputAddressValue
       );
+    } catch (error) {
+      console.error("주소 저장 실패:", error);
+      alert("주소 저장에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -136,7 +269,9 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
-          <h3 className={styles.modalTitle}>새 주소 추가</h3>
+          <h3 className={styles.modalTitle}>
+            {selectedAddress ? "주소 수정" : "새 주소 추가"}
+          </h3>
           <button className={styles.closeButton} onClick={onClose}>
             ×
           </button>
@@ -186,6 +321,7 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
               className={`${styles.input} ${
                 showNumberWarning ? styles.errorInput : ""
               }`}
+              maxLength={11}
             />
             {showNumberWarning && (
               <p className={styles.errorText}>
@@ -236,6 +372,20 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
             />
           </div>
 
+          {/* 기본 배송지 체크박스 */}
+          <div className={styles.checkboxGroup}>
+            <input
+              type="checkbox"
+              id="isDefault"
+              checked={isDefault}
+              onChange={handleDefaultAddressChange}
+              className={styles.checkbox}
+            />
+            <label htmlFor="isDefault" className={styles.checkboxLabel}>
+              기본 배송지로 설정
+            </label>
+          </div>
+
           {/* 버튼 그룹 */}
           <div className={styles.buttonGroup}>
             <button onClick={onClose} className={styles.cancelButton}>
@@ -244,11 +394,11 @@ const DeliveryAddressModal: React.FC<DeliveryAddressModalProps> = ({
             <button
               onClick={handleSave}
               className={`${styles.saveButton} ${
-                !finalBtn ? styles.disabledButton : ""
+                !finalBtn || isSubmitting ? styles.disabledButton : ""
               }`}
-              disabled={!finalBtn}
+              disabled={!finalBtn || isSubmitting}
             >
-              저장하기
+              {isSubmitting ? "저장 중..." : "저장하기"}
             </button>
           </div>
         </div>
