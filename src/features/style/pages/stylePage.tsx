@@ -130,19 +130,19 @@ const StylePage: React.FC = () => {
   }, [isLoading, hasMore]);
 
   const tabs = [
-    { name: "KICKS", path: "/style/kicks", updated: false },
+    // { name: "KICKS", path: "/style/kicks", updated: false },
     { name: "팔로잉", path: "/style/following", updated: false },
     { name: "발견", path: "/style/explore", updated: false },
     { name: "랭킹", path: "/style/ranking", updated: true },
     { name: "트렌드", path: "/style/trend", updated: true },
-    { name: "겨울 핫템", path: "/style/winter", updated: false },
-    { name: "스니커즈", path: "/style/sneakers", updated: false },
-    { name: "럭셔리", path: "/style/luxury", updated: false },
-    { name: "의류", path: "/style/clothing", updated: false },
-    { name: "가방", path: "/style/bags", updated: false },
-    { name: "셀럽 스타일", path: "/style/celebrity", updated: false },
-    { name: "컬렉터블", path: "/style/collectibles", updated: false },
-    { name: "액세서리", path: "/style/accessories", updated: false },
+    // { name: "겨울 핫템", path: "/style/winter", updated: false },
+    // { name: "스니커즈", path: "/style/sneakers", updated: false },
+    // { name: "럭셔리", path: "/style/luxury", updated: false },
+    // { name: "의류", path: "/style/clothing", updated: false },
+    // { name: "가방", path: "/style/bags", updated: false },
+    // { name: "셀럽 스타일", path: "/style/celebrity", updated: false },
+    // { name: "컬렉터블", path: "/style/collectibles", updated: false },
+    // { name: "액세서리", path: "/style/accessories", updated: false },
   ];
 
   return (
