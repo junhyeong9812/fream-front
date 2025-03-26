@@ -31,6 +31,7 @@ const BuyForm: React.FC = () => {
   const [searchParams] = useSearchParams();
   const colorName = searchParams.get("color") || "";
   const navigate = useNavigate();
+  const portOnechannelKey = process.env.REACT_APP_IMP_CHANNEL_KEY;
 
   // 상태 관리
   const [product, setProduct] = useState<ProductDetailDto | null>(null);
@@ -209,85 +210,98 @@ const BuyForm: React.FC = () => {
 
     setIsLoading(true);
 
-    // IMP 초기화
-    const { IMP } = window;
-    const channelKey = process.env.REACT_APP_IMP_CHANNEL_KEY || "imp25812042"; // 환경변수 사용
-    IMP.init(channelKey); // 포트원 가맹점 식별코드
+    // 사용자 이메일 가져오기
+    orderService
+      .getUserEmail()
+      .then((userEmail) => {
+        // IMP 초기화
+        const { IMP } = window;
+        const channelKey = process.env.REACT_APP_PORTONE_CHANNEL_KEY;
+        IMP.init(channelKey); // 포트원 가맹점 식별코드
 
-    // 결제 요청
-    IMP.request_pay(
-      {
-        pg: "html5_inicis",
-        pay_method: "card",
-        merchant_uid: `payment-${crypto.randomUUID()}`,
-        name: product.name,
-        amount: sizeInfo.purchasePrice + 3000, // 상품가격 + 배송비
-        buyer_email: "user@example.com", // TODO: 실제 사용자 이메일로 대체
-        buyer_name: selectedAddress.recipientName,
-        buyer_tel: selectedAddress.phoneNumber,
-        buyer_addr: `${selectedAddress.address} ${selectedAddress.detailedAddress}`,
-        buyer_postcode: selectedAddress.zipCode,
-      },
-      async (response: any) => {
-        if (response.success) {
-          try {
-            // 1. 주문 입찰 생성
-            const orderBidRequest: OrderBidRequestDto = {
-              productSizeId: 1, // TODO: 실제 상품 사이즈 ID로 대체
-              bidPrice: sizeInfo.purchasePrice,
-            };
+        // 결제 요청
+        IMP.request_pay(
+          {
+            channelKey: portOnechannelKey,
+            pg: "nice",
+            pay_method: "card",
+            merchant_uid: `payment-${crypto.randomUUID()}`,
+            name: product.name,
+            amount: sizeInfo.purchasePrice + 3000, // 상품가격 + 배송비
+            buyer_email: userEmail, // 가져온 이메일 사용
+            buyer_name: selectedAddress.recipientName,
+            buyer_tel: selectedAddress.phoneNumber,
+            buyer_addr: `${selectedAddress.address} ${selectedAddress.detailedAddress}`,
+            buyer_postcode: selectedAddress.zipCode,
+          },
+          async (response: any) => {
+            if (response.success) {
+              try {
+                // 1. 주문 입찰 생성
+                const orderBidRequest: OrderBidRequestDto = {
+                  productSizeId: 1, // TODO: 실제 상품 사이즈 ID로 대체
+                  bidPrice: sizeInfo.purchasePrice,
+                };
 
-            const orderId = await orderService.createOrderBid(orderBidRequest);
+                const orderId = await orderService.createOrderBid(
+                  orderBidRequest
+                );
 
-            // 2. 결제 및 배송 정보 처리
-            const payAndShipmentRequest: PayAndShipmentRequestDto = {
-              paymentRequest: {
-                paymentMethod:
-                  paymentBtn === 1
-                    ? "CARD"
-                    : paymentBtn === 2
-                    ? "NAVER_PAY"
-                    : paymentBtn === 3
-                    ? "KAKAO_PAY"
-                    : paymentBtn === 4
-                    ? "TOSS_PAY"
-                    : "PAYCO",
-                amount: sizeInfo.purchasePrice + 3000,
-                orderId: orderId,
-                impUid: response.imp_uid,
-                merchantUid: response.merchant_uid,
-              },
-              receiverName: selectedAddress.recipientName,
-              receiverPhone: selectedAddress.phoneNumber,
-              postalCode: selectedAddress.zipCode,
-              address: `${selectedAddress.address} ${selectedAddress.detailedAddress}`,
-              warehouseStorage: isWarehouseStorage,
-            };
+                // 2. 결제 및 배송 정보 처리
+                const payAndShipmentRequest: PayAndShipmentRequestDto = {
+                  paymentRequest: {
+                    paymentMethod:
+                      paymentBtn === 1
+                        ? "CARD"
+                        : paymentBtn === 2
+                        ? "NAVER_PAY"
+                        : paymentBtn === 3
+                        ? "KAKAO_PAY"
+                        : paymentBtn === 4
+                        ? "TOSS_PAY"
+                        : "PAYCO",
+                    amount: sizeInfo.purchasePrice + 3000,
+                    orderId: orderId,
+                    impUid: response.imp_uid,
+                    merchantUid: response.merchant_uid,
+                  },
+                  receiverName: selectedAddress.recipientName,
+                  receiverPhone: selectedAddress.phoneNumber,
+                  postalCode: selectedAddress.zipCode,
+                  address: `${selectedAddress.address} ${selectedAddress.detailedAddress}`,
+                  warehouseStorage: isWarehouseStorage,
+                };
 
-            await orderService.processPaymentAndShipment(
-              orderId,
-              payAndShipmentRequest
-            );
+                await orderService.processPaymentAndShipment(
+                  orderId,
+                  payAndShipmentRequest
+                );
 
-            // 3. 결제 완료 페이지로 이동
-            navigate("/buy/success", {
-              state: {
-                orderId: orderId,
-                productInfo: product,
-                sizeInfo: sizeInfo,
-                totalAmount: sizeInfo.purchasePrice + 3000,
-              },
-            });
-          } catch (error) {
-            console.error("주문 처리 실패:", error);
-            alert("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+                // 3. 결제 완료 페이지로 이동
+                navigate("/buy/success", {
+                  state: {
+                    orderId: orderId,
+                    productInfo: product,
+                    sizeInfo: sizeInfo,
+                    totalAmount: sizeInfo.purchasePrice + 3000,
+                  },
+                });
+              } catch (error) {
+                console.error("주문 처리 실패:", error);
+                alert("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+              }
+            } else {
+              alert(`결제에 실패했습니다: ${response.error_msg}`);
+            }
+            setIsLoading(false);
           }
-        } else {
-          alert(`결제에 실패했습니다: ${response.error_msg}`);
-        }
+        );
+      })
+      .catch((error) => {
+        console.error("이메일 가져오기 실패:", error);
         setIsLoading(false);
-      }
-    );
+        alert("결제 준비 중 오류가 발생했습니다.");
+      });
   };
 
   // 로딩 중일 때 표시

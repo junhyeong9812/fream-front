@@ -51,4 +51,13 @@ export const orderService = {
     const response = await apiClient.get<any>(`/orders/${orderId}`);
     return response.data;
   },
+  getUserEmail: async (): Promise<string> => {
+    try {
+      const response = await apiClient.get<string>("/auth/email");
+      return response.data;
+    } catch (error) {
+      console.error("사용자 이메일 가져오기 실패:", error);
+      return "user@example.com"; // 실패 시 기본값 반환
+    }
+  },
 };
