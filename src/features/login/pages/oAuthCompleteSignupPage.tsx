@@ -1,4 +1,4 @@
-import styles from "../css/OAuthCompleteSignupPage.module.css";
+import styles from "../OAuthCompleteSignupPage.module.css";
 import React, { useContext, useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import OAuthSizeModal from "../components/OAuthSizeModal";
