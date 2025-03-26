@@ -4,16 +4,22 @@ import AdminPage from "../features/admin/pages/adminPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
+import AdminFindEmail from "../features/admin/pages/AdminFindEmailPage";
+import AdminFindPassword from "../features/admin/pages/AdminFindPasswordPage";
 
 const AdminRoutes: React.FC = () => {
   return (
     <Routes>
       {/* 관리자 로그인 페이지 - 보호되지 않음 */}
-      <Route path="/login" element={<AdminLoginPage />} />
-
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin/login/find_email" element={<AdminFindEmail />} />
+      <Route
+        path="/admin/login/find_password"
+        element={<AdminFindPassword />}
+      />
       {/* 보호된 관리자 경로들 */}
       <Route
-        path="/"
+        path="/admin"
         element={
           <ProtectedAdminRoute>
             <AdminLayout />
