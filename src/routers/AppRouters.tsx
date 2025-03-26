@@ -62,7 +62,7 @@ import StyleDetailPage from "../features/style/pages/StyleDetailPage";
 import SellForm from "../features/sellForm/pages/sellForm";
 import BuyForm from "../features/buyForm/pages/BuyForm";
 import BuySuccessPage from "../features/buyForm/pages/BuySuccessPage";
-import OAuthCompleteSignupPage from "../features/login/pages/oAuthCompleteSignupPage";
+import OAuthCompleteSignupPage from "../features/login/pages/OAuthCompleteSignupPage";
 
 // 스타일드 컴포넌트로 Wrapping
 const AppRoutesContainer = styled.div`
