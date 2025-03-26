@@ -10,6 +10,8 @@ import { AuthProvider } from "./global/context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HeaderProvider, useHeader } from "./global/context/HeaderContext";
 import FloatingButtons from "./global/components/floatingButtons/FloatingButtons";
+import { useLocation } from "react-router-dom";
+import AdminRoutes from "./routers/AdminRoutes";
 
 const AppContainer = styled.div`
   display: flex;
@@ -43,6 +45,8 @@ const StyledHeader = styled(Header)`
 
 const AppContent = () => {
   const { headerHeight, refreshAccessCount } = useHeader();
+  const location = useLocation(); // 현재 경로 확인용
+  const isAdminRoute = location.pathname.startsWith("/admin"); // admin 경로 체크
 
   useEffect(() => {
     const sendLogAndUpdateCount = async () => {
@@ -66,8 +70,10 @@ const AppContent = () => {
     };
 
     sendLogAndUpdateCount();
-  }, [refreshAccessCount]);
-
+  }, [refreshAccessCount, location.pathname, isAdminRoute]);
+  if (isAdminRoute) {
+    return <AdminRoutes />;
+  }
   return (
     <AppContainer>
       <StyledHeader />

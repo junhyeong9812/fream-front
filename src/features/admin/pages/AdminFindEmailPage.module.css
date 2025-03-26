@@ -1,0 +1,160 @@
+.container {
+  width: 400px;
+  margin: 60px auto;
+  color: #fff;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 이메일 찾기 성공 */
+/* 제목 */
+.successTitle {
+  font-size: 24px;
+  border-bottom: 2px solid #495057;
+  text-align: center;
+  font-weight: 700;
+  padding-top: 40px;
+  padding-bottom: 41px;
+  color: #fff;
+}
+
+/* 이메일 정보 */
+.successInfoContent {
+  padding-top: 30px;
+  text-align: center;
+}
+
+.successInfoText {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.successInfoEmail {
+  font-size: 18px;
+  font-weight: 700;
+  padding-top: 8px;
+  color: #fff;
+}
+
+/* 비밀번호 찾기 및 로그인 버튼 */
+.successBtnContent {
+  padding-top: 56px;
+  display: flex;
+}
+
+.successPasswordBtn {
+  width: 196px;
+  height: 52px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #495057;
+  border-radius: 12px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.successLoginBtn {
+  width: 196px;
+  height: 52px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 8px;
+  border: 1px solid #0d6efd;
+  border-radius: 12px;
+  background-color: #0d6efd;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* 이메일 찾기 */
+/* 제목 */
+.titleContent {
+  font-size: 32px;
+  border-bottom: 2px solid #495057;
+  padding-bottom: 41px;
+  text-align: center;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 공지 */
+.noticeContent {
+  font-size: 14px;
+  padding-top: 40px;
+  padding-bottom: 30px;
+  color: #adb5bd;
+}
+
+/* 입력 */
+.inputContent {
+  padding-top: 10px;
+  padding-bottom: 14px;
+}
+
+.inputTitleContent {
+  font-size: 13px;
+  line-height: 18px;
+  color: #fff;
+}
+
+.inputField {
+  font-size: 15px;
+  line-height: 22px;
+  border: none;
+  outline: none;
+  width: 400px;
+  padding: 8px 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #495057;
+  background-color: transparent;
+  color: #fff;
+}
+
+.inputField::placeholder {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.inputField:focus {
+  border-bottom: 2px solid #0d6efd;
+}
+
+.inputField:focus::placeholder {
+  opacity: 0;
+}
+
+/* 버튼 */
+.btnActive {
+  margin-top: 44px;
+  width: 400px;
+  height: 52px;
+  font-size: 16px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  background-color: #0d6efd;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btnInactive {
+  margin-top: 44px;
+  width: 400px;
+  height: 52px;
+  font-size: 16px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 400;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: default;
+}
