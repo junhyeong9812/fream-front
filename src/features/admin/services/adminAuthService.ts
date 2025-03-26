@@ -1,12 +1,5 @@
 import apiClient from "src/global/services/ApiClient";
-import {
-  AdminLoginData,
-  AdminFindEmailData,
-  AdminFindPasswordData,
-  AdminLoginStatus,
-} from "../types/AdminloginTypes";
-
-// 로컬 스토리지 키
+import { AdminLoginStatus } from "src/features/admin/types/AdminLoginTypes"; // 로컬 스토리지 키
 const ADMIN_LOGIN_STATUS_KEY = "isAdminLoggedIn";
 
 /**

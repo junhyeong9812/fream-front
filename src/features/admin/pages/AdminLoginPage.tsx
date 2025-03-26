@@ -6,7 +6,7 @@ import {
   fetchAdminLoginData,
   checkAdminLoginStatus,
 } from "../services/adminAuthService";
-import { AdminLoginData } from "../types/AdminloginTypes";
+import { AdminLoginData } from "../types/AdminLoginTypes";
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { setIsAdminLoggedIn } = useAdminAuth();

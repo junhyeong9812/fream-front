@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminFindEmailPage.module.css";
 import { fetchAdminFindEmailData } from "../services/adminAuthService";
-import { AdminFindEmailData } from "../types/AdminloginTypes";
+import { AdminFindEmailData } from "../types/AdminLoginTypes";
 
 const AdminFindEmail: React.FC = () => {
   const navigate = useNavigate();

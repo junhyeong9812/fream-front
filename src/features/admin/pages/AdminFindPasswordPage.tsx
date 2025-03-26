@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminFindPasswordPage.module.css";
 import { fetchAdminFindPasswordData } from "../services/adminAuthService";
-import { AdminFindPasswordData } from "../types/AdminloginTypes";
+import { AdminFindPasswordData } from "../types/AdminLoginTypes";
 
 const AdminFindPassword: React.FC = () => {
   const navigate = useNavigate();
