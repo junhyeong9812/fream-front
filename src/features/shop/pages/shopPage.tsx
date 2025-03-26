@@ -11,8 +11,17 @@ import {
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useHeader } from "src/global/context/HeaderContext";
-import { ButtonOption, ImageData, SelectedFiltersPayload } from "../types/filterTypes";
-import { fetchShopData, setAdditionalFilters, setDeliveryOption, setSortOption } from "../services/shopService";
+import {
+  ButtonOption,
+  ImageData,
+  SelectedFiltersPayload,
+} from "../types/filterTypes";
+import {
+  fetchShopData,
+  setAdditionalFilters,
+  setDeliveryOption,
+  setSortOption,
+} from "../services/shopService";
 import styles from "./shopPage.module.css";
 import FilterModal from "../components/filterModal";
 import PopularityModal from "../components/popularityModal";
@@ -21,37 +30,39 @@ const ShopPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { headerHeight } = useHeader();
-  const [searchParams] = useSearchParams();
-  
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // State for filter modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // State for delivery filter buttons
   const [clickedButton, setClickedButton] = useState<string | null>(null);
-  
+
   // State for additional filters (checkboxes)
   const [additionalFilters, setAdditionalFilters] = useState({
     isBelowOriginalPrice: false,
     isExcludeSoldOut: false,
   });
-  
+
   // State for sort modal
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const sortModalRef = useRef<HTMLDivElement>(null);
   const [selectedSortOption, setSelectedSortOption] = useState("인기순");
-  
+
   // State for product data
   const [productData, setProductData] = useState<ImageData[]>([]);
-  
+
   // State for active tab
   const [activeTabId, setActiveTabId] = useState<string>("all");
-  
+
   // State for slide pagination
   const [page, setPage] = useState<number>(1);
   const itemsPerPage = 9;
-  
+
   // State for applied filters
-  const [appliedFilters, setAppliedFilters] = useState<SelectedFiltersPayload>({});
+  const [appliedFilters, setAppliedFilters] = useState<SelectedFiltersPayload>(
+    {}
+  );
 
   // Example data
   const categories = [
@@ -115,22 +126,22 @@ const ShopPage: React.FC = () => {
       // Build filter object from search params and applied filters
       const filterPayload: SelectedFiltersPayload = {
         ...appliedFilters,
-        keyword: searchParams.get("keyword") || undefined
+        keyword: searchParams.get("keyword") || undefined,
       };
-      
+
       // If there's an active tab other than "all", add it to category filter
       if (activeTabId !== "all") {
-        const activeTab = TAB_MENU_DATA.find(tab => tab.id === activeTabId);
+        const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
         if (activeTab && activeTab.filterValue) {
           filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
         }
       }
-      
+
       // Fetch products with filters - 포맷팅은 fetchShopData 내부에서 처리됨
       const products = await fetchShopData(filterPayload);
       setProductData(products);
     };
-    
+
     loadProducts();
   }, [searchParams, appliedFilters, activeTabId, location.state]);
 
@@ -138,7 +149,7 @@ const ShopPage: React.FC = () => {
   const handleDeliveryButtonClick = async (buttonLabel: string) => {
     const newValue = clickedButton === buttonLabel ? null : buttonLabel;
     setClickedButton(newValue);
-    
+
     // Update backend
     if (newValue) {
       await setDeliveryOption(newValue);
@@ -146,14 +157,16 @@ const ShopPage: React.FC = () => {
   };
 
   // Handle additional filter toggles (checkboxes)
-  const handleAdditionalFilterToggle = async (filterKey: "isBelowOriginalPrice" | "isExcludeSoldOut") => {
+  const handleAdditionalFilterToggle = async (
+    filterKey: "isBelowOriginalPrice" | "isExcludeSoldOut"
+  ) => {
     const newFilters = {
       ...additionalFilters,
       [filterKey]: !additionalFilters[filterKey],
     };
-    
+
     setAdditionalFilters(newFilters);
-    
+
     // Update backend
     await setAdditionalFilters(newFilters);
   };
@@ -162,7 +175,7 @@ const ShopPage: React.FC = () => {
   const handleSortOptionSelect = async (option: string) => {
     setSelectedSortOption(option);
     setIsSortModalOpen(false);
-    
+
     // Update backend
     await setSortOption(option);
   };
@@ -173,7 +186,67 @@ const ShopPage: React.FC = () => {
 
   // Handle applying filters from modal
   const handleApplyFilters = (filters: SelectedFiltersPayload) => {
+    // 기존 필터 상태 업데이트 유지
     setAppliedFilters(filters);
+
+    // 새 URL 파라미터 객체 생성
+    const newParams = new URLSearchParams(searchParams);
+
+    // 기존 필터 관련 파라미터 모두 제거
+    [
+      "categoryIds",
+      "brandIds",
+      "collectionIds",
+      "genders",
+      "colors",
+      "sizes",
+      "minPrice",
+      "maxPrice",
+    ].forEach((param) => {
+      newParams.delete(param);
+    });
+
+    // 카테고리 ID 추가
+    if (filters.categoryIds && filters.categoryIds.length > 0) {
+      newParams.set("categoryIds", filters.categoryIds.join(","));
+    }
+
+    // 브랜드 ID 추가
+    if (filters.brandIds && filters.brandIds.length > 0) {
+      newParams.set("brandIds", filters.brandIds.join(","));
+    }
+
+    // 컬렉션 ID 추가
+    if (filters.collectionIds && filters.collectionIds.length > 0) {
+      newParams.set("collectionIds", filters.collectionIds.join(","));
+    }
+
+    // 성별 추가
+    if (filters.genders && filters.genders.length > 0) {
+      newParams.set("genders", filters.genders.join(","));
+    }
+
+    // 색상 추가
+    if (filters.colors && filters.colors.length > 0) {
+      newParams.set("colors", filters.colors.join(","));
+    }
+
+    // 사이즈 추가
+    if (filters.sizes && filters.sizes.length > 0) {
+      newParams.set("sizes", filters.sizes.join(","));
+    }
+
+    // 가격 범위 추가
+    if (filters.minPrice) {
+      newParams.set("minPrice", filters.minPrice.toString());
+    }
+
+    if (filters.maxPrice) {
+      newParams.set("maxPrice", filters.maxPrice.toString());
+    }
+
+    // URL 파라미터 업데이트
+    setSearchParams(newParams);
   };
 
   // Handle product click navigation
@@ -208,16 +281,15 @@ const ShopPage: React.FC = () => {
         </div>
 
         {/* Navigation tabs */}
-        <nav 
-          className={styles.shopTab} 
-          style={{ top: `${headerHeight}px` }}
-        >
+        <nav className={styles.shopTab} style={{ top: `${headerHeight}px` }}>
           <div className={styles.tabs}>
             <ul className={styles.ulTab}>
               {TAB_MENU_DATA.map((menu) => (
                 <li key={menu.id} className={styles.liTab}>
                   <a
-                    className={`${styles.tabLink} ${activeTabId === menu.id ? styles.tabLinkActive : ''}`}
+                    className={`${styles.tabLink} ${
+                      activeTabId === menu.id ? styles.tabLinkActive : ""
+                    }`}
                     onClick={() => handleTabClick(menu.id)}
                   >
                     {menu.label}
@@ -248,7 +320,9 @@ const ShopPage: React.FC = () => {
                             style={{ width: "100%", height: "100%" }}
                           />
                         </div>
-                        <span className={styles.trendKeywordName}>{item.name}</span>
+                        <span className={styles.trendKeywordName}>
+                          {item.name}
+                        </span>
                       </div>
                     </a>
                   </div>
@@ -258,7 +332,9 @@ const ShopPage: React.FC = () => {
             <div className={styles.movingControl}>
               {/* Previous button */}
               <button
-                className={`${styles.arrow} ${page === 1 ? styles.arrowDisabled : ''}`}
+                className={`${styles.arrow} ${
+                  page === 1 ? styles.arrowDisabled : ""
+                }`}
                 disabled={page === 1}
                 onClick={() => setPage(page - 1)}
               >
@@ -273,7 +349,9 @@ const ShopPage: React.FC = () => {
                     <button
                       key={pageNum}
                       type="button"
-                      className={`${styles.pagination} ${pageNum === page ? styles.paginationActive : ''}`}
+                      className={`${styles.pagination} ${
+                        pageNum === page ? styles.paginationActive : ""
+                      }`}
                       onClick={() => setPage(pageNum)}
                     />
                   );
@@ -282,7 +360,9 @@ const ShopPage: React.FC = () => {
 
               {/* Next button */}
               <button
-                className={`${styles.arrow} ${page === totalPage ? styles.arrowDisabled : ''}`}
+                className={`${styles.arrow} ${
+                  page === totalPage ? styles.arrowDisabled : ""
+                }`}
                 disabled={page === totalPage}
                 onClick={() => setPage(page + 1)}
               >
@@ -295,7 +375,7 @@ const ShopPage: React.FC = () => {
         {/* Main content */}
         <div className={styles.contentContainer}>
           {/* Filter buttons */}
-          <div 
+          <div
             className={styles.shopFilterOpenButtonsContainer}
             style={{ top: `${headerHeight + 105}px` }}
           >
@@ -304,33 +384,54 @@ const ShopPage: React.FC = () => {
               <div className={styles.filterDeliveryContainer}>
                 <div className={styles.filterChipButtons}>
                   <button
-                    className={`${styles.filterButton} ${clickedButton === "빠른배송" ? styles.filterButtonActive : styles.filterButtonInactive}`}
+                    className={`${styles.filterButton} ${
+                      clickedButton === "빠른배송"
+                        ? styles.filterButtonActive
+                        : styles.filterButtonInactive
+                    }`}
                     onClick={() => handleDeliveryButtonClick("빠른배송")}
                   >
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faBolt} />
+                    <FontAwesomeIcon
+                      className={styles.buttonIcon}
+                      icon={faBolt}
+                    />
                     빠른배송
                   </button>
 
                   <button
-                    className={`${styles.filterButton} ${clickedButton === "브랜드배송" ? styles.filterButtonActive : styles.filterButtonInactive}`}
+                    className={`${styles.filterButton} ${
+                      clickedButton === "브랜드배송"
+                        ? styles.filterButtonActive
+                        : styles.filterButtonInactive
+                    }`}
                     onClick={() => handleDeliveryButtonClick("브랜드배송")}
                   >
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faTruck} />
+                    <FontAwesomeIcon
+                      className={styles.buttonIcon}
+                      icon={faTruck}
+                    />
                     브랜드배송
                   </button>
 
                   <button
-                    className={`${styles.filterButton} ${clickedButton === "프리미엄배송" ? styles.filterButtonActive : styles.filterButtonInactive}`}
+                    className={`${styles.filterButton} ${
+                      clickedButton === "프리미엄배송"
+                        ? styles.filterButtonActive
+                        : styles.filterButtonInactive
+                    }`}
                     onClick={() => handleDeliveryButtonClick("프리미엄배송")}
                   >
-                    <FontAwesomeIcon className={styles.buttonIcon} icon={faDollarSign} />
+                    <FontAwesomeIcon
+                      className={styles.buttonIcon}
+                      icon={faDollarSign}
+                    />
                     프리미엄배송
                   </button>
                 </div>
               </div>
-              
+
               <div className={styles.divider} />
-              
+
               {/* Filter menu buttons */}
               <div className={styles.searchFilterButtons}>
                 <button
@@ -344,8 +445,21 @@ const ShopPage: React.FC = () => {
                   <div className={styles.scrollContainer}>
                     <div className={styles.filterChipButtons}>
                       {/* Filter buttons that open the modal */}
-                      {["카테고리", "성별", "색상", "혜택/할인", "브랜드", "컬렉션", "사이즈", "가격대"].map((filter) => (
-                        <button key={filter} className={styles.filterButtonMenu} onClick={handleOpenFilterModal}>
+                      {[
+                        "카테고리",
+                        "성별",
+                        "색상",
+                        "혜택/할인",
+                        "브랜드",
+                        "컬렉션",
+                        "사이즈",
+                        "가격대",
+                      ].map((filter) => (
+                        <button
+                          key={filter}
+                          className={styles.filterButtonMenu}
+                          onClick={handleOpenFilterModal}
+                        >
                           <p className={styles.textGroup}>
                             <span className="title">{filter}</span>
                             <FaChevronDown />
@@ -370,7 +484,9 @@ const ShopPage: React.FC = () => {
                       type="checkbox"
                       className={styles.checkBox}
                       checked={additionalFilters.isBelowOriginalPrice}
-                      onChange={() => handleAdditionalFilterToggle("isBelowOriginalPrice")}
+                      onChange={() =>
+                        handleAdditionalFilterToggle("isBelowOriginalPrice")
+                      }
                     />
                     <span>정가이하</span>
                   </label>
@@ -381,7 +497,9 @@ const ShopPage: React.FC = () => {
                       type="checkbox"
                       className={styles.checkBox}
                       checked={additionalFilters.isExcludeSoldOut}
-                      onChange={() => handleAdditionalFilterToggle("isExcludeSoldOut")}
+                      onChange={() =>
+                        handleAdditionalFilterToggle("isExcludeSoldOut")
+                      }
                     />
                     <span>품절제외</span>
                   </label>
@@ -398,8 +516,14 @@ const ShopPage: React.FC = () => {
                   >
                     <span>
                       {selectedSortOption}
-                      <FontAwesomeIcon icon={faArrowUp} style={{ marginLeft: "5px" }} />
-                      <FontAwesomeIcon icon={faArrowDown} style={{ marginLeft: "2px" }} />
+                      <FontAwesomeIcon
+                        icon={faArrowUp}
+                        style={{ marginLeft: "5px" }}
+                      />
+                      <FontAwesomeIcon
+                        icon={faArrowDown}
+                        style={{ marginLeft: "2px" }}
+                      />
                     </span>
                   </button>
                   {isSortModalOpen && (
@@ -420,7 +544,9 @@ const ShopPage: React.FC = () => {
             {productData.map((product) => (
               <div
                 key={product.id}
-                onClick={() => handleProductClick(product.id, product.colorName)}
+                onClick={() =>
+                  handleProductClick(product.id, product.colorName)
+                }
                 style={{ cursor: "pointer" }}
               >
                 <div className={styles.searchResult}>
@@ -431,33 +557,50 @@ const ShopPage: React.FC = () => {
                         alt={`${product.brandName} ${product.name}`}
                         className={styles.productImage}
                       />
-                      <div className={styles.overlayText}>거래 {product.tradeCount}</div>
+                      <div className={styles.overlayText}>
+                        거래 {product.tradeCount}
+                      </div>
                     </div>
                   </div>
 
                   <div className={styles.imageInfo}>
                     <div className={styles.imgTitle}>
-                      <span className={styles.brandName}>{product.brandName}</span>
+                      <span className={styles.brandName}>
+                        {product.brandName}
+                      </span>
                       <div>
-                        <span className={styles.name}>{product.name || product.productName}</span>
-                        <span className={styles.translatedName}>{product.englishName}</span>
+                        <span className={styles.name}>
+                          {product.name || product.productName}
+                        </span>
+                        <span className={styles.translatedName}>
+                          {product.englishName}
+                        </span>
                       </div>
                     </div>
                     <div className={`${styles.price}`}>
                       <span className={styles.infoPrice}>
-                        {product.productPrice || `${product.price?.toLocaleString()}원`}
+                        {product.productPrice ||
+                          `${product.price?.toLocaleString()}원`}
                       </span>
                       <span className={styles.translatedName}>즉시 구매가</span>
                     </div>
                     <div className={styles.actionIcon}>
-                      <FontAwesomeIcon className={styles.translatedName} icon={faBookmark} />
+                      <FontAwesomeIcon
+                        className={styles.translatedName}
+                        icon={faBookmark}
+                      />
                       <span className={styles.translatedName}>
-                        {product.interestCount > 10000 
-                          ? `${(product.interestCount / 10000).toFixed(1)}만` 
+                        {product.interestCount > 10000
+                          ? `${(product.interestCount / 10000).toFixed(1)}만`
                           : product.interestCount.toLocaleString()}
                       </span>
-                      <FontAwesomeIcon className={styles.translatedName} icon={faNewspaper} />
-                      <span className={styles.translatedName}>{product.styleCount.toLocaleString()}</span>
+                      <FontAwesomeIcon
+                        className={styles.translatedName}
+                        icon={faNewspaper}
+                      />
+                      <span className={styles.translatedName}>
+                        {product.styleCount.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </div>
