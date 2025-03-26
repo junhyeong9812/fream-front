@@ -1,4 +1,4 @@
-import "../css/OAuthCompleteSignupPage.css";
+import styles from "../css/OAuthCompleteSignupPage.module.css";
 import React, { useContext, useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import OAuthSizeModal from "../components/OAuthSizeModal";
@@ -252,42 +252,42 @@ const OAuthCompleteSignupPage: React.FC = () => {
 
   return (
     <div
-      className="oauth_signup_form_container"
+      className={styles.oauth_signup_form_container}
       style={{
         paddingTop: `${headerHeight + 60}px`,
         minHeight: `calc(100vh - ${headerHeight}px)`,
       }}
     >
-      <div className="oauth_signup_form_margin_content">
-        <div className="oauth_signup_form_content">
-          <div className="oauth_signup_form_title_content">
+      <div className={styles.oauth_signup_form_margin_content}>
+        <div className={styles.oauth_signup_form_content}>
+          <div className={styles.oauth_signup_form_title_content}>
             소셜 회원가입 완료
           </div>
-          <div className="oauth_signup_form_subtitle">
+          <div className={styles.oauth_signup_form_subtitle}>
             추가 정보를 입력하여 회원가입을 완료해주세요.
           </div>
 
           {/* 에러 메시지 */}
           {errorMessage && (
-            <div className="oauth_signup_form_error_message">
+            <div className={styles.oauth_signup_form_error_message}>
               {errorMessage}
             </div>
           )}
 
           {/* 전화번호 입력 */}
-          <div className="oauth_signup_form_phone_input_content">
+          <div className={styles.oauth_signup_form_phone_input_content}>
             <div
-              className={`oauth_signup_form_phone_input_title ${
-                phoneWarn ? "oauth_signup_form_phone_input_title_warn" : ""
+              className={`${styles.oauth_signup_form_phone_input_title} ${
+                phoneWarn ? styles.oauth_signup_form_phone_input_title_warn : ""
               }`}
             >
               전화번호
             </div>
             <input
-              className={`oauth_signup_form_phone_input ${
+              className={`${styles.oauth_signup_form_phone_input} ${
                 phoneWarn
-                  ? "oauth_signup_form_phone_input_warn"
-                  : "oauth_signup_form_phone_input_none_warn"
+                  ? styles.oauth_signup_form_phone_input_warn
+                  : styles.oauth_signup_form_phone_input_none_warn
               }`}
               onChange={handlePhoneNumberChange}
               placeholder="'-' 없이 입력해주세요"
@@ -296,8 +296,10 @@ const OAuthCompleteSignupPage: React.FC = () => {
               value={signupData.phoneNumber}
             ></input>
             <div
-              className={`oauth_signup_form_phone_input_bottom ${
-                phoneWarn ? "oauth_signup_form_phone_input_bottom_warn" : ""
+              className={`${styles.oauth_signup_form_phone_input_bottom} ${
+                phoneWarn
+                  ? styles.oauth_signup_form_phone_input_bottom_warn
+                  : ""
               }`}
             >
               {phoneWarn ? "올바른 전화번호를 입력해주세요." : ""}
@@ -305,19 +307,19 @@ const OAuthCompleteSignupPage: React.FC = () => {
           </div>
 
           {/* 나이 입력 */}
-          <div className="oauth_signup_form_age_input_content">
+          <div className={styles.oauth_signup_form_age_input_content}>
             <div
-              className={`oauth_signup_form_age_input_title ${
-                ageWarn ? "oauth_signup_form_age_input_title_warn" : ""
+              className={`${styles.oauth_signup_form_age_input_title} ${
+                ageWarn ? styles.oauth_signup_form_age_input_title_warn : ""
               }`}
             >
               나이
             </div>
             <input
-              className={`oauth_signup_form_age_input ${
+              className={`${styles.oauth_signup_form_age_input} ${
                 ageWarn
-                  ? "oauth_signup_form_age_input_warn"
-                  : "oauth_signup_form_age_input_none_warn"
+                  ? styles.oauth_signup_form_age_input_warn
+                  : styles.oauth_signup_form_age_input_none_warn
               }`}
               onChange={handleAgeChange}
               placeholder="만 나이를 입력해주세요"
@@ -327,8 +329,8 @@ const OAuthCompleteSignupPage: React.FC = () => {
               value={signupData.age || ""}
             ></input>
             <div
-              className={`oauth_signup_form_age_input_bottom ${
-                ageWarn ? "oauth_signup_form_age_input_bottom_warn" : ""
+              className={`${styles.oauth_signup_form_age_input_bottom} ${
+                ageWarn ? styles.oauth_signup_form_age_input_bottom_warn : ""
               }`}
             >
               {ageWarn ? "만 14세 이상만 가입 가능합니다." : ""}
@@ -336,56 +338,66 @@ const OAuthCompleteSignupPage: React.FC = () => {
           </div>
 
           {/* 성별 선택 */}
-          <div className="oauth_signup_form_gender_container">
-            <div className="oauth_signup_form_gender_title">성별</div>
-            <div className="oauth_signup_form_gender_options">
+          <div className={styles.oauth_signup_form_gender_container}>
+            <div className={styles.oauth_signup_form_gender_title}>성별</div>
+            <div className={styles.oauth_signup_form_gender_options}>
               <div
-                className="oauth_signup_form_gender_option"
+                className={styles.oauth_signup_form_gender_option}
                 onClick={() => handleGenderChange(Gender.MALE)}
               >
                 <div
-                  className={`oauth_signup_form_gender_radio ${
-                    signupData.gender === Gender.MALE ? "selected" : ""
+                  className={`${styles.oauth_signup_form_gender_radio} ${
+                    signupData.gender === Gender.MALE ? styles.selected : ""
                   }`}
                 ></div>
-                <div className="oauth_signup_form_gender_label">남성</div>
+                <div className={styles.oauth_signup_form_gender_label}>
+                  남성
+                </div>
               </div>
               <div
-                className="oauth_signup_form_gender_option"
+                className={styles.oauth_signup_form_gender_option}
                 onClick={() => handleGenderChange(Gender.FEMALE)}
               >
                 <div
-                  className={`oauth_signup_form_gender_radio ${
-                    signupData.gender === Gender.FEMALE ? "selected" : ""
+                  className={`${styles.oauth_signup_form_gender_radio} ${
+                    signupData.gender === Gender.FEMALE ? styles.selected : ""
                   }`}
                 ></div>
-                <div className="oauth_signup_form_gender_label">여성</div>
+                <div className={styles.oauth_signup_form_gender_label}>
+                  여성
+                </div>
               </div>
             </div>
           </div>
 
           {/* 신발 사이즈 선택 */}
-          <div className="oauth_signup_form_shoes_input_content">
-            <div className="oauth_signup_form_shoes_input_title">
+          <div className={styles.oauth_signup_form_shoes_input_content}>
+            <div className={styles.oauth_signup_form_shoes_input_title}>
               신발 사이즈
             </div>
             <div
               onClick={() => setSizeModal(true)}
-              className="oauth_signup_form_shoes_input"
+              className={styles.oauth_signup_form_shoes_input}
             >
               <div
-                className={`oauth_signup_form_shoes_input_text ${
-                  selectedSize === "선택하세요" ? "unselected" : "selected"
+                className={`${styles.oauth_signup_form_shoes_input_text} ${
+                  selectedSize === "선택하세요"
+                    ? styles.unselected
+                    : styles.selected
                 }`}
               >
                 {selectedSize}
               </div>
-              <div className="oauth_signup_form_shoes_input_arrow_content">
-                <IoIosArrowForward className="oauth_signup_form_shoes_input_arrow" />
+              <div
+                className={styles.oauth_signup_form_shoes_input_arrow_content}
+              >
+                <IoIosArrowForward
+                  className={styles.oauth_signup_form_shoes_input_arrow}
+                />
               </div>
             </div>
             {sizeModal ? (
-              <OAuthSizeModal // 여기서 JoinModal 대신 OAuthSizeModal 사용
+              <OAuthSizeModal
                 setSizeModal={setSizeModal}
                 setSize={setSelectedSize}
                 size={selectedSize}
@@ -394,12 +406,12 @@ const OAuthCompleteSignupPage: React.FC = () => {
           </div>
 
           {/* 추천인 코드 */}
-          <div className="oauth_signup_form_referrer_input_content">
-            <div className="oauth_signup_form_referrer_input_title">
+          <div className={styles.oauth_signup_form_referrer_input_content}>
+            <div className={styles.oauth_signup_form_referrer_input_title}>
               추천인코드
             </div>
             <input
-              className="oauth_signup_form_referrer_input"
+              className={styles.oauth_signup_form_referrer_input}
               onChange={handleReferralCodeChange}
               placeholder="추천인 코드를 입력하세요"
               type="text"
@@ -408,25 +420,43 @@ const OAuthCompleteSignupPage: React.FC = () => {
           </div>
 
           {/* 동의 사항 */}
-          <div className="oauth_signup_form_agreement_input_container">
-            <div className="oauth_signup_form_agreement_input_title_container">
-              <div className="oauth_signup_form_agreement_input_title_checkbox_content">
+          <div className={styles.oauth_signup_form_agreement_input_container}>
+            <div
+              className={
+                styles.oauth_signup_form_agreement_input_title_container
+              }
+            >
+              <div
+                className={
+                  styles.oauth_signup_form_agreement_input_title_checkbox_content
+                }
+              >
                 <input
                   checked={agreementBtn}
                   onChange={agreementAllCheck}
                   id="check1"
-                  className="oauth_signup_form_agreement_input_title_checkbox"
+                  className={
+                    styles.oauth_signup_form_agreement_input_title_checkbox
+                  }
                   type="checkbox"
                 />
                 <label
                   htmlFor="check1"
-                  className="oauth_signup_form_agreement_input_title_checkbox_label"
+                  className={
+                    styles.oauth_signup_form_agreement_input_title_checkbox_label
+                  }
                 ></label>
               </div>
-              <div className="oauth_signup_form_agreement_input_title_content">
-                <p className="oauth_signup_form_agreement_input_title1">
+              <div
+                className={
+                  styles.oauth_signup_form_agreement_input_title_content
+                }
+              >
+                <p className={styles.oauth_signup_form_agreement_input_title1}>
                   모두 동의합니다
-                  <p className="oauth_signup_form_agreement_input_title2">
+                  <p
+                    className={styles.oauth_signup_form_agreement_input_title2}
+                  >
                     선택 동의 항목 포함
                   </p>
                 </p>
@@ -434,21 +464,21 @@ const OAuthCompleteSignupPage: React.FC = () => {
             </div>
             {agreementTexts.map((item, index) => (
               <div
-                className="oauth_signup_form_agreement_input_content"
+                className={styles.oauth_signup_form_agreement_input_content}
                 key={index}
               >
                 {index === 0 &&
                   (agreementAge ? (
                     <div
                       onClick={agreementAgeCheck}
-                      className="oauth_signup_form_agreement_input_content_check active"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.active}`}
                     >
                       ✔
                     </div>
                   ) : (
                     <div
                       onClick={agreementAgeCheck}
-                      className="oauth_signup_form_agreement_input_content_check inactive"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.inactive}`}
                     >
                       ✔
                     </div>
@@ -457,14 +487,14 @@ const OAuthCompleteSignupPage: React.FC = () => {
                   (agreementTerms ? (
                     <div
                       onClick={agreementTermsCheck}
-                      className="oauth_signup_form_agreement_input_content_check active"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.active}`}
                     >
                       ✔
                     </div>
                   ) : (
                     <div
                       onClick={agreementTermsCheck}
-                      className="oauth_signup_form_agreement_input_content_check inactive"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.inactive}`}
                     >
                       ✔
                     </div>
@@ -473,14 +503,14 @@ const OAuthCompleteSignupPage: React.FC = () => {
                   (agreementPrivacyRequired ? (
                     <div
                       onClick={agreementPrivacyRequiredCheck}
-                      className="oauth_signup_form_agreement_input_content_check active"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.active}`}
                     >
                       ✔
                     </div>
                   ) : (
                     <div
                       onClick={agreementPrivacyRequiredCheck}
-                      className="oauth_signup_form_agreement_input_content_check inactive"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.inactive}`}
                     >
                       ✔
                     </div>
@@ -489,14 +519,14 @@ const OAuthCompleteSignupPage: React.FC = () => {
                   (agreementPrivacyOptional ? (
                     <div
                       onClick={agreementPrivacyOptionalCheck}
-                      className="oauth_signup_form_agreement_input_content_check active"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.active}`}
                     >
                       ✔
                     </div>
                   ) : (
                     <div
                       onClick={agreementPrivacyOptionalCheck}
-                      className="oauth_signup_form_agreement_input_content_check inactive"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.inactive}`}
                     >
                       ✔
                     </div>
@@ -505,19 +535,23 @@ const OAuthCompleteSignupPage: React.FC = () => {
                   (agreementAdvertisement ? (
                     <div
                       onClick={agreementAdvertisementCheck}
-                      className="oauth_signup_form_agreement_input_content_check active"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.active}`}
                     >
                       ✔
                     </div>
                   ) : (
                     <div
                       onClick={agreementAdvertisementCheck}
-                      className="oauth_signup_form_agreement_input_content_check inactive"
+                      className={`${styles.oauth_signup_form_agreement_input_content_check} ${styles.inactive}`}
                     >
                       ✔
                     </div>
                   ))}
-                <div className="oauth_signup_form_agreement_input_content_text">
+                <div
+                  className={
+                    styles.oauth_signup_form_agreement_input_content_text
+                  }
+                >
                   {item}
                 </div>
               </div>
@@ -526,18 +560,20 @@ const OAuthCompleteSignupPage: React.FC = () => {
 
           {/* 회원가입 버튼 */}
           {isLoading ? (
-            <div className="oauth_signup_form_signup_btn_loading_content">
+            <div
+              className={styles.oauth_signup_form_signup_btn_loading_content}
+            >
               회원가입 처리 중...
             </div>
           ) : signupBtn ? (
             <div
               onClick={handleSignupSubmit}
-              className="oauth_signup_form_signup_btn_content"
+              className={styles.oauth_signup_form_signup_btn_content}
             >
               회원가입 완료하기
             </div>
           ) : (
-            <div className="oauth_signup_form_signup_btn_none_content">
+            <div className={styles.oauth_signup_form_signup_btn_none_content}>
               회원가입 완료하기
             </div>
           )}
