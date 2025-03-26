@@ -37,7 +37,8 @@ const BuySuccessPage: React.FC = () => {
 
         <button
           className={styles.detailButton}
-          onClick={() => navigate(`/my/purchase/${orderId}`)}
+          onClick={() => navigate(`/my/purchase`)}
+          // /${orderId}
         >
           구매 내역 상세보기
         </button>

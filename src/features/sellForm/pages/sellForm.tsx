@@ -201,7 +201,7 @@ const SellForm: React.FC = () => {
       const saleId = await sellService.createSaleBid(saleData);
 
       alert("판매 등록이 완료되었습니다.");
-      navigate("/my/selling", { state: { saleBidId: saleId } });
+      navigate("/my/sales", { state: { saleBidId: saleId } });
     } catch (error) {
       console.error("판매 등록 실패:", error);
       alert("판매 등록에 실패했습니다. 다시 시도해주세요.");
