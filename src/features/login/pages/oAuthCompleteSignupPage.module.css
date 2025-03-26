@@ -1,0 +1,439 @@
+.oauth_signup_form_container {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.oauth_signup_form_margin_content {
+  width: 100%;
+  background-color: #f4f4f4;
+  padding-top: 20px;
+  padding-bottom: 70px;
+}
+
+.oauth_signup_form_content {
+  width: 480px;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 20px 16px 20px 16px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+/* 제목 */
+.oauth_signup_form_title_content {
+  font-size: 30px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 6px;
+  letter-spacing: -3px;
+}
+
+.oauth_signup_form_subtitle {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* 전화번호 */
+.oauth_signup_form_phone_input_content {
+  padding-top: 10px;
+}
+
+.oauth_signup_form_phone_input_title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: -1px;
+}
+
+.oauth_signup_form_phone_input_title:after {
+  content: "*";
+}
+
+.oauth_signup_form_phone_input_title_warn {
+  color: #ef6253;
+}
+
+.oauth_signup_form_phone_input {
+  width: 448px;
+  height: 38px;
+  padding: 8px 30px 8px 0;
+  border: none;
+  box-sizing: border-box;
+  font-size: 15px;
+  outline: none;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.oauth_signup_form_phone_input_none_warn {
+  border-bottom: 1px solid #ebebeb;
+}
+
+.oauth_signup_form_phone_input_warn {
+  border-bottom: 1px solid #ef6253;
+}
+
+.oauth_signup_form_phone_input_none_warn:focus {
+  border-bottom: 2px solid black;
+}
+
+.oauth_signup_form_phone_input_none_warn:focus::placeholder {
+  opacity: 0;
+}
+
+.oauth_signup_form_phone_input_none_warn::placeholder {
+  color: rgba(34, 34, 34, 0.3);
+}
+
+.oauth_signup_form_phone_input_bottom {
+  height: 18px;
+}
+
+.oauth_signup_form_phone_input_bottom_warn {
+  font-size: 11px;
+  color: #f15746;
+}
+
+/* 나이 */
+.oauth_signup_form_age_input_content {
+  padding-top: 10px;
+}
+
+.oauth_signup_form_age_input_title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: -1px;
+}
+
+.oauth_signup_form_age_input_title:after {
+  content: "*";
+}
+
+.oauth_signup_form_age_input_title_warn {
+  color: #ef6253;
+}
+
+.oauth_signup_form_age_input {
+  width: 448px;
+  height: 38px;
+  padding: 8px 30px 8px 0;
+  border: none;
+  box-sizing: border-box;
+  font-size: 15px;
+  outline: none;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.oauth_signup_form_age_input_none_warn {
+  border-bottom: 1px solid #ebebeb;
+}
+
+.oauth_signup_form_age_input_warn {
+  border-bottom: 1px solid #ef6253;
+}
+
+.oauth_signup_form_age_input_none_warn:focus {
+  border-bottom: 2px solid black;
+}
+
+.oauth_signup_form_age_input_none_warn:focus::placeholder {
+  opacity: 0;
+}
+
+.oauth_signup_form_age_input_none_warn::placeholder {
+  color: rgba(34, 34, 34, 0.3);
+}
+
+.oauth_signup_form_age_input_bottom {
+  height: 18px;
+}
+
+.oauth_signup_form_age_input_bottom_warn {
+  font-size: 11px;
+  color: #f15746;
+}
+
+/* 성별 */
+.oauth_signup_form_gender_container {
+  padding: 10px 0px 18px;
+}
+
+.oauth_signup_form_gender_title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+}
+
+.oauth_signup_form_gender_title:after {
+  content: "*";
+}
+
+.oauth_signup_form_gender_options {
+  display: flex;
+  gap: 20px;
+}
+
+.oauth_signup_form_gender_option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.oauth_signup_form_gender_radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.oauth_signup_form_gender_radio.selected {
+  border-color: #000;
+}
+
+.oauth_signup_form_gender_radio.selected:after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #000;
+}
+
+.oauth_signup_form_gender_label {
+  font-size: 14px;
+}
+
+/* 추천인 코드 */
+.oauth_signup_form_referrer_input_content {
+  padding: 10px 0px 18px;
+}
+
+.oauth_signup_form_referrer_input_title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: -1px;
+}
+
+.oauth_signup_form_referrer_input {
+  width: 448px;
+  height: 38px;
+  padding: 8px 30px 8px 0;
+  border: none;
+  border-bottom: 1px solid #ebebeb;
+  box-sizing: border-box;
+  font-size: 15px;
+  outline: none;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.oauth_signup_form_referrer_input:focus {
+  border-bottom: 2px solid black;
+}
+
+.oauth_signup_form_referrer_input:focus::placeholder {
+  opacity: 0;
+}
+
+.oauth_signup_form_referrer_input::placeholder {
+  color: rgba(34, 34, 34, 0.3);
+  letter-spacing: -1px;
+}
+
+/* 신발 사이즈 */
+.oauth_signup_form_shoes_input_content {
+  padding: 10px 0px 18px;
+}
+
+.oauth_signup_form_shoes_input_title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: -1px;
+}
+
+.oauth_signup_form_shoes_input_title:after {
+  content: "*";
+}
+
+.oauth_signup_form_shoes_input {
+  width: 448px;
+  height: 38px;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid #ebebeb;
+  box-sizing: border-box;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  outline: none;
+  cursor: pointer;
+}
+
+.oauth_signup_form_shoes_input_text.unselected {
+  color: rgba(34, 34, 34, 0.3);
+}
+
+.oauth_signup_form_shoes_input_text.selected {
+  color: #222;
+}
+
+.oauth_signup_form_shoes_input_arrow_content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.oauth_signup_form_shoes_input_arrow {
+  font-size: 20px;
+}
+
+/* 동의 사항 */
+.oauth_signup_form_agreement_input_container {
+  padding: 16px 0;
+}
+
+.oauth_signup_form_agreement_input_title_container {
+  height: 40px;
+  display: flex;
+  margin-bottom: 6px;
+}
+
+.oauth_signup_form_agreement_input_title_checkbox_content {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.oauth_signup_form_agreement_input_title_checkbox {
+  margin: 0;
+  width: 0;
+  height: 0;
+}
+
+.oauth_signup_form_agreement_input_title_checkbox_label {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(34, 34, 34, 0.2);
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+}
+
+.oauth_signup_form_agreement_input_title_checkbox:checked
+  + .oauth_signup_form_agreement_input_title_checkbox_label {
+  background-color: black;
+}
+
+.oauth_signup_form_agreement_input_title_checkbox:checked
+  + .oauth_signup_form_agreement_input_title_checkbox_label::after {
+  content: "✔";
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.oauth_signup_form_agreement_input_title_content {
+  padding: 2px 0px 0px 12px;
+}
+
+.oauth_signup_form_agreement_input_title1 {
+  font-size: 17px;
+  line-height: 17px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.oauth_signup_form_agreement_input_title2 {
+  font-size: 13px;
+  line-height: 13px;
+  font-weight: 400;
+  margin: 5px 0 0 0;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.oauth_signup_form_agreement_input_content {
+  height: 24px;
+  margin-top: 8px;
+  display: flex;
+}
+
+.oauth_signup_form_agreement_input_content_check {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.oauth_signup_form_agreement_input_content_check.active {
+  color: black;
+}
+
+.oauth_signup_form_agreement_input_content_check.inactive {
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.oauth_signup_form_agreement_input_content_text {
+  padding: 4px 0px 0px 12px;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 400;
+  color: #222;
+}
+
+/* 회원가입 버튼 */
+.oauth_signup_form_signup_btn_content {
+  height: 52px;
+  background-color: #222;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.oauth_signup_form_signup_btn_none_content {
+  height: 52px;
+  background-color: rgba(34, 34, 34, 0.2);
+  border-radius: 10px;
+  font-size: 16px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.oauth_signup_form_signup_btn_loading_content {
+  height: 52px;
+  background-color: #222;
+  border-radius: 10px;
+  font-size: 16px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.oauth_signup_form_error_message {
+  color: #f15746;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+}

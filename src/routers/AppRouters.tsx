@@ -62,6 +62,7 @@ import StyleDetailPage from "../features/style/pages/StyleDetailPage";
 import SellForm from "../features/sellForm/pages/sellForm";
 import BuyForm from "../features/buyForm/pages/BuyForm";
 import BuySuccessPage from "../features/buyForm/pages/BuySuccessPage";
+import OAuthCompleteSignupPage from "../features/login/pages/oAuthCompleteSignupPage";
 
 // 스타일드 컴포넌트로 Wrapping
 const AppRoutesContainer = styled.div`
@@ -179,6 +180,10 @@ const AppRoutes: React.FC = () => {
         <Route path="/service-info" element={<ServiceInfoPage />} />
         <Route path="/store-info" element={<StoreInfoPage />} />
         <Route path="/seller-visit" element={<SellerVisitPage />} />
+        <Route
+          path="/oauth/complete-signup"
+          element={<OAuthCompleteSignupPage />}
+        />
       </Routes>
     </AppRoutesContainer>
   );

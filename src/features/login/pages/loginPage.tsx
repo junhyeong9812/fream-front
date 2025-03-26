@@ -2,6 +2,7 @@ import "../css/loginPage.css";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SiNaver } from "react-icons/si";
+import { FaGoogle } from "react-icons/fa";
 import { FaApple } from "react-icons/fa";
 import { LoginData } from "../types/loginTypes";
 import { fetchLoginData, checkLoginStatus } from "../services/loginService";
@@ -14,8 +15,8 @@ const LoginPage: React.FC = () => {
   const { setIsLoggedIn } = useContext(AuthContext);
 
   const [loginData, setLoginData] = useState<LoginData>({
-    email: "user1@example.com",
-    password: "password123!",
+    email: "",
+    password: "",
   });
 
   // 로딩 상태 추가
@@ -119,6 +120,20 @@ const LoginPage: React.FC = () => {
       setErrorMessage("로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
       setIsLoading(false);
     }
+  };
+
+  // OAuth 로그인 핸들러 추가
+  const handleOAuthLogin = (provider: "google" | "naver") => {
+    if (isLoading) return;
+
+    // OAuth 로그인 URL (하드코딩)
+    const oauthUrls = {
+      google: `https://www.pinjun.xyz/api/oauth2/authorization/google`,
+      naver: `https://www.pinjun.xyz/api/oauth2/authorization/naver`,
+    };
+
+    // 해당 OAuth 제공자의 로그인 페이지로 리다이렉트
+    window.location.href = oauthUrls[provider];
   };
 
   // 로딩 버튼 컴포넌트
@@ -265,11 +280,12 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="login_form_sns_conatiner">
+        <div className="login_form_sns_container">
           <div
             className={`login_form_sns_content ${
               isLoading ? "login_form_disabled" : ""
             }`}
+            onClick={() => handleOAuthLogin("naver")}
           >
             <div className="login_form_sns_icon_content">
               <SiNaver className="login_form_sns_naver" />
@@ -280,11 +296,12 @@ const LoginPage: React.FC = () => {
             className={`login_form_sns_content ${
               isLoading ? "login_form_disabled" : ""
             }`}
+            onClick={() => handleOAuthLogin("google")}
           >
             <div className="login_form_sns_icon_content">
-              <FaApple className="login_form_sns_apple" />
+              <FaGoogle className="login_form_sns_google" />
             </div>
-            <div className="login_form_sns_text">Apple로 로그인</div>
+            <div className="login_form_sns_text">Google로 로그인</div>
           </div>
         </div>
       </div>
