@@ -155,7 +155,7 @@
   font-size: 13px;
   color: #222;
   gap: 20px; /* 이 부분을 추가하여 카테고리 사이 간격 생성 */
-  margin-top: 20px; /* 상단 여백도 추가 */
+  margin-bottom: 20px; /* 상단 여백도 추가 */
 }
 .login_form_category1,
 .login_form_category2,
