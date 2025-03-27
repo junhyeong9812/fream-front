@@ -1,4 +1,4 @@
-import styles from "../css/OAuthSizeModal.module.css";
+import styles from "./OAuthSizeModal.module.css";
 import React from "react";
 
 interface OAuthSizeModalProps {
