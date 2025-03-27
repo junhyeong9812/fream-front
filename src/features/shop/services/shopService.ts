@@ -1,48 +1,16 @@
 import apiClient from "src/global/services/ApiClient";
-import {
-  ImageData,
-  SelectedFiltersPayload,
-  PaginatedResponse,
-} from "../types/filterTypes";
-
-// 캐싱을 위한 변수 타입 정의
-let lastRequestHash: string | null = null;
-let lastResponseData: PaginatedResponse<ImageData> | null = null;
-let lastRequestTime: number = 0;
-const CACHE_EXPIRY_TIME: number = 5 * 60 * 1000; // 5분 캐시 유효 시간
+import { ImageData, SelectedFiltersPayload } from "../types/filterTypes";
 
 /**
- * 필터 적용하여 상품 데이터 가져오기 (페이징 지원)
+ * 필터 적용하여 상품 데이터 가져오기 (새로운 방식)
  * @param filters 선택한 필터 값들
- * @param page 페이지 번호 (0부터 시작)
- * @param size 페이지당 아이템 수
- * @returns 필터링된 상품 데이터와 페이징 정보를 포함한 객체 프로미스
+ * @returns 필터링된 상품 데이터 프로미스
  */
 export const fetchShopData = async (
-  filters: SelectedFiltersPayload = {},
-  page: number = 0,
-  size: number = 20
-): Promise<PaginatedResponse<ImageData>> => {
+  filters: SelectedFiltersPayload = {}
+): Promise<ImageData[]> => {
   try {
-    // 요청 파라미터의 해시 생성
-    const requestHash = JSON.stringify({ filters, page, size });
-    const currentTime = Date.now();
-
-    // 캐시 데이터가 있고 유효 기간 내라면 캐시된 결과 반환
-    if (
-      lastRequestHash === requestHash &&
-      lastResponseData &&
-      currentTime - lastRequestTime < CACHE_EXPIRY_TIME
-    ) {
-      console.log("[ShopService] 캐시된 데이터 반환:", { page });
-      return lastResponseData;
-    }
-
     const params = new URLSearchParams();
-
-    // 페이징 파라미터 추가
-    params.append("page", page.toString());
-    params.append("size", size.toString());
 
     // 키워드 추가
     if (filters.keyword) {
@@ -87,106 +55,34 @@ export const fetchShopData = async (
     if (filters.maxPrice) {
       params.append("maxPrice", filters.maxPrice.toString());
     }
-
-    // 정렬 옵션 추가
-    if (filters.sortOption) {
-      const { formatSortForAPI } = await import("../types/sortOptions");
-      params.append("sort", formatSortForAPI(filters.sortOption));
-    }
-
-    // 배송 옵션 추가
-    if (filters.deliveryOption) {
-      params.append("delivery", filters.deliveryOption);
-    }
-
-    // 추가 필터 추가
-    if (filters.isBelowOriginalPrice) {
-      params.append("belowOriginalPrice", "true");
-    }
-
-    if (filters.isExcludeSoldOut) {
-      params.append("excludeSoldOut", "true");
-    }
-
-    // API 요청 시작 시간 기록 (성능 측정용)
-    const startTime = performance.now();
-
-    // API 요청 URL 구성
+    //product경로 /products/query
+    //elastic경로 /es/products
     const url = `/es/products${
       params.toString() ? `?${params.toString()}` : ""
     }`;
-
-    console.log(`[ShopService] API 요청: ${url}`);
     const response = await apiClient.get(url);
 
-    // API 요청 완료 시간 측정 (성능 측정용)
-    const endTime = performance.now();
-    console.log(
-      `[ShopService] API 요청 완료: ${Math.round(endTime - startTime)}ms`
-    );
-
-    if (response.data) {
+    if (response.data && response.data.content) {
       // 응답 데이터 포맷팅
-      const formattedData = response.data.content.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        englishName: item.englishName || "",
-        brandName: item.brandName,
-        releasePrice: item.releasePrice || 0,
-        thumbnailImageUrl: item.thumbnailImageUrl,
-        price: item.price || item.releasePrice || 0,
-        colorName: item.colorName || "default",
-        colorId: item.colorId || 0,
-        interestCount: item.interestCount || 0,
-        styleCount: item.styleCount || 0,
-        tradeCount: item.tradeCount || 0,
-        imgUrl: item.imgUrl || item.thumbnailImageUrl,
+      return response.data.content.map((item: any) => ({
+        ...item,
+        price: item.price || item.releasePrice,
+        imgUrl: item.thumbnailImageUrl,
         productName: item.name,
-        productPrice:
-          (item.price || item.releasePrice || 0).toLocaleString() + "원",
+        productPrice: (item.price || item.releasePrice).toLocaleString() + "원",
       }));
-
-      // 결과 데이터 준비
-      const result = {
-        content: formattedData,
-        last: response.data.last || false,
-        totalElements: response.data.totalElements || 0,
-        totalPages: response.data.totalPages || 1,
-      };
-
-      // 캐시 업데이트
-      lastRequestHash = requestHash;
-      lastResponseData = result;
-      lastRequestTime = currentTime;
-
-      return result;
     } else {
       console.error(
         "fetchShopData 에러: 예상 데이터 구조가 아님",
         response.data
       );
-      return {
-        content: [],
-        last: true,
-        totalElements: 0,
-        totalPages: 0,
-      };
+      return [];
     }
   } catch (error) {
     console.error("fetchShopData 에러:", error);
-    return {
-      content: [],
-      last: true,
-      totalElements: 0,
-      totalPages: 0,
-    };
+    return [];
   }
 };
-
-// API 요청 제한을 위한 디바운싱 변수
-let deliveryTimeout: ReturnType<typeof setTimeout> | null = null;
-let sortTimeout: ReturnType<typeof setTimeout> | null = null;
-let additionalTimeout: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * 기존 호출 방식과의 호환성을 위한 함수 (레거시 지원)
@@ -255,8 +151,7 @@ export const fetchShopDataLegacy = async (
   }
 
   // 필터 객체를 사용하여 새 함수 호출
-  const result = await fetchShopData(filters);
-  return result.content;
+  return fetchShopData(filters);
 };
 
 /**
@@ -265,16 +160,7 @@ export const fetchShopDataLegacy = async (
  */
 export const setSortOption = async (sortOption: string): Promise<void> => {
   try {
-    // 기존 타임아웃 취소
-    if (sortTimeout) {
-      clearTimeout(sortTimeout);
-    }
-
-    // 디바운싱 적용 (300ms)
-    sortTimeout = setTimeout(async () => {
-      console.log("[ShopService] 정렬 옵션 설정:", sortOption);
-      await apiClient.post("/filters/sort", { sortOption });
-    }, 300);
+    await apiClient.post("/filters/sort", { sortOption });
   } catch (error) {
     console.error("정렬 옵션 설정 실패:", error);
   }
@@ -288,16 +174,7 @@ export const setDeliveryOption = async (
   deliveryOption: string
 ): Promise<void> => {
   try {
-    // 기존 타임아웃 취소
-    if (deliveryTimeout) {
-      clearTimeout(deliveryTimeout);
-    }
-
-    // 디바운싱 적용 (300ms)
-    deliveryTimeout = setTimeout(async () => {
-      console.log("[ShopService] 배송 옵션 설정:", deliveryOption);
-      await apiClient.post("/filters/delivery", { filter: deliveryOption });
-    }, 300);
+    await apiClient.post("/filters/delivery", { filter: deliveryOption });
   } catch (error) {
     console.error("배송 옵션 설정 실패:", error);
   }
@@ -312,16 +189,7 @@ export const setAdditionalFilters = async (options: {
   isExcludeSoldOut: boolean;
 }): Promise<void> => {
   try {
-    // 기존 타임아웃 취소
-    if (additionalTimeout) {
-      clearTimeout(additionalTimeout);
-    }
-
-    // 디바운싱 적용 (300ms)
-    additionalTimeout = setTimeout(async () => {
-      console.log("[ShopService] 추가 필터 설정:", options);
-      await apiClient.post("/filters/additional", options);
-    }, 300);
+    await apiClient.post("/filters/additional", options);
   } catch (error) {
     console.error("추가 필터 설정 실패:", error);
   }

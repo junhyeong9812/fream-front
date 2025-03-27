@@ -172,4 +172,3 @@ export interface PaginatedResponse<T> {
   numberOfElements?: number;
   empty?: boolean;
 }
-

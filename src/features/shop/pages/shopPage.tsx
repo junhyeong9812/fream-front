@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faNewspaper } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -25,15 +25,15 @@ import {
 import styles from "./shopPage.module.css";
 import FilterModal from "../components/filterModal";
 import PopularityModal from "../components/popularityModal";
-import { SortOptionKey } from "../types/sortOptions";
 
 const ShopPage: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { headerHeight } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // State for filter modal
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // State for delivery filter buttons
   const [clickedButton, setClickedButton] = useState<string | null>(null);
@@ -45,24 +45,18 @@ const ShopPage: React.FC = () => {
   });
 
   // State for sort modal
-  const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
+  const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const sortModalRef = useRef<HTMLDivElement>(null);
-  const [selectedSortOption, setSelectedSortOption] =
-    useState<SortOptionKey>("인기순");
+  const [selectedSortOption, setSelectedSortOption] = useState("인기순");
 
-  // State for product data with pagination
+  // State for product data
   const [productData, setProductData] = useState<ImageData[]>([]);
-  const [page, setPage] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [totalProducts, setTotalProducts] = useState<number>(0);
 
   // State for active tab
   const [activeTabId, setActiveTabId] = useState<string>("all");
 
   // State for slide pagination
-  const [slidePage, setSlidePage] = useState<number>(1);
+  const [page, setPage] = useState<number>(1);
   const itemsPerPage = 9;
 
   // State for applied filters
@@ -70,50 +64,18 @@ const ShopPage: React.FC = () => {
     {}
   );
 
-  // Observer for infinite scroll - 간소화된 무한 스크롤 로직
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastProductElementRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      // 이미 로딩 중이거나 더 이상 로드할 데이터가 없으면 observer 설정하지 않음
-      if (isLoading || !hasMore) return;
-
-      // 이전 observer가 있으면 연결 해제
-      if (observer.current) observer.current.disconnect();
-
-      // 새 observer 생성 및 설정
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          // 관찰 대상이 화면에 나타났고, 로딩 중이 아니며, 더 로드할 데이터가 있으면
-          if (entries[0].isIntersecting && hasMore && !isLoading) {
-            console.log("[ShopPage] 끝에 도달, 다음 페이지 로드:", page + 1);
-            setPage((prevPage) => prevPage + 1);
-          }
-        },
-        {
-          root: null,
-          rootMargin: "100px",
-          threshold: 0.1, // 10% 정도 보이면 로드 시작
-        }
-      );
-
-      // 마지막 요소가 있으면 관찰 시작
-      if (node) observer.current.observe(node);
-    },
-    [isLoading, hasMore, page]
-  );
-
   // Example data
-  const categories: ButtonOption[] = [
+  const categories = [
     { value: "shoes", label: "신발" },
     { value: "clothes", label: "의류" },
   ];
 
-  const outerwear: ButtonOption[] = [
+  const outerwear = [
     { value: "jackets", label: "재킷" },
     { value: "coats", label: "코트" },
   ];
 
-  const shirts: ButtonOption[] = [
+  const shirts = [
     { value: "tshirts", label: "티셔츠" },
     { value: "dressShirts", label: "드레스 셔츠" },
   ];
@@ -135,8 +97,8 @@ const ShopPage: React.FC = () => {
   ];
 
   // Pagination calculations
-  const totalSlidePages = Math.ceil(SLIDE_DATA.length / itemsPerPage);
-  const offset = (slidePage - 1) * itemsPerPage;
+  const totalPage = Math.ceil(SLIDE_DATA.length / itemsPerPage);
+  const offset = (page - 1) * itemsPerPage;
   const currentPageData = SLIDE_DATA.slice(offset, offset + itemsPerPage);
 
   // Tab data
@@ -158,115 +120,40 @@ const ShopPage: React.FC = () => {
     { id: "living", label: "가구/리빙", filterValue: "55" },
   ];
 
-  // 필터 파라미터 생성 함수
-  const createFilterPayload = useCallback((): SelectedFiltersPayload => {
-    const filterPayload: SelectedFiltersPayload = {
-      ...appliedFilters,
-      keyword: searchParams.get("keyword") || undefined,
-      sortOption: selectedSortOption,
-      deliveryOption: clickedButton || undefined,
-      isBelowOriginalPrice: additionalFilters.isBelowOriginalPrice,
-      isExcludeSoldOut: additionalFilters.isExcludeSoldOut,
+  // Load products on component mount or when filters change
+  useEffect(() => {
+    const loadProducts = async () => {
+      // Build filter object from search params and applied filters
+      const filterPayload: SelectedFiltersPayload = {
+        ...appliedFilters,
+        keyword: searchParams.get("keyword") || undefined,
+      };
+
+      // If there's an active tab other than "all", add it to category filter
+      if (activeTabId !== "all") {
+        const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
+        if (activeTab && activeTab.filterValue) {
+          filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
+        }
+      }
+
+      // Fetch products with filters - 포맷팅은 fetchShopData 내부에서 처리됨
+      const products = await fetchShopData(filterPayload);
+      setProductData(products);
     };
 
-    // If there's an active tab other than "all", add it to category filter
-    if (activeTabId !== "all") {
-      const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
-      if (activeTab && activeTab.filterValue) {
-        filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
-      }
-    }
-
-    return filterPayload;
-  }, [
-    appliedFilters,
-    searchParams,
-    selectedSortOption,
-    clickedButton,
-    additionalFilters,
-    activeTabId,
-  ]);
-
-  // Reset product data and pagination when filters change
-  const resetProductData = useCallback(() => {
-    setProductData([]);
-    setPage(0);
-    setHasMore(true);
-  }, []);
-
-  // Load products - 간소화된 데이터 로드 함수
-  const loadProducts = useCallback(
-    async (pageNum: number) => {
-      // 이미 로딩 중이거나 더 이상 불러올 데이터가 없으면 요청하지 않음
-      if (!hasMore || isLoading) return;
-
-      try {
-        setIsLoading(true);
-        const filterPayload = createFilterPayload();
-
-        console.log(`[ShopPage] 상품 로드 요청: 페이지 ${pageNum}`);
-        const result = await fetchShopData(filterPayload, pageNum);
-
-        // 첫 페이지면 데이터 초기화, 아니면 추가
-        if (pageNum === 0) {
-          setProductData(result.content);
-        } else {
-          // 중복 방지를 위한 필터링
-          const existingIds = new Set(productData.map((item) => item.id));
-          const newItems = result.content.filter(
-            (item) => !existingIds.has(item.id)
-          );
-
-          setProductData((prev) => [...prev, ...newItems]);
-        }
-
-        // 페이지 정보 업데이트
-        setHasMore(!result.last);
-        setTotalPages(result.totalPages);
-        setTotalProducts(result.totalElements);
-      } catch (error) {
-        console.error("상품 로드 에러:", error);
-        setHasMore(false);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [createFilterPayload, hasMore, isLoading, productData]
-  );
-
-  // 필터 변경 시 상품 데이터 초기화 및 첫 페이지 로드
-  useEffect(() => {
-    resetProductData();
-    loadProducts(0);
-  }, [
-    searchParams,
-    appliedFilters,
-    activeTabId,
-    clickedButton,
-    additionalFilters,
-    selectedSortOption,
-    resetProductData,
-    loadProducts,
-  ]);
-
-  // 페이지 변경 시 추가 데이터 로드
-  useEffect(() => {
-    if (page > 0) {
-      loadProducts(page);
-    }
-  }, [page, loadProducts]);
+    loadProducts();
+  }, [searchParams, appliedFilters, activeTabId, location.state]);
 
   // Handle delivery button click
   const handleDeliveryButtonClick = async (buttonLabel: string) => {
-    // 이미 선택된 버튼을 다시 클릭하면 해제
     const newValue = clickedButton === buttonLabel ? null : buttonLabel;
     setClickedButton(newValue);
 
+    // Update backend
     if (newValue) {
       await setDeliveryOption(newValue);
     }
-
-    resetProductData();
   };
 
   // Handle additional filter toggles (checkboxes)
@@ -279,16 +166,18 @@ const ShopPage: React.FC = () => {
     };
 
     setAdditionalFilters(newFilters);
+
+    // Update backend
     await setAdditionalFilters(newFilters);
-    resetProductData();
   };
 
   // Handle sort option selection
-  const handleSortOptionSelect = async (option: SortOptionKey) => {
+  const handleSortOptionSelect = async (option: string) => {
     setSelectedSortOption(option);
     setIsSortModalOpen(false);
+
+    // Update backend
     await setSortOption(option);
-    resetProductData();
   };
 
   // Handle filter modal open/close
@@ -297,9 +186,67 @@ const ShopPage: React.FC = () => {
 
   // Handle applying filters from modal
   const handleApplyFilters = (filters: SelectedFiltersPayload) => {
+    // 기존 필터 상태 업데이트 유지
     setAppliedFilters(filters);
-    resetProductData();
-    handleCloseFilterModal();
+
+    // 새 URL 파라미터 객체 생성
+    const newParams = new URLSearchParams(searchParams);
+
+    // 기존 필터 관련 파라미터 모두 제거
+    [
+      "categoryIds",
+      "brandIds",
+      "collectionIds",
+      "genders",
+      "colors",
+      "sizes",
+      "minPrice",
+      "maxPrice",
+    ].forEach((param) => {
+      newParams.delete(param);
+    });
+
+    // 카테고리 ID 추가
+    if (filters.categoryIds && filters.categoryIds.length > 0) {
+      newParams.set("categoryIds", filters.categoryIds.join(","));
+    }
+
+    // 브랜드 ID 추가
+    if (filters.brandIds && filters.brandIds.length > 0) {
+      newParams.set("brandIds", filters.brandIds.join(","));
+    }
+
+    // 컬렉션 ID 추가
+    if (filters.collectionIds && filters.collectionIds.length > 0) {
+      newParams.set("collectionIds", filters.collectionIds.join(","));
+    }
+
+    // 성별 추가
+    if (filters.genders && filters.genders.length > 0) {
+      newParams.set("genders", filters.genders.join(","));
+    }
+
+    // 색상 추가
+    if (filters.colors && filters.colors.length > 0) {
+      newParams.set("colors", filters.colors.join(","));
+    }
+
+    // 사이즈 추가
+    if (filters.sizes && filters.sizes.length > 0) {
+      newParams.set("sizes", filters.sizes.join(","));
+    }
+
+    // 가격 범위 추가
+    if (filters.minPrice) {
+      newParams.set("minPrice", filters.minPrice.toString());
+    }
+
+    if (filters.maxPrice) {
+      newParams.set("maxPrice", filters.maxPrice.toString());
+    }
+
+    // URL 파라미터 업데이트
+    setSearchParams(newParams);
   };
 
   // Handle product click navigation
@@ -309,9 +256,7 @@ const ShopPage: React.FC = () => {
 
   // Handle tab click
   const handleTabClick = (tabId: string) => {
-    if (tabId === activeTabId) return;
     setActiveTabId(tabId);
-    resetProductData();
   };
 
   return (
@@ -388,26 +333,26 @@ const ShopPage: React.FC = () => {
               {/* Previous button */}
               <button
                 className={`${styles.arrow} ${
-                  slidePage === 1 ? styles.arrowDisabled : ""
+                  page === 1 ? styles.arrowDisabled : ""
                 }`}
-                disabled={slidePage === 1}
-                onClick={() => setSlidePage(slidePage - 1)}
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
               >
                 <FaChevronLeft />
               </button>
 
               {/* Pagination dots */}
               <div className={styles.paginations}>
-                {Array.from({ length: totalSlidePages }).map((_, idx) => {
+                {Array.from({ length: totalPage }).map((_, idx) => {
                   const pageNum = idx + 1;
                   return (
                     <button
                       key={pageNum}
                       type="button"
                       className={`${styles.pagination} ${
-                        pageNum === slidePage ? styles.paginationActive : ""
+                        pageNum === page ? styles.paginationActive : ""
                       }`}
-                      onClick={() => setSlidePage(pageNum)}
+                      onClick={() => setPage(pageNum)}
                     />
                   );
                 })}
@@ -416,10 +361,10 @@ const ShopPage: React.FC = () => {
               {/* Next button */}
               <button
                 className={`${styles.arrow} ${
-                  slidePage === totalSlidePages ? styles.arrowDisabled : ""
+                  page === totalPage ? styles.arrowDisabled : ""
                 }`}
-                disabled={slidePage === totalSlidePages}
-                onClick={() => setSlidePage(slidePage + 1)}
+                disabled={page === totalPage}
+                onClick={() => setPage(page + 1)}
               >
                 <FaChevronRight />
               </button>
@@ -596,105 +541,71 @@ const ShopPage: React.FC = () => {
 
           {/* Product grid */}
           <div className={styles.searchContent}>
-            {productData.map((product, index) => {
-              // 마지막 아이템에 ref 추가하여 무한 스크롤 관찰
-              const isLastItem = index === productData.length - 1;
-
-              return (
-                <div
-                  key={`${product.id}-${index}`}
-                  ref={isLastItem ? lastProductElementRef : null}
-                  onClick={() =>
-                    handleProductClick(product.id, product.colorName)
-                  }
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className={styles.searchResult}>
-                    <div>
-                      <div className={styles.imageWrapper}>
-                        <img
-                          src={product.thumbnailImageUrl || product.imgUrl}
-                          alt={`${product.brandName} ${product.name}`}
-                          className={styles.productImage}
-                          loading="lazy"
-                        />
-                        <div className={styles.overlayText}>
-                          거래 {product.tradeCount}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className={styles.imageInfo}>
-                      <div className={styles.imgTitle}>
-                        <span className={styles.brandName}>
-                          {product.brandName}
-                        </span>
-                        <div>
-                          <span className={styles.name}>
-                            {product.name || product.productName}
-                          </span>
-                          <span className={styles.translatedName}>
-                            {product.englishName}
-                          </span>
-                        </div>
-                      </div>
-                      <div className={`${styles.price}`}>
-                        <span className={styles.infoPrice}>
-                          {product.productPrice ||
-                            `${product.price?.toLocaleString()}원`}
-                        </span>
-                        <span className={styles.translatedName}>
-                          즉시 구매가
-                        </span>
-                      </div>
-                      <div className={styles.actionIcon}>
-                        <FontAwesomeIcon
-                          className={styles.translatedName}
-                          icon={faBookmark}
-                        />
-                        <span className={styles.translatedName}>
-                          {product.interestCount > 10000
-                            ? `${(product.interestCount / 10000).toFixed(1)}만`
-                            : product.interestCount.toLocaleString()}
-                        </span>
-                        <FontAwesomeIcon
-                          className={styles.translatedName}
-                          icon={faNewspaper}
-                        />
-                        <span className={styles.translatedName}>
-                          {product.styleCount.toLocaleString()}
-                        </span>
+            {productData.map((product) => (
+              <div
+                key={product.id}
+                onClick={() =>
+                  handleProductClick(product.id, product.colorName)
+                }
+                style={{ cursor: "pointer" }}
+              >
+                <div className={styles.searchResult}>
+                  <div>
+                    <div className={styles.imageWrapper}>
+                      <img
+                        src={product.thumbnailImageUrl || product.imgUrl}
+                        alt={`${product.brandName} ${product.name}`}
+                        className={styles.productImage}
+                      />
+                      <div className={styles.overlayText}>
+                        거래 {product.tradeCount}
                       </div>
                     </div>
                   </div>
+
+                  <div className={styles.imageInfo}>
+                    <div className={styles.imgTitle}>
+                      <span className={styles.brandName}>
+                        {product.brandName}
+                      </span>
+                      <div>
+                        <span className={styles.name}>
+                          {product.name || product.productName}
+                        </span>
+                        <span className={styles.translatedName}>
+                          {product.englishName}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={`${styles.price}`}>
+                      <span className={styles.infoPrice}>
+                        {product.productPrice ||
+                          `${product.price?.toLocaleString()}원`}
+                      </span>
+                      <span className={styles.translatedName}>즉시 구매가</span>
+                    </div>
+                    <div className={styles.actionIcon}>
+                      <FontAwesomeIcon
+                        className={styles.translatedName}
+                        icon={faBookmark}
+                      />
+                      <span className={styles.translatedName}>
+                        {product.interestCount > 10000
+                          ? `${(product.interestCount / 10000).toFixed(1)}만`
+                          : product.interestCount.toLocaleString()}
+                      </span>
+                      <FontAwesomeIcon
+                        className={styles.translatedName}
+                        icon={faNewspaper}
+                      />
+                      <span className={styles.translatedName}>
+                        {product.styleCount.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              );
-            })}
-
-            {/* 로딩 인디케이터 */}
-            {isLoading && (
-              <div className={styles.loadingContainer}>
-                <div className={styles.loadingSpinner}></div>
-                <p>상품을 불러오는 중...</p>
               </div>
-            )}
-
-            {/* 더 이상 상품이 없을 때 메시지 */}
-            {!isLoading && !hasMore && productData.length > 0 && (
-              <div className={styles.noMoreProductsContainer}>
-                <p>더 이상 상품이 없습니다.</p>
-                <p className={styles.pageInfo}>
-                  총 {totalProducts}개 상품 | {page + 1}/{totalPages} 페이지
-                </p>
-              </div>
-            )}
-
-            {/* 검색 결과가 없을 때 메시지 */}
-            {!isLoading && productData.length === 0 && (
-              <div className={styles.noProductsContainer}>
-                <p>검색 결과가 없습니다.</p>
-              </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
