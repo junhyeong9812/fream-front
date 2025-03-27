@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faNewspaper } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -49,14 +49,34 @@ const ShopPage: React.FC = () => {
   const sortModalRef = useRef<HTMLDivElement>(null);
   const [selectedSortOption, setSelectedSortOption] = useState("인기순");
 
-  // State for product data
+  // State for product data with infinite scroll
   const [productData, setProductData] = useState<ImageData[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [totalProducts, setTotalProducts] = useState<number>(0);
+
+  // Observer for infinite scroll
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastProductElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
+  );
 
   // State for active tab
   const [activeTabId, setActiveTabId] = useState<string>("all");
 
   // State for slide pagination
-  const [page, setPage] = useState<number>(1);
+  const [slidePage, setSlidePage] = useState<number>(1);
   const itemsPerPage = 9;
 
   // State for applied filters
@@ -98,7 +118,7 @@ const ShopPage: React.FC = () => {
 
   // Pagination calculations
   const totalPage = Math.ceil(SLIDE_DATA.length / itemsPerPage);
-  const offset = (page - 1) * itemsPerPage;
+  const offset = (slidePage - 1) * itemsPerPage;
   const currentPageData = SLIDE_DATA.slice(offset, offset + itemsPerPage);
 
   // Tab data
@@ -120,30 +140,91 @@ const ShopPage: React.FC = () => {
     { id: "living", label: "가구/리빙", filterValue: "55" },
   ];
 
+  // Reset product data and pagination when filters change
+  const resetProductData = useCallback(() => {
+    setProductData([]);
+    setPage(0);
+    setHasMore(true);
+  }, []);
+
   // Load products on component mount or when filters change
-  useEffect(() => {
-    const loadProducts = async () => {
-      // Build filter object from search params and applied filters
-      const filterPayload: SelectedFiltersPayload = {
-        ...appliedFilters,
-        keyword: searchParams.get("keyword") || undefined,
-      };
+  const loadProducts = useCallback(
+    async (pageNum: number) => {
+      if (!hasMore || isLoading) return;
 
-      // If there's an active tab other than "all", add it to category filter
-      if (activeTabId !== "all") {
-        const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
-        if (activeTab && activeTab.filterValue) {
-          filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
+      try {
+        setIsLoading(true);
+
+        // Build filter object from search params and applied filters
+        const filterPayload: SelectedFiltersPayload = {
+          ...appliedFilters,
+          keyword: searchParams.get("keyword") || undefined,
+          sortOption: selectedSortOption,
+          deliveryOption: clickedButton || undefined,
+          isBelowOriginalPrice: additionalFilters.isBelowOriginalPrice,
+          isExcludeSoldOut: additionalFilters.isExcludeSoldOut,
+        };
+
+        // If there's an active tab other than "all", add it to category filter
+        if (activeTabId !== "all") {
+          const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
+          if (activeTab && activeTab.filterValue) {
+            filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
+          }
         }
+
+        // Fetch products with filters and pagination
+        const result = await fetchShopData(filterPayload, pageNum);
+
+        // Update state with new data
+        if (pageNum === 0) {
+          setProductData(result.content);
+        } else {
+          setProductData((prev) => [...prev, ...result.content]);
+        }
+
+        setHasMore(!result.last);
+        setTotalProducts(result.totalElements);
+      } catch (error) {
+        console.error("상품 로드 에러:", error);
+      } finally {
+        setIsLoading(false);
       }
+    },
+    [
+      searchParams,
+      appliedFilters,
+      activeTabId,
+      location.state,
+      clickedButton,
+      additionalFilters,
+      selectedSortOption,
+      hasMore,
+      isLoading,
+    ]
+  );
 
-      // Fetch products with filters - 포맷팅은 fetchShopData 내부에서 처리됨
-      const products = await fetchShopData(filterPayload);
-      setProductData(products);
-    };
+  // Effect to load initial products
+  useEffect(() => {
+    resetProductData();
+    loadProducts(0);
+  }, [
+    searchParams,
+    appliedFilters,
+    activeTabId,
+    clickedButton,
+    additionalFilters,
+    selectedSortOption,
+    resetProductData,
+    loadProducts,
+  ]);
 
-    loadProducts();
-  }, [searchParams, appliedFilters, activeTabId, location.state]);
+  // Effect to load more products when page changes
+  useEffect(() => {
+    if (page > 0) {
+      loadProducts(page);
+    }
+  }, [page, loadProducts]);
 
   // Handle delivery button click
   const handleDeliveryButtonClick = async (buttonLabel: string) => {
@@ -154,6 +235,9 @@ const ShopPage: React.FC = () => {
     if (newValue) {
       await setDeliveryOption(newValue);
     }
+
+    // Reset product list and pagination
+    resetProductData();
   };
 
   // Handle additional filter toggles (checkboxes)
@@ -169,6 +253,9 @@ const ShopPage: React.FC = () => {
 
     // Update backend
     await setAdditionalFilters(newFilters);
+
+    // Reset product list and pagination
+    resetProductData();
   };
 
   // Handle sort option selection
@@ -178,6 +265,9 @@ const ShopPage: React.FC = () => {
 
     // Update backend
     await setSortOption(option);
+
+    // Reset product list and pagination
+    resetProductData();
   };
 
   // Handle filter modal open/close
@@ -247,6 +337,9 @@ const ShopPage: React.FC = () => {
 
     // URL 파라미터 업데이트
     setSearchParams(newParams);
+
+    // Reset product list and pagination
+    resetProductData();
   };
 
   // Handle product click navigation
@@ -257,6 +350,7 @@ const ShopPage: React.FC = () => {
   // Handle tab click
   const handleTabClick = (tabId: string) => {
     setActiveTabId(tabId);
+    resetProductData();
   };
 
   return (
@@ -333,10 +427,10 @@ const ShopPage: React.FC = () => {
               {/* Previous button */}
               <button
                 className={`${styles.arrow} ${
-                  page === 1 ? styles.arrowDisabled : ""
+                  slidePage === 1 ? styles.arrowDisabled : ""
                 }`}
-                disabled={page === 1}
-                onClick={() => setPage(page - 1)}
+                disabled={slidePage === 1}
+                onClick={() => setSlidePage(slidePage - 1)}
               >
                 <FaChevronLeft />
               </button>
@@ -350,9 +444,9 @@ const ShopPage: React.FC = () => {
                       key={pageNum}
                       type="button"
                       className={`${styles.pagination} ${
-                        pageNum === page ? styles.paginationActive : ""
+                        pageNum === slidePage ? styles.paginationActive : ""
                       }`}
-                      onClick={() => setPage(pageNum)}
+                      onClick={() => setSlidePage(pageNum)}
                     />
                   );
                 })}
@@ -361,10 +455,10 @@ const ShopPage: React.FC = () => {
               {/* Next button */}
               <button
                 className={`${styles.arrow} ${
-                  page === totalPage ? styles.arrowDisabled : ""
+                  slidePage === totalPage ? styles.arrowDisabled : ""
                 }`}
-                disabled={page === totalPage}
-                onClick={() => setPage(page + 1)}
+                disabled={slidePage === totalPage}
+                onClick={() => setSlidePage(slidePage + 1)}
               >
                 <FaChevronRight />
               </button>
@@ -541,71 +635,101 @@ const ShopPage: React.FC = () => {
 
           {/* Product grid */}
           <div className={styles.searchContent}>
-            {productData.map((product) => (
-              <div
-                key={product.id}
-                onClick={() =>
-                  handleProductClick(product.id, product.colorName)
-                }
-                style={{ cursor: "pointer" }}
-              >
-                <div className={styles.searchResult}>
-                  <div>
-                    <div className={styles.imageWrapper}>
-                      <img
-                        src={product.thumbnailImageUrl || product.imgUrl}
-                        alt={`${product.brandName} ${product.name}`}
-                        className={styles.productImage}
-                      />
-                      <div className={styles.overlayText}>
-                        거래 {product.tradeCount}
+            {productData.map((product, index) => {
+              // 마지막 아이템에 ref 추가하여 무한 스크롤 관찰
+              const isLastItem = index === productData.length - 1;
+
+              return (
+                <div
+                  key={`${product.id}-${index}`}
+                  ref={isLastItem ? lastProductElementRef : null}
+                  onClick={() =>
+                    handleProductClick(product.id, product.colorName)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className={styles.searchResult}>
+                    <div>
+                      <div className={styles.imageWrapper}>
+                        <img
+                          src={product.thumbnailImageUrl || product.imgUrl}
+                          alt={`${product.brandName} ${product.name}`}
+                          className={styles.productImage}
+                        />
+                        <div className={styles.overlayText}>
+                          거래 {product.tradeCount}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className={styles.imageInfo}>
-                    <div className={styles.imgTitle}>
-                      <span className={styles.brandName}>
-                        {product.brandName}
-                      </span>
-                      <div>
-                        <span className={styles.name}>
-                          {product.name || product.productName}
+                    <div className={styles.imageInfo}>
+                      <div className={styles.imgTitle}>
+                        <span className={styles.brandName}>
+                          {product.brandName}
+                        </span>
+                        <div>
+                          <span className={styles.name}>
+                            {product.name || product.productName}
+                          </span>
+                          <span className={styles.translatedName}>
+                            {product.englishName}
+                          </span>
+                        </div>
+                      </div>
+                      <div className={`${styles.price}`}>
+                        <span className={styles.infoPrice}>
+                          {product.productPrice ||
+                            `${product.price?.toLocaleString()}원`}
                         </span>
                         <span className={styles.translatedName}>
-                          {product.englishName}
+                          즉시 구매가
                         </span>
                       </div>
-                    </div>
-                    <div className={`${styles.price}`}>
-                      <span className={styles.infoPrice}>
-                        {product.productPrice ||
-                          `${product.price?.toLocaleString()}원`}
-                      </span>
-                      <span className={styles.translatedName}>즉시 구매가</span>
-                    </div>
-                    <div className={styles.actionIcon}>
-                      <FontAwesomeIcon
-                        className={styles.translatedName}
-                        icon={faBookmark}
-                      />
-                      <span className={styles.translatedName}>
-                        {product.interestCount > 10000
-                          ? `${(product.interestCount / 10000).toFixed(1)}만`
-                          : product.interestCount.toLocaleString()}
-                      </span>
-                      <FontAwesomeIcon
-                        className={styles.translatedName}
-                        icon={faNewspaper}
-                      />
-                      <span className={styles.translatedName}>
-                        {product.styleCount.toLocaleString()}
-                      </span>
+                      <div className={styles.actionIcon}>
+                        <FontAwesomeIcon
+                          className={styles.translatedName}
+                          icon={faBookmark}
+                        />
+                        <span className={styles.translatedName}>
+                          {product.interestCount > 10000
+                            ? `${(product.interestCount / 10000).toFixed(1)}만`
+                            : product.interestCount.toLocaleString()}
+                        </span>
+                        <FontAwesomeIcon
+                          className={styles.translatedName}
+                          icon={faNewspaper}
+                        />
+                        <span className={styles.translatedName}>
+                          {product.styleCount.toLocaleString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
+              );
+            })}
+
+            {/* 로딩 인디케이터 */}
+            {isLoading && (
+              <div className={styles.loadingContainer}>
+                <div className={styles.loadingSpinner}></div>
+                <p>상품을 불러오는 중...</p>
               </div>
-            ))}
+            )}
+
+            {/* 더 이상 상품이 없을 때 메시지 */}
+            {!isLoading && !hasMore && productData.length > 0 && (
+              <div className={styles.noMoreProductsContainer}>
+                <p>더 이상 상품이 없습니다.</p>
+              </div>
+            )}
+
+            {/* 검색 결과가 없을 때 메시지 */}
+            {!isLoading && productData.length === 0 && (
+              <div className={styles.noProductsContainer}>
+                <p>검색 결과가 없습니다.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

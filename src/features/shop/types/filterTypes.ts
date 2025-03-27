@@ -121,6 +121,10 @@ export interface SelectedFiltersPayload {
   minPrice?: number;
   maxPrice?: number;
   keyword?: string;
+  sortOption?: string;
+  deliveryOption?: string;
+  isBelowOriginalPrice?: boolean;
+  isExcludeSoldOut?: boolean;
 }
 
 // 브랜드 그룹화에 사용되는 타입
@@ -137,4 +141,34 @@ export interface BrandItem {
   id: number;
   value: string;
   label: string;
+}
+
+// 페이징 응답을 위한 인터페이스
+export interface PaginatedResponse<T> {
+  content: T[];
+  pageable?: {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    offset: number;
+    unpaged: boolean;
+    paged: boolean;
+  };
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+  size?: number;
+  number?: number;
+  sort?: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  first?: boolean;
+  numberOfElements?: number;
+  empty?: boolean;
 }

@@ -2,15 +2,28 @@ import apiClient from "src/global/services/ApiClient";
 import { ImageData, SelectedFiltersPayload } from "../types/filterTypes";
 
 /**
- * 필터 적용하여 상품 데이터 가져오기 (새로운 방식)
+ * 필터 적용하여 상품 데이터 가져오기 (페이징 지원)
  * @param filters 선택한 필터 값들
- * @returns 필터링된 상품 데이터 프로미스
+ * @param page 페이지 번호 (0부터 시작)
+ * @param size 페이지당 아이템 수
+ * @returns 필터링된 상품 데이터와 페이징 정보를 포함한 객체 프로미스
  */
 export const fetchShopData = async (
-  filters: SelectedFiltersPayload = {}
-): Promise<ImageData[]> => {
+  filters: SelectedFiltersPayload = {},
+  page: number = 0,
+  size: number = 20
+): Promise<{
+  content: ImageData[];
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+}> => {
   try {
     const params = new URLSearchParams();
+
+    // 페이징 파라미터 추가
+    params.append("page", page.toString());
+    params.append("size", size.toString());
 
     // 키워드 추가
     if (filters.keyword) {
@@ -55,6 +68,26 @@ export const fetchShopData = async (
     if (filters.maxPrice) {
       params.append("maxPrice", filters.maxPrice.toString());
     }
+
+    // 정렬 옵션 추가
+    if (filters.sortOption) {
+      params.append("sort", filters.sortOption);
+    }
+
+    // 배송 옵션 추가
+    if (filters.deliveryOption) {
+      params.append("delivery", filters.deliveryOption);
+    }
+
+    // 추가 필터 추가
+    if (filters.isBelowOriginalPrice) {
+      params.append("belowOriginalPrice", "true");
+    }
+
+    if (filters.isExcludeSoldOut) {
+      params.append("excludeSoldOut", "true");
+    }
+
     //product경로 /products/query 
     //elastic경로 /es/products 
     const url = `/es/products${
@@ -62,25 +95,50 @@ export const fetchShopData = async (
     }`;
     const response = await apiClient.get(url);
 
-    if (response.data && response.data.content) {
+    if (response.data) {
       // 응답 데이터 포맷팅
-      return response.data.content.map((item: any) => ({
+      const formattedData = response.data.content.map((item: any) => ({
         ...item,
+        id: item.id,
         price: item.price || item.releasePrice,
         imgUrl: item.thumbnailImageUrl,
         productName: item.name,
         productPrice: (item.price || item.releasePrice).toLocaleString() + "원",
+        tradeCount: item.tradeCount || 0,
+        interestCount: item.interestCount || 0,
+        styleCount: item.styleCount || 0,
+        brandName: item.brandName,
+        name: item.name,
+        englishName: item.englishName || "",
+        colorName: item.colorName || "default",
       }));
+
+      return {
+        content: formattedData,
+        last: response.data.last || false,
+        totalElements: response.data.totalElements || 0,
+        totalPages: response.data.totalPages || 1
+      };
     } else {
       console.error(
         "fetchShopData 에러: 예상 데이터 구조가 아님",
         response.data
       );
-      return [];
+      return {
+        content: [],
+        last: true,
+        totalElements: 0,
+        totalPages: 0
+      };
     }
   } catch (error) {
     console.error("fetchShopData 에러:", error);
-    return [];
+    return {
+      content: [],
+      last: true,
+      totalElements: 0,
+      totalPages: 0
+    };
   }
 };
 
@@ -151,7 +209,8 @@ export const fetchShopDataLegacy = async (
   }
 
   // 필터 객체를 사용하여 새 함수 호출
-  return fetchShopData(filters);
+  const result = await fetchShopData(filters);
+  return result.content;
 };
 
 /**
