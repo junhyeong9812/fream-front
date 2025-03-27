@@ -15,6 +15,7 @@ import {
   ButtonOption,
   ImageData,
   SelectedFiltersPayload,
+  PaginatedResponse,
 } from "../types/filterTypes";
 import {
   fetchShopData,
@@ -25,6 +26,7 @@ import {
 import styles from "./shopPage.module.css";
 import FilterModal from "../components/filterModal";
 import PopularityModal from "../components/popularityModal";
+import { SortOptionKey } from "../types/sortOptions";
 
 const ShopPage: React.FC = () => {
   const location = useLocation();
@@ -47,7 +49,8 @@ const ShopPage: React.FC = () => {
   // State for sort modal
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const sortModalRef = useRef<HTMLDivElement>(null);
-  const [selectedSortOption, setSelectedSortOption] = useState("인기순");
+  const [selectedSortOption, setSelectedSortOption] =
+    useState<SortOptionKey>("인기순");
 
   // State for product data with infinite scroll
   const [productData, setProductData] = useState<ImageData[]>([]);
@@ -259,7 +262,7 @@ const ShopPage: React.FC = () => {
   };
 
   // Handle sort option selection
-  const handleSortOptionSelect = async (option: string) => {
+  const handleSortOptionSelect = async (option: SortOptionKey) => {
     setSelectedSortOption(option);
     setIsSortModalOpen(false);
 

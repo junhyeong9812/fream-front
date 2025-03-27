@@ -1,5 +1,9 @@
 import apiClient from "src/global/services/ApiClient";
-import { ImageData, SelectedFiltersPayload } from "../types/filterTypes";
+import {
+  ImageData,
+  SelectedFiltersPayload,
+  PaginatedResponse,
+} from "../types/filterTypes";
 
 /**
  * 필터 적용하여 상품 데이터 가져오기 (페이징 지원)
@@ -12,12 +16,7 @@ export const fetchShopData = async (
   filters: SelectedFiltersPayload = {},
   page: number = 0,
   size: number = 20
-): Promise<{
-  content: ImageData[];
-  last: boolean;
-  totalElements: number;
-  totalPages: number;
-}> => {
+): Promise<PaginatedResponse<ImageData>> => {
   try {
     const params = new URLSearchParams();
 
@@ -71,7 +70,8 @@ export const fetchShopData = async (
 
     // 정렬 옵션 추가
     if (filters.sortOption) {
-      params.append("sort", filters.sortOption);
+      const { formatSortForAPI } = await import("../types/sortOptions");
+      params.append("sort", formatSortForAPI(filters.sortOption));
     }
 
     // 배송 옵션 추가
@@ -88,8 +88,8 @@ export const fetchShopData = async (
       params.append("excludeSoldOut", "true");
     }
 
-    //product경로 /products/query 
-    //elastic경로 /es/products 
+    //product경로 /products/query
+    //elastic경로 /es/products
     const url = `/es/products${
       params.toString() ? `?${params.toString()}` : ""
     }`;
@@ -98,26 +98,29 @@ export const fetchShopData = async (
     if (response.data) {
       // 응답 데이터 포맷팅
       const formattedData = response.data.content.map((item: any) => ({
-        ...item,
         id: item.id,
-        price: item.price || item.releasePrice,
-        imgUrl: item.thumbnailImageUrl,
-        productName: item.name,
-        productPrice: (item.price || item.releasePrice).toLocaleString() + "원",
-        tradeCount: item.tradeCount || 0,
-        interestCount: item.interestCount || 0,
-        styleCount: item.styleCount || 0,
-        brandName: item.brandName,
         name: item.name,
         englishName: item.englishName || "",
+        brandName: item.brandName,
+        releasePrice: item.releasePrice || 0,
+        thumbnailImageUrl: item.thumbnailImageUrl,
+        price: item.price || item.releasePrice || 0,
         colorName: item.colorName || "default",
+        colorId: item.colorId || 0,
+        interestCount: item.interestCount || 0,
+        styleCount: item.styleCount || 0,
+        tradeCount: item.tradeCount || 0,
+        imgUrl: item.imgUrl || item.thumbnailImageUrl,
+        productName: item.name,
+        productPrice:
+          (item.price || item.releasePrice || 0).toLocaleString() + "원",
       }));
 
       return {
         content: formattedData,
         last: response.data.last || false,
         totalElements: response.data.totalElements || 0,
-        totalPages: response.data.totalPages || 1
+        totalPages: response.data.totalPages || 1,
       };
     } else {
       console.error(
@@ -128,7 +131,7 @@ export const fetchShopData = async (
         content: [],
         last: true,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
       };
     }
   } catch (error) {
@@ -137,7 +140,7 @@ export const fetchShopData = async (
       content: [],
       last: true,
       totalElements: 0,
-      totalPages: 0
+      totalPages: 0,
     };
   }
 };
