@@ -15,8 +15,8 @@ const LoginPage: React.FC = () => {
   const { setIsLoggedIn } = useContext(AuthContext);
 
   const [loginData, setLoginData] = useState<LoginData>({
-    email: "",
-    password: "",
+    email: "user1@example.com",
+    password: "password123!",
   });
 
   // 로딩 상태 추가
