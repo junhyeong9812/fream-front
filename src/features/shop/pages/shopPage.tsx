@@ -348,76 +348,87 @@ const ShopPage: React.FC = () => {
 
   // Handle applying filters from modal - 최적화됨: 불필요한 리셋 방지
   const handleApplyFilters = (filters: SelectedFiltersPayload) => {
-    // 필터 변경 여부 확인
-    const isFilterChanged =
-      JSON.stringify(filters) !== JSON.stringify(appliedFilters);
+    // // 필터 변경 여부 확인
+    // const isFilterChanged =
+    //   JSON.stringify(filters) !== JSON.stringify(appliedFilters);
 
-    if (isFilterChanged) {
-      // 기존 필터 상태 업데이트 유지
-      setAppliedFilters(filters);
+    // if (isFilterChanged) {
+    //   // 기존 필터 상태 업데이트 유지
+    //   setAppliedFilters(filters);
 
-      // 새 URL 파라미터 객체 생성
-      const newParams = new URLSearchParams(searchParams);
+    //   // 새 URL 파라미터 객체 생성
+    //   const newParams = new URLSearchParams(searchParams);
 
-      // 기존 필터 관련 파라미터 모두 제거
-      [
-        "categoryIds",
-        "brandIds",
-        "collectionIds",
-        "genders",
-        "colors",
-        "sizes",
-        "minPrice",
-        "maxPrice",
-      ].forEach((param) => {
-        newParams.delete(param);
-      });
+    //   // 기존 필터 관련 파라미터 모두 제거
+    //   [
+    //     "categoryIds",
+    //     "brandIds",
+    //     "collectionIds",
+    //     "genders",
+    //     "colors",
+    //     "sizes",
+    //     "minPrice",
+    //     "maxPrice",
+    //   ].forEach((param) => {
+    //     newParams.delete(param);
+    //   });
 
-      // 카테고리 ID 추가
-      if (filters.categoryIds && filters.categoryIds.length > 0) {
-        newParams.set("categoryIds", filters.categoryIds.join(","));
-      }
+    //   // 카테고리 ID 추가
+    //   if (filters.categoryIds && filters.categoryIds.length > 0) {
+    //     newParams.set("categoryIds", filters.categoryIds.join(","));
+    //   }
 
-      // 브랜드 ID 추가
-      if (filters.brandIds && filters.brandIds.length > 0) {
-        newParams.set("brandIds", filters.brandIds.join(","));
-      }
+    //   // 브랜드 ID 추가
+    //   if (filters.brandIds && filters.brandIds.length > 0) {
+    //     newParams.set("brandIds", filters.brandIds.join(","));
+    //   }
 
-      // 컬렉션 ID 추가
-      if (filters.collectionIds && filters.collectionIds.length > 0) {
-        newParams.set("collectionIds", filters.collectionIds.join(","));
-      }
+    //   // 컬렉션 ID 추가
+    //   if (filters.collectionIds && filters.collectionIds.length > 0) {
+    //     newParams.set("collectionIds", filters.collectionIds.join(","));
+    //   }
 
-      // 성별 추가
-      if (filters.genders && filters.genders.length > 0) {
-        newParams.set("genders", filters.genders.join(","));
-      }
+    //   // 성별 추가
+    //   if (filters.genders && filters.genders.length > 0) {
+    //     newParams.set("genders", filters.genders.join(","));
+    //   }
 
-      // 색상 추가
-      if (filters.colors && filters.colors.length > 0) {
-        newParams.set("colors", filters.colors.join(","));
-      }
+    //   // 색상 추가
+    //   if (filters.colors && filters.colors.length > 0) {
+    //     newParams.set("colors", filters.colors.join(","));
+    //   }
 
-      // 사이즈 추가
-      if (filters.sizes && filters.sizes.length > 0) {
-        newParams.set("sizes", filters.sizes.join(","));
-      }
+    //   // 사이즈 추가
+    //   if (filters.sizes && filters.sizes.length > 0) {
+    //     newParams.set("sizes", filters.sizes.join(","));
+    //   }
 
-      // 가격 범위 추가
-      if (filters.minPrice) {
-        newParams.set("minPrice", filters.minPrice.toString());
-      }
+    //   // 가격 범위 추가
+    //   if (filters.minPrice) {
+    //     newParams.set("minPrice", filters.minPrice.toString());
+    //   }
 
-      if (filters.maxPrice) {
-        newParams.set("maxPrice", filters.maxPrice.toString());
-      }
+    //   if (filters.maxPrice) {
+    //     newParams.set("maxPrice", filters.maxPrice.toString());
+    //   }
 
-      // URL 파라미터 업데이트
-      setSearchParams(newParams);
+    //   // URL 파라미터 업데이트
+    //   setSearchParams(newParams);
 
-      // 필터가 변경되었을 때만 리셋
-      resetProductData();
-    }
+    //   // 필터가 변경되었을 때만 리셋
+    //   resetProductData();
+    // }
+    // 1. 필터 상태 업데이트
+    setAppliedFilters(filters);
+
+    // 2. 상품 데이터 초기화
+    resetProductData();
+
+    // 3. 첫 페이지부터 다시 로드
+    loadProducts(0);
+
+    // 4. 모달 닫기
+    handleCloseFilterModal();
   };
 
   // Handle product click navigation
