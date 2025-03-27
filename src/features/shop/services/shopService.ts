@@ -5,6 +5,12 @@ import {
   PaginatedResponse,
 } from "../types/filterTypes";
 
+// 캐싱을 위한 변수 타입 정의
+let lastRequestHash: string | null = null;
+let lastResponseData: PaginatedResponse<ImageData> | null = null;
+let lastRequestTime: number = 0;
+const CACHE_EXPIRY_TIME: number = 5 * 60 * 1000; // 5분 캐시 유효 시간
+
 /**
  * 필터 적용하여 상품 데이터 가져오기 (페이징 지원)
  * @param filters 선택한 필터 값들
@@ -18,6 +24,20 @@ export const fetchShopData = async (
   size: number = 20
 ): Promise<PaginatedResponse<ImageData>> => {
   try {
+    // 요청 파라미터의 해시 생성
+    const requestHash = JSON.stringify({ filters, page, size });
+    const currentTime = Date.now();
+
+    // 캐시 데이터가 있고 유효 기간 내라면 캐시된 결과 반환
+    if (
+      lastRequestHash === requestHash &&
+      lastResponseData &&
+      currentTime - lastRequestTime < CACHE_EXPIRY_TIME
+    ) {
+      console.log("[ShopService] 캐시된 데이터 반환:", { page });
+      return lastResponseData;
+    }
+
     const params = new URLSearchParams();
 
     // 페이징 파라미터 추가
@@ -88,12 +108,22 @@ export const fetchShopData = async (
       params.append("excludeSoldOut", "true");
     }
 
-    //product경로 /products/query
-    //elastic경로 /es/products
+    // API 요청 시작 시간 기록 (성능 측정용)
+    const startTime = performance.now();
+
+    // API 요청 URL 구성
     const url = `/es/products${
       params.toString() ? `?${params.toString()}` : ""
     }`;
+
+    console.log(`[ShopService] API 요청: ${url}`);
     const response = await apiClient.get(url);
+
+    // API 요청 완료 시간 측정 (성능 측정용)
+    const endTime = performance.now();
+    console.log(
+      `[ShopService] API 요청 완료: ${Math.round(endTime - startTime)}ms`
+    );
 
     if (response.data) {
       // 응답 데이터 포맷팅
@@ -116,12 +146,20 @@ export const fetchShopData = async (
           (item.price || item.releasePrice || 0).toLocaleString() + "원",
       }));
 
-      return {
+      // 결과 데이터 준비
+      const result = {
         content: formattedData,
         last: response.data.last || false,
         totalElements: response.data.totalElements || 0,
         totalPages: response.data.totalPages || 1,
       };
+
+      // 캐시 업데이트
+      lastRequestHash = requestHash;
+      lastResponseData = result;
+      lastRequestTime = currentTime;
+
+      return result;
     } else {
       console.error(
         "fetchShopData 에러: 예상 데이터 구조가 아님",
@@ -144,6 +182,11 @@ export const fetchShopData = async (
     };
   }
 };
+
+// API 요청 제한을 위한 디바운싱 변수
+let deliveryTimeout: ReturnType<typeof setTimeout> | null = null;
+let sortTimeout: ReturnType<typeof setTimeout> | null = null;
+let additionalTimeout: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * 기존 호출 방식과의 호환성을 위한 함수 (레거시 지원)
@@ -222,7 +265,16 @@ export const fetchShopDataLegacy = async (
  */
 export const setSortOption = async (sortOption: string): Promise<void> => {
   try {
-    await apiClient.post("/filters/sort", { sortOption });
+    // 기존 타임아웃 취소
+    if (sortTimeout) {
+      clearTimeout(sortTimeout);
+    }
+
+    // 디바운싱 적용 (300ms)
+    sortTimeout = setTimeout(async () => {
+      console.log("[ShopService] 정렬 옵션 설정:", sortOption);
+      await apiClient.post("/filters/sort", { sortOption });
+    }, 300);
   } catch (error) {
     console.error("정렬 옵션 설정 실패:", error);
   }
@@ -236,7 +288,16 @@ export const setDeliveryOption = async (
   deliveryOption: string
 ): Promise<void> => {
   try {
-    await apiClient.post("/filters/delivery", { filter: deliveryOption });
+    // 기존 타임아웃 취소
+    if (deliveryTimeout) {
+      clearTimeout(deliveryTimeout);
+    }
+
+    // 디바운싱 적용 (300ms)
+    deliveryTimeout = setTimeout(async () => {
+      console.log("[ShopService] 배송 옵션 설정:", deliveryOption);
+      await apiClient.post("/filters/delivery", { filter: deliveryOption });
+    }, 300);
   } catch (error) {
     console.error("배송 옵션 설정 실패:", error);
   }
@@ -251,7 +312,16 @@ export const setAdditionalFilters = async (options: {
   isExcludeSoldOut: boolean;
 }): Promise<void> => {
   try {
-    await apiClient.post("/filters/additional", options);
+    // 기존 타임아웃 취소
+    if (additionalTimeout) {
+      clearTimeout(additionalTimeout);
+    }
+
+    // 디바운싱 적용 (300ms)
+    additionalTimeout = setTimeout(async () => {
+      console.log("[ShopService] 추가 필터 설정:", options);
+      await apiClient.post("/filters/additional", options);
+    }, 300);
   } catch (error) {
     console.error("추가 필터 설정 실패:", error);
   }

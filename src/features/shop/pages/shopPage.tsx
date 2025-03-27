@@ -36,7 +36,7 @@ const ShopPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // State for filter modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // State for delivery filter buttons
   const [clickedButton, setClickedButton] = useState<string | null>(null);
@@ -48,7 +48,7 @@ const ShopPage: React.FC = () => {
   });
 
   // State for sort modal
-  const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+  const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
   const sortModalRef = useRef<HTMLDivElement>(null);
   const [selectedSortOption, setSelectedSortOption] =
     useState<SortOptionKey>("인기순");
@@ -62,48 +62,6 @@ const ShopPage: React.FC = () => {
   const [isIntersectionProcessed, setIsIntersectionProcessed] =
     useState<boolean>(false);
 
-  // 디바운스된 페이지 설정 함수 생성
-  const debouncedSetPage = useCallback(
-    debounce((nextPage: number) => {
-      setPage(nextPage);
-      setIsIntersectionProcessed(false);
-    }, 500),
-    []
-  );
-
-  // Observer for infinite scroll
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastProductElementRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (isLoading || !hasMore || isIntersectionProcessed) return;
-
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          // 더 엄격한 조건: 최소 50% 이상 보여야 함
-          if (
-            entries[0].isIntersecting &&
-            entries[0].intersectionRatio >= 0.5 &&
-            hasMore &&
-            !isLoading
-          ) {
-            setIsIntersectionProcessed(true); // 중복 처리 방지
-            debouncedSetPage(page + 1);
-          }
-        },
-        {
-          root: null, // 뷰포트 기준
-          rootMargin: "0px",
-          threshold: 0.5, // 50% 이상 보일 때만 트리거
-        }
-      );
-
-      if (node) observer.current.observe(node);
-    },
-    [isLoading, hasMore, page, debouncedSetPage, isIntersectionProcessed]
-  );
-
   // State for active tab
   const [activeTabId, setActiveTabId] = useState<string>("all");
 
@@ -116,18 +74,59 @@ const ShopPage: React.FC = () => {
     {}
   );
 
+  // 디바운스된 페이지 설정 함수 생성 - 수정됨: 함수를 받도록 변경
+  const debouncedSetPage = useCallback(
+    debounce((nextPageFn: ((prevPage: number) => number) | number) => {
+      setPage(typeof nextPageFn === "function" ? nextPageFn(page) : nextPageFn);
+      setIsIntersectionProcessed(false);
+    }, 800),
+    []
+  );
+
+  // Observer for infinite scroll - 수정됨: 의존성 최적화
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastProductElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isLoading || !hasMore || isIntersectionProcessed) return;
+
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (
+            entries[0].isIntersecting &&
+            entries[0].intersectionRatio >= 0.5 &&
+            hasMore &&
+            !isLoading
+          ) {
+            setIsIntersectionProcessed(true); // 중복 처리 방지
+            debouncedSetPage((prevPage) => prevPage + 1); // 함수형 업데이트 사용
+          }
+        },
+        {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.5,
+        }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore, isIntersectionProcessed, debouncedSetPage] // page 의존성 제거
+  );
+
   // Example data
-  const categories = [
+  const categories: ButtonOption[] = [
     { value: "shoes", label: "신발" },
     { value: "clothes", label: "의류" },
   ];
 
-  const outerwear = [
+  const outerwear: ButtonOption[] = [
     { value: "jackets", label: "재킷" },
     { value: "coats", label: "코트" },
   ];
 
-  const shirts = [
+  const shirts: ButtonOption[] = [
     { value: "tshirts", label: "티셔츠" },
     { value: "dressShirts", label: "드레스 셔츠" },
   ];
@@ -172,6 +171,35 @@ const ShopPage: React.FC = () => {
     { id: "living", label: "가구/리빙", filterValue: "55" },
   ];
 
+  // 필터 파라미터 생성 함수 - 중복 코드 제거
+  const createFilterPayload = useCallback((): SelectedFiltersPayload => {
+    const filterPayload: SelectedFiltersPayload = {
+      ...appliedFilters,
+      keyword: searchParams.get("keyword") || undefined,
+      sortOption: selectedSortOption,
+      deliveryOption: clickedButton || undefined,
+      isBelowOriginalPrice: additionalFilters.isBelowOriginalPrice,
+      isExcludeSoldOut: additionalFilters.isExcludeSoldOut,
+    };
+
+    // If there's an active tab other than "all", add it to category filter
+    if (activeTabId !== "all") {
+      const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
+      if (activeTab && activeTab.filterValue) {
+        filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
+      }
+    }
+
+    return filterPayload;
+  }, [
+    appliedFilters,
+    searchParams,
+    selectedSortOption,
+    clickedButton,
+    additionalFilters,
+    activeTabId,
+  ]);
+
   // Reset product data and pagination when filters change
   const resetProductData = useCallback(() => {
     setProductData([]);
@@ -180,7 +208,7 @@ const ShopPage: React.FC = () => {
     setIsIntersectionProcessed(false);
   }, []);
 
-  // Load products on component mount or when filters change
+  // Load products (최적화됨)
   const loadProducts = useCallback(
     async (pageNum: number) => {
       // 이미 로딩 중이거나 더 이상 불러올 데이터가 없으면 요청하지 않음
@@ -189,23 +217,11 @@ const ShopPage: React.FC = () => {
       try {
         setIsLoading(true);
 
-        // Build filter object from search params and applied filters
-        const filterPayload: SelectedFiltersPayload = {
-          ...appliedFilters,
-          keyword: searchParams.get("keyword") || undefined,
-          sortOption: selectedSortOption,
-          deliveryOption: clickedButton || undefined,
-          isBelowOriginalPrice: additionalFilters.isBelowOriginalPrice,
-          isExcludeSoldOut: additionalFilters.isExcludeSoldOut,
-        };
+        // 필터 객체 생성
+        const filterPayload = createFilterPayload();
 
-        // If there's an active tab other than "all", add it to category filter
-        if (activeTabId !== "all") {
-          const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
-          if (activeTab && activeTab.filterValue) {
-            filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
-          }
-        }
+        // 요청 로그
+        console.log(`[ShopPage] 상품 로드 요청: 페이지 ${pageNum}`);
 
         // Fetch products with filters and pagination
         const result = await fetchShopData(filterPayload, pageNum);
@@ -217,17 +233,18 @@ const ShopPage: React.FC = () => {
         if (pageNum === 0) {
           setProductData(result.content);
         } else {
-          // 같은 데이터가 다시 로드되는 것을 방지
-          const newItems = result.content.filter(
-            (newItem) =>
-              !productData.some(
-                (existingItem) => existingItem.id === newItem.id
-              )
-          );
+          // 중복 방지 로직 최적화
+          setProductData((prevData) => {
+            // ID로 빠른 조회를 위한 Set 사용
+            const existingIds = new Set(prevData.map((item) => item.id));
+            // 중복되지 않은 새 데이터만 필터링
+            const newItems = result.content.filter(
+              (newItem) => !existingIds.has(newItem.id)
+            );
 
-          if (newItems.length > 0) {
-            setProductData((prev) => [...prev, ...newItems]);
-          }
+            // 새 데이터가 있을 때만 상태 업데이트
+            return newItems.length > 0 ? [...prevData, ...newItems] : prevData;
+          });
         }
 
         // hasMore 상태 업데이트 - 서버가 마지막 페이지임을 알려주거나 데이터가 없으면 false
@@ -240,21 +257,10 @@ const ShopPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [
-      searchParams,
-      appliedFilters,
-      activeTabId,
-      location.state,
-      clickedButton,
-      additionalFilters,
-      selectedSortOption,
-      hasMore,
-      isLoading,
-      productData,
-    ]
+    [createFilterPayload] // 필터 관련 의존성을 createFilterPayload로 통합
   );
 
-  // Effect to load initial products
+  // Effect to load initial products - 수정됨: 의존성 최적화
   useEffect(() => {
     resetProductData();
     loadProducts(0);
@@ -265,52 +271,67 @@ const ShopPage: React.FC = () => {
     clickedButton,
     additionalFilters,
     selectedSortOption,
-    resetProductData,
+    resetProductData, // 함수를 실제로 사용하므로 의존성에 추가
     loadProducts,
   ]);
 
-  // Effect to load more products when page changes
+  // Effect to load more products when page changes - 수정됨: 불필요한 의존성 제거
   useEffect(() => {
     // 페이지가 0보다 크고 로딩 중이 아니며 더 불러올 데이터가 있는 경우에만 요청
     if (page > 0 && !isLoading && hasMore) {
       loadProducts(page);
     }
-  }, [page, loadProducts, isLoading, hasMore]);
+  }, [page, isLoading, hasMore, loadProducts]);
 
-  // Handle delivery button click
+  // Handle delivery button click - 최적화됨: 불필요한 리셋 방지
   const handleDeliveryButtonClick = async (buttonLabel: string) => {
     const newValue = clickedButton === buttonLabel ? null : buttonLabel;
-    setClickedButton(newValue);
 
-    // Update backend
-    if (newValue) {
-      await setDeliveryOption(newValue);
+    // 상태가 실제로 변경될 때만 처리
+    if (newValue !== clickedButton) {
+      setClickedButton(newValue);
+
+      // Update backend
+      if (newValue) {
+        await setDeliveryOption(newValue);
+      }
+
+      // 상태가 변경되었을 때만 리셋
+      resetProductData();
     }
-
-    // Reset product list and pagination
-    resetProductData();
   };
 
-  // Handle additional filter toggles (checkboxes)
+  // Handle additional filter toggles (checkboxes) - 최적화됨: 불필요한 리셋 방지
   const handleAdditionalFilterToggle = async (
     filterKey: "isBelowOriginalPrice" | "isExcludeSoldOut"
   ) => {
+    const newValue = !additionalFilters[filterKey];
+
     const newFilters = {
       ...additionalFilters,
-      [filterKey]: !additionalFilters[filterKey],
+      [filterKey]: newValue,
     };
 
-    setAdditionalFilters(newFilters);
+    // 상태가 실제로 변경되었을 때만 업데이트
+    if (additionalFilters[filterKey] !== newValue) {
+      setAdditionalFilters(newFilters);
 
-    // Update backend
-    await setAdditionalFilters(newFilters);
+      // Update backend
+      await setAdditionalFilters(newFilters);
 
-    // Reset product list and pagination
-    resetProductData();
+      // 상태가 변경되었을 때만 리셋
+      resetProductData();
+    }
   };
 
-  // Handle sort option selection
+  // Handle sort option selection - 최적화됨: 불필요한 리셋 방지
   const handleSortOptionSelect = async (option: SortOptionKey) => {
+    // 동일한 정렬 옵션 선택 시 무시
+    if (option === selectedSortOption) {
+      setIsSortModalOpen(false);
+      return;
+    }
+
     setSelectedSortOption(option);
     setIsSortModalOpen(false);
 
@@ -325,72 +346,78 @@ const ShopPage: React.FC = () => {
   const handleOpenFilterModal = () => setIsModalOpen(true);
   const handleCloseFilterModal = () => setIsModalOpen(false);
 
-  // Handle applying filters from modal
+  // Handle applying filters from modal - 최적화됨: 불필요한 리셋 방지
   const handleApplyFilters = (filters: SelectedFiltersPayload) => {
-    // 기존 필터 상태 업데이트 유지
-    setAppliedFilters(filters);
+    // 필터 변경 여부 확인
+    const isFilterChanged =
+      JSON.stringify(filters) !== JSON.stringify(appliedFilters);
 
-    // 새 URL 파라미터 객체 생성
-    const newParams = new URLSearchParams(searchParams);
+    if (isFilterChanged) {
+      // 기존 필터 상태 업데이트 유지
+      setAppliedFilters(filters);
 
-    // 기존 필터 관련 파라미터 모두 제거
-    [
-      "categoryIds",
-      "brandIds",
-      "collectionIds",
-      "genders",
-      "colors",
-      "sizes",
-      "minPrice",
-      "maxPrice",
-    ].forEach((param) => {
-      newParams.delete(param);
-    });
+      // 새 URL 파라미터 객체 생성
+      const newParams = new URLSearchParams(searchParams);
 
-    // 카테고리 ID 추가
-    if (filters.categoryIds && filters.categoryIds.length > 0) {
-      newParams.set("categoryIds", filters.categoryIds.join(","));
+      // 기존 필터 관련 파라미터 모두 제거
+      [
+        "categoryIds",
+        "brandIds",
+        "collectionIds",
+        "genders",
+        "colors",
+        "sizes",
+        "minPrice",
+        "maxPrice",
+      ].forEach((param) => {
+        newParams.delete(param);
+      });
+
+      // 카테고리 ID 추가
+      if (filters.categoryIds && filters.categoryIds.length > 0) {
+        newParams.set("categoryIds", filters.categoryIds.join(","));
+      }
+
+      // 브랜드 ID 추가
+      if (filters.brandIds && filters.brandIds.length > 0) {
+        newParams.set("brandIds", filters.brandIds.join(","));
+      }
+
+      // 컬렉션 ID 추가
+      if (filters.collectionIds && filters.collectionIds.length > 0) {
+        newParams.set("collectionIds", filters.collectionIds.join(","));
+      }
+
+      // 성별 추가
+      if (filters.genders && filters.genders.length > 0) {
+        newParams.set("genders", filters.genders.join(","));
+      }
+
+      // 색상 추가
+      if (filters.colors && filters.colors.length > 0) {
+        newParams.set("colors", filters.colors.join(","));
+      }
+
+      // 사이즈 추가
+      if (filters.sizes && filters.sizes.length > 0) {
+        newParams.set("sizes", filters.sizes.join(","));
+      }
+
+      // 가격 범위 추가
+      if (filters.minPrice) {
+        newParams.set("minPrice", filters.minPrice.toString());
+      }
+
+      if (filters.maxPrice) {
+        newParams.set("maxPrice", filters.maxPrice.toString());
+      }
+
+      // URL 파라미터 업데이트
+      setSearchParams(newParams);
+
+      // 필터가 변경되었을 때만 리셋
+      resetProductData();
     }
-
-    // 브랜드 ID 추가
-    if (filters.brandIds && filters.brandIds.length > 0) {
-      newParams.set("brandIds", filters.brandIds.join(","));
-    }
-
-    // 컬렉션 ID 추가
-    if (filters.collectionIds && filters.collectionIds.length > 0) {
-      newParams.set("collectionIds", filters.collectionIds.join(","));
-    }
-
-    // 성별 추가
-    if (filters.genders && filters.genders.length > 0) {
-      newParams.set("genders", filters.genders.join(","));
-    }
-
-    // 색상 추가
-    if (filters.colors && filters.colors.length > 0) {
-      newParams.set("colors", filters.colors.join(","));
-    }
-
-    // 사이즈 추가
-    if (filters.sizes && filters.sizes.length > 0) {
-      newParams.set("sizes", filters.sizes.join(","));
-    }
-
-    // 가격 범위 추가
-    if (filters.minPrice) {
-      newParams.set("minPrice", filters.minPrice.toString());
-    }
-
-    if (filters.maxPrice) {
-      newParams.set("maxPrice", filters.maxPrice.toString());
-    }
-
-    // URL 파라미터 업데이트
-    setSearchParams(newParams);
-
-    // Reset product list and pagination
-    resetProductData();
   };
 
   // Handle product click navigation
@@ -398,8 +425,11 @@ const ShopPage: React.FC = () => {
     navigate(`/products/${productId}?color=${colorName}`);
   };
 
-  // Handle tab click
+  // Handle tab click - 최적화됨: 불필요한 리셋 방지
   const handleTabClick = (tabId: string) => {
+    // 같은 탭 클릭 시 무시
+    if (tabId === activeTabId) return;
+
     setActiveTabId(tabId);
     resetProductData();
   };
