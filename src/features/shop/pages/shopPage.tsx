@@ -27,6 +27,7 @@ import styles from "./shopPage.module.css";
 import FilterModal from "../components/filterModal";
 import PopularityModal from "../components/popularityModal";
 import { SortOptionKey } from "../types/sortOptions";
+import debounce from "lodash/debounce";
 
 const ShopPage: React.FC = () => {
   const location = useLocation();
@@ -58,21 +59,49 @@ const ShopPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [totalProducts, setTotalProducts] = useState<number>(0);
+  const [isIntersectionProcessed, setIsIntersectionProcessed] =
+    useState<boolean>(false);
+
+  // 디바운스된 페이지 설정 함수 생성
+  const debouncedSetPage = useCallback(
+    debounce((nextPage: number) => {
+      setPage(nextPage);
+      setIsIntersectionProcessed(false);
+    }, 500),
+    []
+  );
 
   // Observer for infinite scroll
   const observer = useRef<IntersectionObserver | null>(null);
   const lastProductElementRef = useCallback(
     (node: HTMLDivElement | null) => {
-      if (isLoading) return;
+      if (isLoading || !hasMore || isIntersectionProcessed) return;
+
       if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((prevPage) => prevPage + 1);
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          // 더 엄격한 조건: 최소 50% 이상 보여야 함
+          if (
+            entries[0].isIntersecting &&
+            entries[0].intersectionRatio >= 0.5 &&
+            hasMore &&
+            !isLoading
+          ) {
+            setIsIntersectionProcessed(true); // 중복 처리 방지
+            debouncedSetPage(page + 1);
+          }
+        },
+        {
+          root: null, // 뷰포트 기준
+          rootMargin: "0px",
+          threshold: 0.5, // 50% 이상 보일 때만 트리거
         }
-      });
+      );
+
       if (node) observer.current.observe(node);
     },
-    [isLoading, hasMore]
+    [isLoading, hasMore, page, debouncedSetPage, isIntersectionProcessed]
   );
 
   // State for active tab
@@ -148,11 +177,13 @@ const ShopPage: React.FC = () => {
     setProductData([]);
     setPage(0);
     setHasMore(true);
+    setIsIntersectionProcessed(false);
   }, []);
 
   // Load products on component mount or when filters change
   const loadProducts = useCallback(
     async (pageNum: number) => {
+      // 이미 로딩 중이거나 더 이상 불러올 데이터가 없으면 요청하지 않음
       if (!hasMore || isLoading) return;
 
       try {
@@ -179,17 +210,32 @@ const ShopPage: React.FC = () => {
         // Fetch products with filters and pagination
         const result = await fetchShopData(filterPayload, pageNum);
 
+        // 결과 확인: 데이터가 비어 있거나 적은 경우 hasMore를 false로 설정
+        const hasResultData = result.content && result.content.length > 0;
+
         // Update state with new data
         if (pageNum === 0) {
           setProductData(result.content);
         } else {
-          setProductData((prev) => [...prev, ...result.content]);
+          // 같은 데이터가 다시 로드되는 것을 방지
+          const newItems = result.content.filter(
+            (newItem) =>
+              !productData.some(
+                (existingItem) => existingItem.id === newItem.id
+              )
+          );
+
+          if (newItems.length > 0) {
+            setProductData((prev) => [...prev, ...newItems]);
+          }
         }
 
-        setHasMore(!result.last);
+        // hasMore 상태 업데이트 - 서버가 마지막 페이지임을 알려주거나 데이터가 없으면 false
+        setHasMore(!result.last && hasResultData && result.content.length >= 5);
         setTotalProducts(result.totalElements);
       } catch (error) {
         console.error("상품 로드 에러:", error);
+        setHasMore(false); // 오류 발생 시 더 이상 로드하지 않음
       } finally {
         setIsLoading(false);
       }
@@ -204,6 +250,7 @@ const ShopPage: React.FC = () => {
       selectedSortOption,
       hasMore,
       isLoading,
+      productData,
     ]
   );
 
@@ -224,10 +271,11 @@ const ShopPage: React.FC = () => {
 
   // Effect to load more products when page changes
   useEffect(() => {
-    if (page > 0) {
+    // 페이지가 0보다 크고 로딩 중이 아니며 더 불러올 데이터가 있는 경우에만 요청
+    if (page > 0 && !isLoading && hasMore) {
       loadProducts(page);
     }
-  }, [page, loadProducts]);
+  }, [page, loadProducts, isLoading, hasMore]);
 
   // Handle delivery button click
   const handleDeliveryButtonClick = async (buttonLabel: string) => {
@@ -639,13 +687,14 @@ const ShopPage: React.FC = () => {
           {/* Product grid */}
           <div className={styles.searchContent}>
             {productData.map((product, index) => {
-              // 마지막 아이템에 ref 추가하여 무한 스크롤 관찰
-              const isLastItem = index === productData.length - 1;
+              // 마지막 아이템에서 3번째 전에 ref 추가하여 무한 스크롤 관찰 (일찍 로드 시작)
+              const isTargetItem =
+                productData.length > 5 && index === productData.length - 3;
 
               return (
                 <div
                   key={`${product.id}-${index}`}
-                  ref={isLastItem ? lastProductElementRef : null}
+                  ref={isTargetItem ? lastProductElementRef : null}
                   onClick={() =>
                     handleProductClick(product.id, product.colorName)
                   }
@@ -728,7 +777,7 @@ const ShopPage: React.FC = () => {
             )}
 
             {/* 검색 결과가 없을 때 메시지 */}
-            {!isLoading && productData.length === 0 && (
+            {!isLoading && productData.length === 0 && !isLoading && (
               <div className={styles.noProductsContainer}>
                 <p>검색 결과가 없습니다.</p>
               </div>
