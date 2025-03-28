@@ -141,7 +141,8 @@ const ShopPage: React.FC = () => {
   // 상품 로드 함수
   const loadProducts = useCallback(
     async (pageToLoad: number) => {
-      if (isLoading || (pageToLoad > 0 && !hasMore)) return;
+      if (isLoading || (pageToLoad > 0 && !hasMore) || pageToLoad >= totalPages)
+        return;
 
       setIsLoading(true);
 
@@ -177,14 +178,16 @@ const ShopPage: React.FC = () => {
 
         // 페이징 상태 업데이트
         setTotalPages(result.totalPages);
-        setHasMore(!result.last);
+        // setHasMore(!result.last);
+        // 마지막 페이지 체크를 두 가지 방식으로 수행
+        setHasMore(!result.last && pageToLoad < result.totalPages - 1);
       } catch (error) {
         console.error("상품 로드 실패:", error);
       } finally {
         setIsLoading(false);
       }
     },
-    [appliedFilters, searchParams, activeTabId, selectedSortOption]
+    [appliedFilters, searchParams, activeTabId, selectedSortOption, totalPages]
   );
 
   // 페이지 변경시 상품 로드
