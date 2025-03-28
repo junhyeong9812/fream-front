@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faNewspaper } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -20,7 +20,6 @@ import {
   fetchShopData,
   setAdditionalFilters,
   setDeliveryOption,
-  setSortOption,
 } from "../services/shopService";
 import styles from "./shopPage.module.css";
 import FilterModal from "../components/filterModal";
@@ -32,39 +31,39 @@ const ShopPage: React.FC = () => {
   const { headerHeight } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // State for filter modal
+  // 필터 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // State for delivery filter buttons
   const [clickedButton, setClickedButton] = useState<string | null>(null);
-
-  // State for additional filters (checkboxes)
   const [additionalFilters, setAdditionalFilters] = useState({
     isBelowOriginalPrice: false,
     isExcludeSoldOut: false,
   });
 
-  // State for sort modal
+  // 정렬 상태
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const sortModalRef = useRef<HTMLDivElement>(null);
   const [selectedSortOption, setSelectedSortOption] = useState("인기순");
 
-  // State for product data
+  // 상품 데이터 상태
   const [productData, setProductData] = useState<ImageData[]>([]);
-
-  // State for active tab
   const [activeTabId, setActiveTabId] = useState<string>("all");
 
-  // State for slide pagination
-  const [page, setPage] = useState<number>(1);
+  // 페이징 상태
+  const [page, setPage] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
+
+  // 슬라이드 상태
+  const [slidePage, setSlidePage] = useState<number>(1);
   const itemsPerPage = 9;
 
-  // State for applied filters
+  // 필터 상태
   const [appliedFilters, setAppliedFilters] = useState<SelectedFiltersPayload>(
     {}
   );
 
-  // Example data
+  // 예시 데이터
   const categories = [
     { value: "shoes", label: "신발" },
     { value: "clothes", label: "의류" },
@@ -80,7 +79,7 @@ const ShopPage: React.FC = () => {
     { value: "dressShirts", label: "드레스 셔츠" },
   ];
 
-  // Mock data for slides
+  // 슬라이드 데이터
   const SLIDE_DATA = [
     { id: 1, imgUrl: "https://via.placeholder.com/90", name: "패딩 계급도" },
     { id: 2, imgUrl: "https://via.placeholder.com/90", name: "올해의 신발?" },
@@ -96,12 +95,12 @@ const ShopPage: React.FC = () => {
     { id: 12, imgUrl: "https://via.placeholder.com/90", name: "살로몬" },
   ];
 
-  // Pagination calculations
-  const totalPage = Math.ceil(SLIDE_DATA.length / itemsPerPage);
-  const offset = (page - 1) * itemsPerPage;
+  // 슬라이드 페이지네이션 계산
+  const totalSlidePage = Math.ceil(SLIDE_DATA.length / itemsPerPage);
+  const offset = (slidePage - 1) * itemsPerPage;
   const currentPageData = SLIDE_DATA.slice(offset, offset + itemsPerPage);
 
-  // Tab data
+  // 탭 데이터
   const TAB_MENU_DATA = [
     { id: "all", label: "전체", filterValue: "" },
     { id: "luxury", label: "럭셔리", filterValue: "43" },
@@ -120,43 +119,103 @@ const ShopPage: React.FC = () => {
     { id: "living", label: "가구/리빙", filterValue: "55" },
   ];
 
-  // Load products on component mount or when filters change
+  // 스크롤 감지 및 페이지 로드 로직
   useEffect(() => {
-    const loadProducts = async () => {
-      // Build filter object from search params and applied filters
-      const filterPayload: SelectedFiltersPayload = {
-        ...appliedFilters,
-        keyword: searchParams.get("keyword") || undefined,
-      };
+    const handleScroll = () => {
+      if (isLoading || !hasMore) return;
 
-      // If there's an active tab other than "all", add it to category filter
-      if (activeTabId !== "all") {
-        const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
-        if (activeTab && activeTab.filterValue) {
-          filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
-        }
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const scrollPercentage =
+        (scrollTop / (scrollHeight - clientHeight)) * 100;
+
+      if (scrollPercentage > 70) {
+        setPage((prev) => prev + 1);
       }
-
-      // Fetch products with filters - 포맷팅은 fetchShopData 내부에서 처리됨
-      const products = await fetchShopData(filterPayload);
-      setProductData(products);
     };
 
-    loadProducts();
-  }, [searchParams, appliedFilters, activeTabId, location.state]);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading, hasMore]);
 
-  // Handle delivery button click
+  // 상품 로드 함수
+  const loadProducts = useCallback(
+    async (pageToLoad: number) => {
+      if (isLoading || (pageToLoad > 0 && !hasMore)) return;
+
+      setIsLoading(true);
+
+      try {
+        // 필터 객체 구성
+        const filterPayload: SelectedFiltersPayload = {
+          ...appliedFilters,
+          keyword: searchParams.get("keyword") || undefined,
+        };
+
+        // 카테고리 필터 추가
+        if (activeTabId !== "all") {
+          const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
+          if (activeTab && activeTab.filterValue) {
+            filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
+          }
+        }
+
+        // 상품 가져오기
+        const result = await fetchShopData(
+          filterPayload,
+          pageToLoad,
+          20,
+          selectedSortOption
+        );
+
+        // 첫 페이지면 데이터 교체, 아니면 추가
+        if (pageToLoad === 0) {
+          setProductData(result.content);
+        } else {
+          setProductData((prev) => [...prev, ...result.content]);
+        }
+
+        // 페이징 상태 업데이트
+        setTotalPages(result.totalPages);
+        setHasMore(!result.last);
+      } catch (error) {
+        console.error("상품 로드 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [appliedFilters, searchParams, activeTabId, selectedSortOption]
+  );
+
+  // 페이지 변경시 상품 로드
+  useEffect(() => {
+    loadProducts(page);
+  }, [page, loadProducts]);
+
+  // 필터, 탭, 정렬 변경시 첫 페이지부터 다시 로드
+  useEffect(() => {
+    setPage(0);
+    setHasMore(true);
+    loadProducts(0);
+  }, [
+    appliedFilters,
+    activeTabId,
+    selectedSortOption,
+    location.state,
+    searchParams,
+  ]);
+
+  // 배송 버튼 클릭 핸들러
   const handleDeliveryButtonClick = async (buttonLabel: string) => {
     const newValue = clickedButton === buttonLabel ? null : buttonLabel;
     setClickedButton(newValue);
 
-    // Update backend
     if (newValue) {
       await setDeliveryOption(newValue);
     }
   };
 
-  // Handle additional filter toggles (checkboxes)
+  // 추가 필터 토글 핸들러
   const handleAdditionalFilterToggle = async (
     filterKey: "isBelowOriginalPrice" | "isExcludeSoldOut"
   ) => {
@@ -166,33 +225,35 @@ const ShopPage: React.FC = () => {
     };
 
     setAdditionalFilters(newFilters);
-
-    // Update backend
     await setAdditionalFilters(newFilters);
+
+    // 필터 변경시 첫 페이지부터 다시 로드
+    setPage(0);
+    setHasMore(true);
+    loadProducts(0);
   };
 
-  // Handle sort option selection
-  const handleSortOptionSelect = async (option: string) => {
+  // 정렬 옵션 선택 핸들러
+  const handleSortOptionSelect = (option: string) => {
     setSelectedSortOption(option);
     setIsSortModalOpen(false);
 
-    // Update backend
-    await setSortOption(option);
+    // 정렬 변경시 첫 페이지부터 다시 로드
+    setPage(0);
+    setHasMore(true);
   };
 
-  // Handle filter modal open/close
+  // 필터 모달 핸들러
   const handleOpenFilterModal = () => setIsModalOpen(true);
   const handleCloseFilterModal = () => setIsModalOpen(false);
 
-  // Handle applying filters from modal
+  // 필터 적용 핸들러
   const handleApplyFilters = (filters: SelectedFiltersPayload) => {
-    // 기존 필터 상태 업데이트 유지
     setAppliedFilters(filters);
 
-    // 새 URL 파라미터 객체 생성
     const newParams = new URLSearchParams(searchParams);
 
-    // 기존 필터 관련 파라미터 모두 제거
+    // 기존 필터 파라미터 제거
     [
       "categoryIds",
       "brandIds",
@@ -206,37 +267,31 @@ const ShopPage: React.FC = () => {
       newParams.delete(param);
     });
 
-    // 카테고리 ID 추가
-    if (filters.categoryIds && filters.categoryIds.length > 0) {
+    // 새 필터 파라미터 추가
+    if (filters.categoryIds?.length) {
       newParams.set("categoryIds", filters.categoryIds.join(","));
     }
 
-    // 브랜드 ID 추가
-    if (filters.brandIds && filters.brandIds.length > 0) {
+    if (filters.brandIds?.length) {
       newParams.set("brandIds", filters.brandIds.join(","));
     }
 
-    // 컬렉션 ID 추가
-    if (filters.collectionIds && filters.collectionIds.length > 0) {
+    if (filters.collectionIds?.length) {
       newParams.set("collectionIds", filters.collectionIds.join(","));
     }
 
-    // 성별 추가
-    if (filters.genders && filters.genders.length > 0) {
+    if (filters.genders?.length) {
       newParams.set("genders", filters.genders.join(","));
     }
 
-    // 색상 추가
-    if (filters.colors && filters.colors.length > 0) {
+    if (filters.colors?.length) {
       newParams.set("colors", filters.colors.join(","));
     }
 
-    // 사이즈 추가
-    if (filters.sizes && filters.sizes.length > 0) {
+    if (filters.sizes?.length) {
       newParams.set("sizes", filters.sizes.join(","));
     }
 
-    // 가격 범위 추가
     if (filters.minPrice) {
       newParams.set("minPrice", filters.minPrice.toString());
     }
@@ -245,16 +300,15 @@ const ShopPage: React.FC = () => {
       newParams.set("maxPrice", filters.maxPrice.toString());
     }
 
-    // URL 파라미터 업데이트
     setSearchParams(newParams);
   };
 
-  // Handle product click navigation
+  // 상품 클릭 핸들러
   const handleProductClick = (productId: number, colorName: string) => {
     navigate(`/products/${productId}?color=${colorName}`);
   };
 
-  // Handle tab click
+  // 탭 클릭 핸들러
   const handleTabClick = (tabId: string) => {
     setActiveTabId(tabId);
   };
@@ -333,26 +387,26 @@ const ShopPage: React.FC = () => {
               {/* Previous button */}
               <button
                 className={`${styles.arrow} ${
-                  page === 1 ? styles.arrowDisabled : ""
+                  slidePage === 1 ? styles.arrowDisabled : ""
                 }`}
-                disabled={page === 1}
-                onClick={() => setPage(page - 1)}
+                disabled={slidePage === 1}
+                onClick={() => setSlidePage(slidePage - 1)}
               >
                 <FaChevronLeft />
               </button>
 
               {/* Pagination dots */}
               <div className={styles.paginations}>
-                {Array.from({ length: totalPage }).map((_, idx) => {
+                {Array.from({ length: totalSlidePage }).map((_, idx) => {
                   const pageNum = idx + 1;
                   return (
                     <button
                       key={pageNum}
                       type="button"
                       className={`${styles.pagination} ${
-                        pageNum === page ? styles.paginationActive : ""
+                        pageNum === slidePage ? styles.paginationActive : ""
                       }`}
-                      onClick={() => setPage(pageNum)}
+                      onClick={() => setSlidePage(pageNum)}
                     />
                   );
                 })}
@@ -361,10 +415,10 @@ const ShopPage: React.FC = () => {
               {/* Next button */}
               <button
                 className={`${styles.arrow} ${
-                  page === totalPage ? styles.arrowDisabled : ""
+                  slidePage === totalSlidePage ? styles.arrowDisabled : ""
                 }`}
-                disabled={page === totalPage}
-                onClick={() => setPage(page + 1)}
+                disabled={slidePage === totalSlidePage}
+                onClick={() => setSlidePage(slidePage + 1)}
               >
                 <FaChevronRight />
               </button>
@@ -607,6 +661,20 @@ const ShopPage: React.FC = () => {
               </div>
             ))}
           </div>
+
+          {/* Loading indicator */}
+          {isLoading && (
+            <div className={styles.loadingContainer}>
+              <div className={styles.loadingSpinner}></div>
+            </div>
+          )}
+
+          {/* No more products message */}
+          {!hasMore && productData.length > 0 && (
+            <div className={styles.noMoreProducts}>
+              더 이상 상품이 없습니다.
+            </div>
+          )}
         </div>
       </div>
 

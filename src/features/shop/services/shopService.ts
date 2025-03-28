@@ -1,16 +1,37 @@
 import apiClient from "src/global/services/ApiClient";
 import { ImageData, SelectedFiltersPayload } from "../types/filterTypes";
+import { SortOption, getSortOption } from "../types/sortOptions";
 
 /**
- * 필터 적용하여 상품 데이터 가져오기 (새로운 방식)
+ * 필터 적용하여 상품 데이터 가져오기
  * @param filters 선택한 필터 값들
- * @returns 필터링된 상품 데이터 프로미스
+ * @param page 페이지 번호 (0부터 시작)
+ * @param size 페이지 크기
+ * @param sortOption 정렬 옵션
+ * @returns 필터링된 상품 데이터와 페이징 정보를 포함한 응답
  */
 export const fetchShopData = async (
-  filters: SelectedFiltersPayload = {}
-): Promise<ImageData[]> => {
+  filters: SelectedFiltersPayload = {},
+  page: number = 0,
+  size: number = 20,
+  sortOptionName: string = "인기순"
+): Promise<{
+  content: ImageData[];
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}> => {
   try {
     const params = new URLSearchParams();
+
+    // 페이징 파라미터 추가
+    params.append("page", page.toString());
+    params.append("size", size.toString());
+
+    // 정렬 옵션 추가
+    const sortOption = getSortOption(sortOptionName);
+    params.append("sortOption.field", sortOption.field);
+    params.append("sortOption.order", sortOption.order);
 
     // 키워드 추가
     if (filters.keyword) {
@@ -55,107 +76,55 @@ export const fetchShopData = async (
     if (filters.maxPrice) {
       params.append("maxPrice", filters.maxPrice.toString());
     }
-    //product경로 /products/query
-    //elastic경로 /es/products
+
+    // API 엔드포인트 호출
     const url = `/es/products${
       params.toString() ? `?${params.toString()}` : ""
     }`;
+
     const response = await apiClient.get(url);
 
     if (response.data && response.data.content) {
       // 응답 데이터 포맷팅
-      return response.data.content.map((item: any) => ({
+      const formattedData = response.data.content.map((item: any) => ({
         ...item,
         price: item.price || item.releasePrice,
         imgUrl: item.thumbnailImageUrl,
         productName: item.name,
         productPrice: (item.price || item.releasePrice).toLocaleString() + "원",
       }));
+
+      // 페이징 정보를 포함한 응답 반환
+      return {
+        content: formattedData,
+        totalElements: response.data.totalElements,
+        totalPages: response.data.totalPages,
+        last: response.data.last,
+      };
     } else {
       console.error(
         "fetchShopData 에러: 예상 데이터 구조가 아님",
         response.data
       );
-      return [];
+      return {
+        content: [],
+        totalElements: 0,
+        totalPages: 0,
+        last: true,
+      };
     }
   } catch (error) {
     console.error("fetchShopData 에러:", error);
-    return [];
+    return {
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      last: true,
+    };
   }
 };
-
 /**
- * 기존 호출 방식과의 호환성을 위한 함수 (레거시 지원)
- * @deprecated 가능하면 fetchShopData(filters) 방식을 사용하세요
- */
-export const fetchShopDataLegacy = async (
-  keyword?: string,
-  categories?: string[],
-  gender?: string | null,
-  colors?: string[],
-  priceRange?: string | null,
-  sizes?: string[],
-  brands?: string[],
-  collections?: string[]
-): Promise<ImageData[]> => {
-  // 새로운 필터 객체로 변환
-  const filters: SelectedFiltersPayload = {};
-
-  if (keyword) {
-    filters.keyword = keyword;
-  }
-
-  if (categories && categories.length > 0) {
-    filters.categoryIds = categories
-      .map((c) => parseInt(c, 10))
-      .filter((id) => !isNaN(id));
-  }
-
-  if (gender) {
-    filters.genders = [gender];
-  }
-
-  if (colors && colors.length > 0) {
-    filters.colors = colors;
-  }
-
-  if (sizes && sizes.length > 0) {
-    filters.sizes = sizes;
-  }
-
-  if (brands && brands.length > 0) {
-    filters.brandIds = brands
-      .map((b) => parseInt(b, 10))
-      .filter((id) => !isNaN(id));
-  }
-
-  if (collections && collections.length > 0) {
-    filters.collectionIds = collections
-      .map((c) => parseInt(c, 10))
-      .filter((id) => !isNaN(id));
-  }
-
-  // priceRange 처리 (가격 범위 형식에 따라 다름)
-  if (priceRange) {
-    if (priceRange.includes("_")) {
-      const [min, max] = priceRange.split("_");
-      if (min === "under") {
-        filters.maxPrice = parseInt(max, 10);
-      } else if (max === "over") {
-        filters.minPrice = parseInt(min, 10);
-      } else {
-        filters.minPrice = parseInt(min, 10);
-        filters.maxPrice = parseInt(max, 10);
-      }
-    }
-  }
-
-  // 필터 객체를 사용하여 새 함수 호출
-  return fetchShopData(filters);
-};
-
-/**
- * 정렬 옵션 설정
+ * 정렬 옵션 설정(아직 사용X)
  * @param sortOption 정렬 옵션 값
  */
 export const setSortOption = async (sortOption: string): Promise<void> => {
