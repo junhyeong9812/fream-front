@@ -15,7 +15,7 @@ interface StyleContextType {
 
 // Context 생성
 export const StyleContext = createContext<StyleContextType>({
-  page: 0,
+  page: 1,
   setPage: () => {},
   isLoading: false,
   setIsLoading: () => {},
@@ -106,7 +106,7 @@ const TabName = styled.span`
 
 const StylePage: React.FC = () => {
   const { headerHeight } = useHeader();
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 

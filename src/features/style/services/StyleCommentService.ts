@@ -10,7 +10,7 @@ const styleCommentService = {
   // 댓글 목록 조회
   getComments: async (
     styleId: number,
-    page: number = 0,
+    page: number = 1,
     size: number = 10
   ): Promise<StyleCommentsResponseDto> => {
     try {

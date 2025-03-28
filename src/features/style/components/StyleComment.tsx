@@ -42,7 +42,7 @@ const StyleComment: React.FC<StyleCommentProps> = ({
   const [replyTo, setReplyTo] = useState<{ id: number; name: string } | null>(
     null
   );
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [totalComments, setTotalComments] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -95,10 +95,10 @@ const StyleComment: React.FC<StyleCommentProps> = ({
     if (isLoggedIn) {
       setShouldShowCommentModal(true);
       // 댓글 데이터 로드
-      setPage(0);
+      setPage(1);
       setComments([]);
       setHasMore(true);
-      fetchComments(0, true);
+      fetchComments(1, true);
     } else {
       // 로그인 되어 있지 않으면 부모 컴포넌트의 onClose 호출
       onClose();

@@ -22,7 +22,7 @@ interface StyleFilterParams {
 
 export const styleService = {
   async getStyles(
-    page = 0,
+    page = 1,
     size = 10,
     filterParams: Partial<StyleFilterParams> = {}
   ) {

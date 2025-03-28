@@ -12,7 +12,7 @@ import { SortOption, getSortOption } from "../types/sortOptions";
  */
 export const fetchShopData = async (
   filters: SelectedFiltersPayload = {},
-  page: number = 0,
+  page: number = 1,
   size: number = 20,
   sortOptionName: string = "인기순"
 ): Promise<{

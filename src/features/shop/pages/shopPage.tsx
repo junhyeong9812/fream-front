@@ -49,7 +49,7 @@ const ShopPage: React.FC = () => {
   const [activeTabId, setActiveTabId] = useState<string>("all");
 
   // 페이징 상태
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
@@ -174,7 +174,7 @@ const ShopPage: React.FC = () => {
         );
 
         // 첫 페이지면 데이터 교체, 아니면 추가
-        if (pageToLoad === 0) {
+        if (pageToLoad === 1) {
           setProductData(result.content);
         } else {
           setProductData((prev) => [...prev, ...result.content]);
@@ -184,7 +184,7 @@ const ShopPage: React.FC = () => {
         setTotalPages(result.totalPages);
         // setHasMore(!result.last);
         // 마지막 페이지 체크를 두 가지 방식으로 수행
-        setHasMore(!result.last && pageToLoad < result.totalPages - 1);
+        setHasMore(!result.last && pageToLoad < result.totalPages);
       } catch (error) {
         console.error("상품 로드 실패:", error);
       } finally {
@@ -201,9 +201,9 @@ const ShopPage: React.FC = () => {
 
   // 필터, 탭, 정렬 변경시 첫 페이지부터 다시 로드
   useEffect(() => {
-    setPage(0);
+    setPage(1);
     setHasMore(true);
-    loadProducts(0);
+    loadProducts(1);
   }, [
     appliedFilters,
     activeTabId,
@@ -235,9 +235,9 @@ const ShopPage: React.FC = () => {
     await setAdditionalFilters(newFilters);
 
     // 필터 변경시 첫 페이지부터 다시 로드
-    setPage(0);
+    setPage(1);
     setHasMore(true);
-    loadProducts(0);
+    loadProducts(1);
   };
 
   // 정렬 옵션 선택 핸들러
@@ -246,7 +246,7 @@ const ShopPage: React.FC = () => {
     setIsSortModalOpen(false);
 
     // 정렬 변경시 첫 페이지부터 다시 로드
-    setPage(0);
+    setPage(1);
     setHasMore(true);
   };
 
