@@ -144,7 +144,7 @@ const ShopPage: React.FC = () => {
       if (
         isLoading ||
         (pageToLoad > 0 && !hasMore) ||
-        (totalPages > 0 && pageToLoad >= totalPages)
+        (totalPages > 0 && pageToLoad >= totalPages -1)
       )
         return;
 
