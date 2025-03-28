@@ -143,7 +143,7 @@ const ShopPage: React.FC = () => {
     async (pageToLoad: number) => {
       if (
         isLoading ||
-        (pageToLoad > 0 && !hasMore) ||
+        (pageToLoad > 1 && !hasMore) ||
         (totalPages > 0 && pageToLoad >= totalPages)
       )
         return;
@@ -182,9 +182,9 @@ const ShopPage: React.FC = () => {
 
         // 페이징 상태 업데이트
         setTotalPages(result.totalPages);
-        // setHasMore(!result.last);
+        setHasMore(!result.last);
         // 마지막 페이지 체크를 두 가지 방식으로 수행
-        setHasMore(!result.last && pageToLoad < result.totalPages);
+        // setHasMore(!result.last && pageToLoad < result.totalPages);
       } catch (error) {
         console.error("상품 로드 실패:", error);
       } finally {
