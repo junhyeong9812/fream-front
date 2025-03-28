@@ -120,16 +120,32 @@ const ShopPage: React.FC = () => {
   ];
 
   // 스크롤 감지 및 페이지 로드 로직
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (isLoading || !hasMore) return;
+
+  //     const { scrollTop, scrollHeight, clientHeight } =
+  //       document.documentElement;
+  //     const scrollPercentage =
+  //       (scrollTop / (scrollHeight - clientHeight)) * 100;
+
+  //     if (scrollPercentage > 70) {
+  //       setPage((prev) => prev + 1);
+  //     }
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [isLoading, hasMore]);
   useEffect(() => {
     const handleScroll = () => {
-      if (isLoading || !hasMore) return;
-
       const { scrollTop, scrollHeight, clientHeight } =
         document.documentElement;
       const scrollPercentage =
         (scrollTop / (scrollHeight - clientHeight)) * 100;
 
-      if (scrollPercentage > 70) {
+      // 로딩 중이 아니고, 더 로드할 페이지가 있을 때만 페이지 증가
+      if (scrollPercentage > 70 && !isLoading && hasMore) {
         setPage((prev) => prev + 1);
       }
     };
@@ -144,7 +160,7 @@ const ShopPage: React.FC = () => {
       if (
         isLoading ||
         (pageToLoad > 0 && !hasMore) ||
-        (totalPages > 0 && pageToLoad >= totalPages -1)
+        (totalPages > 0 && pageToLoad >= totalPages)
       )
         return;
 
@@ -189,7 +205,15 @@ const ShopPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [appliedFilters, searchParams, activeTabId, selectedSortOption, totalPages]
+    [
+      appliedFilters,
+      searchParams,
+      activeTabId,
+      selectedSortOption,
+      totalPages,
+      hasMore,
+      isLoading,
+    ]
   );
 
   // 페이지 변경시 상품 로드
