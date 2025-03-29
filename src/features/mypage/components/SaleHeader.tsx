@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { FaSort } from "react-icons/fa";
+import { SaleBidResponseDto, statusFilters } from "../types/sale";
 
 const SalesHead = styled.div`
   display: flex;
   align-items: center;
   padding: 10px 16px;
+  justify-content: space-between;
 `;
 
-const FilterButton = styled.button`
+const FilterButton = styled.a`
   display: inline-block;
   background-color: #fff;
   border: 1px solid #ebebeb;
@@ -26,9 +29,23 @@ const FilterButton = styled.button`
     right: 5px;
     top: 6px;
   }
+`;
 
-  &:hover {
-    background-color: #f5f5f5;
+const SortButton = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 15px;
+  font-size: 14px;
+  color: #222;
+  position: relative;
+
+  &.active {
+    font-weight: bold;
+  }
+
+  svg {
+    margin-left: 5px;
   }
 `;
 
@@ -87,37 +104,102 @@ const StatusItem = styled.li`
   }
 `;
 
-const SalesHeader: React.FC<{
+interface SalesHeaderProps {
   onFilterChange: (filter: string) => void;
-}> = ({ onFilterChange }) => {
+  onSortChange: (
+    field: keyof SaleBidResponseDto,
+    direction: "asc" | "desc" | null
+  ) => void;
+  sortField: keyof SaleBidResponseDto | null;
+  sortDirection: "asc" | "desc" | null;
+  currentFilter: string;
+}
+
+const SalesHeader: React.FC<SalesHeaderProps> = ({
+  onFilterChange,
+  onSortChange,
+  sortField,
+  sortDirection,
+  currentFilter,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("전체");
-  const filters = ["전체", "배송완료", "배송 중", "판매 대기", "판매 취소"];
 
   const handleFilterClick = (filter: string) => {
-    setSelectedFilter(filter);
     onFilterChange(filter);
     setIsModalOpen(false);
+  };
+
+  const handleSortClick = (field: keyof SaleBidResponseDto) => {
+    if (sortField === field) {
+      const newDirection =
+        sortDirection === "asc"
+          ? "desc"
+          : sortDirection === "desc"
+          ? null
+          : "asc";
+      onSortChange(field, newDirection);
+    } else {
+      onSortChange(field, "asc");
+    }
+  };
+
+  // 모달 외부 클릭 시 닫기
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setIsModalOpen(false);
+    }
   };
 
   return (
     <>
       <SalesHead>
         <FilterButton onClick={() => setIsModalOpen(true)}>
-          {selectedFilter}
+          {currentFilter}
           <IoIosArrowDown />
         </FilterButton>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <SortButton
+            className={sortField === "bidPrice" ? "active" : ""}
+            onClick={() => handleSortClick("bidPrice")}
+          >
+            판매 희망가
+            {sortField === "bidPrice" ? (
+              <>
+                {sortDirection === "asc" && <IoIosArrowUp />}
+                {sortDirection === "desc" && <IoIosArrowDown />}
+                {sortDirection === null && <FaSort />}
+              </>
+            ) : (
+              <FaSort />
+            )}
+          </SortButton>
+          <SortButton
+            className={sortField === "createdDate" ? "active" : ""}
+            onClick={() => handleSortClick("createdDate")}
+          >
+            만료일
+            {sortField === "createdDate" ? (
+              <>
+                {sortDirection === "asc" && <IoIosArrowUp />}
+                {sortDirection === "desc" && <IoIosArrowDown />}
+                {sortDirection === null && <FaSort />}
+              </>
+            ) : (
+              <FaSort />
+            )}
+          </SortButton>
+        </div>
       </SalesHead>
       {isModalOpen && (
-        <ModalOverlay>
-          <ModalContainer>
+        <ModalOverlay onClick={handleOverlayClick}>
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalHeader>선택한 상태 보기</ModalHeader>
             <StatusList>
-              {filters.map((filter) => (
+              {statusFilters.map((filter) => (
                 <StatusItem
                   key={filter}
                   onClick={() => handleFilterClick(filter)}
-                  className={selectedFilter === filter ? "active" : ""}
+                  className={currentFilter === filter ? "active" : ""}
                 >
                   {filter}
                 </StatusItem>

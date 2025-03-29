@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { SalesBoxProps } from "../types/mypageTypes";
+import { SalesBoxProps } from "../types/sale";
 
 // 여백 스타일
 const Spacer = styled.div`
@@ -55,6 +55,7 @@ const TabLink = styled.a`
   position: relative;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 
   &:hover {
     text-decoration: none;
@@ -85,7 +86,22 @@ const TabCount = styled.dd<{ isTotal?: boolean }>`
   }
 `;
 
-const SalesBoxComponent: React.FC<SalesBoxProps> = ({ title, tabs }) => {
+const SalesBoxComponent: React.FC<SalesBoxProps> = ({
+  title,
+  tabs,
+  onTabClick,
+}) => {
+  // 탭 클릭 핸들러
+  const handleTabClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    e.preventDefault(); // 기본 링크 동작 방지
+    if (onTabClick) {
+      onTabClick(href);
+    }
+  };
+
   return (
     <>
       <Spacer /> {/* 여백 */}
@@ -95,11 +111,14 @@ const SalesBoxComponent: React.FC<SalesBoxProps> = ({ title, tabs }) => {
       <SalesListTab>
         {tabs.map((tab, index) => (
           <TabItem key={index} className={tab.isTotal ? "total" : ""}>
-            <TabLink className="tab-link" href={tab.href}>
+            <TabLink
+              className="tab-link"
+              href={tab.href}
+              onClick={(e) => handleTabClick(e, tab.href)}
+            >
               <dl>
+                <TabTitle className="title">{tab.title}</TabTitle>
                 <TabCount className="count" isTotal={tab.isTotal}>
-                  <TabTitle className="title">{tab.title}</TabTitle>
-
                   {tab.count}
                 </TabCount>
               </dl>
