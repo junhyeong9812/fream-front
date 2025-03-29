@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { OrderBidResponseDto } from "../types/order";
+import {
+  OrderBidResponseDto,
+  OrderStatus,
+  OrderStatusKorean,
+} from "../types/order";
 
 const OrderListContainer = styled.div`
   margin-top: 20px;
@@ -87,6 +91,15 @@ const OrderList: React.FC<{ orders: OrderBidResponseDto[] }> = ({ orders }) => {
     });
   };
 
+  // 주문 상태 표시 헬퍼 함수
+  const getOrderStatusDisplay = (order: OrderBidResponseDto): string => {
+    // 백엔드에서 문자열로 오는 orderStatus를 OrderStatus enum 타입으로 변환
+    const orderStatus = order.orderStatus as keyof typeof OrderStatusKorean;
+
+    // 상태에 해당하는 한글 텍스트 반환
+    return OrderStatusKorean[orderStatus] || order.orderStatus;
+  };
+
   return (
     <OrderListContainer>
       {orders.map((order) => (
@@ -103,9 +116,11 @@ const OrderList: React.FC<{ orders: OrderBidResponseDto[] }> = ({ orders }) => {
           </ProductInfo>
           <OrderDate>{formatDate(order.createdDate)}</OrderDate>
           <StatusContainer>
-            <div className="status">{order.shipmentStatus}</div>
-            {order.shipmentStatus === "배송완료" && (
-              <div className="style-upload">스타일 올리기</div>
+            <div className="status">{getOrderStatusDisplay(order)}</div>
+            {order.orderStatus === OrderStatus.COMPLETED && (
+              <a href="/#" className="style-upload">
+                스타일 올리기
+              </a>
             )}
           </StatusContainer>
         </OrderItem>
