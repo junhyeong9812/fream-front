@@ -20,6 +20,7 @@ interface PurchaseBoxProps {
     isTotal?: boolean; // 전체인지 여부
     href: string; // 링크
   }>;
+  onTabClick?: (href: string) => void; // 탭 클릭 핸들러
 }
 
 // 구매내역 타이틀 컨테이너 스타일
@@ -70,6 +71,7 @@ const TabLink = styled.a`
   position: relative;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 
   &:hover {
     text-decoration: none;
@@ -100,7 +102,22 @@ const TabCount = styled.dd<TabCountProps>`
   }
 `;
 
-const PurchaseBoxComponent: React.FC<PurchaseBoxProps> = ({ title, tabs }) => {
+const PurchaseBoxComponent: React.FC<PurchaseBoxProps> = ({
+  title,
+  tabs,
+  onTabClick,
+}) => {
+  // 탭 클릭 핸들러
+  const handleTabClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    e.preventDefault(); // 기본 링크 동작 방지
+    if (onTabClick) {
+      onTabClick(href);
+    }
+  };
+
   return (
     <>
       <Spacer /> {/* 여백 */}
@@ -110,7 +127,11 @@ const PurchaseBoxComponent: React.FC<PurchaseBoxProps> = ({ title, tabs }) => {
       <PurchaseListTab>
         {tabs.map((tab, index) => (
           <TabItem key={index} className={tab.isTotal ? "total" : ""}>
-            <TabLink className="tab-link" href={tab.href}>
+            <TabLink
+              className="tab-link"
+              href={tab.href}
+              onClick={(e) => handleTabClick(e, tab.href)}
+            >
               <dl>
                 <TabTitle className="title">{tab.title}</TabTitle>
                 <TabCount className="count" isTotal={tab.isTotal}>

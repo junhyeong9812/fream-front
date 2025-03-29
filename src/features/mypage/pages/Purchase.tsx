@@ -1,65 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import OrderList from "../components/OrderList";
+import PurchaseBoxComponent from "../components/purchaseBoxComponent";
+import { orderBidService } from "../services/orderService";
+import {
+  OrderBidResponseDto,
+  OrderBidStatusCountDto,
+  BidStatus,
+  OrderStatus,
+  statusFilters,
+  statusFilterMapping,
+} from "../types/order";
 
 const PageContainer = styled.div`
   padding: 0 20px;
 `;
 
-const PageHeader = styled.div`
-  display: flex;
-  padding-bottom: 16px;
-  margin-bottom: 40px;
-`;
-
-const Title = styled.h3`
-  font-size: 24px;
-  line-height: 29px;
-  letter-spacing: -0.36px;
-  margin: 0;
-`;
-
 const MyAccount = styled.div`
   width: 100%;
   margin: 0 auto;
-`;
-
-const ContentTitle = styled.div`
-  display: flex;
-  padding-bottom: 16px;
-`;
-
-const PurchaseListTab = styled.div`
-  border-radius: 12px;
-  display: flex;
-  margin-top: 20px;
-`;
-
-const TabItem = styled.div<{ isActive: boolean }>`
-  flex: 1;
-  text-align: center;
-  border-bottom: ${({ isActive }) =>
-    isActive ? "2px solid #222" : "1px solid #ebebeb"};
-  padding: 14px 0;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  a {
-    font-size: 13px;
-    color: ${({ isActive }) => (isActive ? "#222" : "rgba(34, 34, 34, 0.5)")};
-    font-weight: ${({ isActive }) => (isActive ? 700 : 400)};
-    text-decoration: none;
-  }
-
-  .count {
-    font-size: 20px;
-    font-weight: 700;
-    margin-top: 2px;
-    color: ${({ isActive }) => (isActive ? "#f15746" : "#000")};
-  }
 `;
 
 const EmptyPage = styled.div`
@@ -95,12 +55,6 @@ const ShopButton = styled.a`
     background-color: #f5f5f5;
   }
 `;
-
-type Counts = {
-  "구매 입찰": number;
-  "진행 중": number;
-  종료: number;
-};
 
 const PurchaseHead = styled.div`
   display: flex;
@@ -183,108 +137,47 @@ const StatusItem = styled.li`
   }
 `;
 
-// 더미 데이터 정의
-const dummyOrders = {
-  "구매 입찰": [
-    {
-      orderBidId: 1,
-      productId: 101,
-      productName: "Nike x Comme des Garçons",
-      productEnglishName: "Nike x Comme des Garçons",
-      size: "250",
-      colorName: "Black",
-      imageUrl: "https://via.placeholder.com/80",
-      bidPrice: 50000,
-      bidStatus: "Accepted",
-      orderStatus: "Confirmed",
-      shipmentStatus: "대기 중",
-      createdDate: new Date("2022-11-23"),
-      modifiedDate: new Date(),
-    },
-  ],
-  "진행 중": [
-    {
-      orderBidId: 2,
-      productId: 102,
-      productName: "Adidas Yeezy Boost",
-      productEnglishName: "Adidas Yeezy Boost",
-      size: "260",
-      colorName: "White",
-      imageUrl: "https://via.placeholder.com/80",
-      bidPrice: 60000,
-      bidStatus: "Accepted",
-      orderStatus: "Confirmed",
-      shipmentStatus: "배송 중",
-      createdDate: new Date("2022-11-24"),
-      modifiedDate: new Date(),
-    },
-  ],
-  종료: [
-    {
-      orderBidId: 3,
-      productId: 103,
-      productName: "Jordan 1 Retro High",
-      productEnglishName: "Jordan 1 Retro High",
-      size: "270",
-      colorName: "Red",
-      imageUrl: "https://via.placeholder.com/80",
-      bidPrice: 70000,
-      bidStatus: "Completed",
-      orderStatus: "Confirmed",
-      shipmentStatus: "배송완료",
-      createdDate: new Date("2022-11-25"),
-      modifiedDate: new Date(),
-    },
-  ],
-};
+const LoadingIndicator = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 16px;
+`;
 
-const PurchaseHeader: React.FC<{
+interface PurchaseHeaderProps {
   onFilterChange: (filter: string) => void;
-}> = ({ onFilterChange }) => {
+  currentFilter: string;
+}
+
+const PurchaseHeader: React.FC<PurchaseHeaderProps> = ({
+  onFilterChange,
+  currentFilter,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("전체"); // Default value
-  const filters = [
-    "전체",
-    "대기 중",
-    "발송완료",
-    "입고대기",
-    "입고완료",
-    "검수 중",
-    "검수보류",
-    "검수합격",
-    "배송 중",
-    "거래실패",
-    "상품준비 중",
-    "반품신청",
-    "접수완료",
-    "회수 중",
-    "회수완료",
-    "교환신청",
-    "교환 중",
-  ];
 
   const handleFilterClick = (filter: string) => {
-    setSelectedFilter(filter); // Update button text
-    onFilterChange(filter); // Pass filter value to parent
-    setIsModalOpen(false); // Close modal
+    onFilterChange(filter);
+    setIsModalOpen(false);
   };
 
   return (
     <>
       <PurchaseHead>
         <FilterButton onClick={() => setIsModalOpen(true)}>
-          {selectedFilter}
+          {currentFilter}
           <IoIosArrowDown />
         </FilterButton>
       </PurchaseHead>
       {isModalOpen && (
-        <ModalOverlay>
-          <ModalContainer>
+        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalHeader>선택한 상태 보기</ModalHeader>
             <StatusList>
-              {filters.map((filter) => (
+              {statusFilters.map((filter) => (
                 <StatusItem
                   key={filter}
+                  className={filter === currentFilter ? "active" : ""}
                   onClick={() => handleFilterClick(filter)}
                 >
                   {filter}
@@ -299,67 +192,152 @@ const PurchaseHeader: React.FC<{
 };
 
 const Purchase: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<number>(0);
+  // 탭 정의 및 상태
+  const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const [filter, setFilter] = useState<string>("전체");
-  const [purchaseData, setPurchaseData] = useState({
-    "구매 입찰": dummyOrders["구매 입찰"],
-    "진행 중": dummyOrders["진행 중"],
-    종료: dummyOrders["종료"],
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [orders, setOrders] = useState<OrderBidResponseDto[]>([]);
+  const [counts, setCounts] = useState<OrderBidStatusCountDto>({
+    pendingCount: 0,
+    matchedCount: 0,
+    cancelledOrCompletedCount: 0,
   });
-  // 카운트 데이터
-  const counts: Counts = {
-    "구매 입찰": dummyOrders["구매 입찰"].length,
-    "진행 중": dummyOrders["진행 중"].length,
-    종료: dummyOrders["종료"].length,
+
+  // 탭 매핑 정의
+  const tabMapping = [
+    {
+      title: "구매 입찰",
+      bidStatus: BidStatus.PENDING,
+      getCount: (c: OrderBidStatusCountDto) => c.pendingCount,
+      href: "#purchase-bid",
+    },
+    {
+      title: "진행 중",
+      bidStatus: BidStatus.MATCHED,
+      getCount: (c: OrderBidStatusCountDto) => c.matchedCount,
+      href: "#in-progress",
+    },
+    {
+      title: "종료",
+      bidStatus: BidStatus.COMPLETED,
+      getCount: (c: OrderBidStatusCountDto) => c.cancelledOrCompletedCount,
+      href: "#completed",
+    },
+  ];
+
+  // 현재 선택된 탭
+  const currentTab = tabMapping[activeTabIndex];
+
+  // 상태 카운트 로드
+  const loadCounts = async () => {
+    try {
+      const countData = await orderBidService.getOrderBidStatusCounts();
+      setCounts(countData);
+    } catch (error) {
+      console.error("상태별 개수 로드 실패:", error);
+    }
   };
 
-  // 구매 내역 데이터
-  // const purchaseData = {
-  //   "구매 입찰": [],
-  //   "진행 중": [{ id: 1, title: "진행 중 상품 1" }],
-  //   종료: [
-  //     { id: 2, title: "종료 상품 1" },
-  //     { id: 3, title: "종료 상품 2" },
-  //   ],
-  // };
+  // 주문 데이터 로드
+  const loadOrders = async () => {
+    setIsLoading(true);
+    try {
+      // 필터 매핑에서 bidStatus와 orderStatus 가져오기
+      const mappedFilter = statusFilterMapping[filter] || {};
 
-  // 탭 변경 핸들러
+      // 기본적으로 탭의 bidStatus를 사용
+      let bidStatus: BidStatus | undefined = currentTab.bidStatus;
+      let orderStatus: OrderStatus | undefined = undefined;
+
+      // 만약 종료 탭이고 필터가 전체라면, COMPLETED와 CANCELLED 둘 다 포함
+      if (activeTabIndex === 2 && filter === "전체") {
+        // 종료 탭은 백엔드에서 COMPLETED와 CANCELLED 둘 다 가져오도록 처리
+        bidStatus = BidStatus.COMPLETED; // 백엔드에서 이 값을 보고 알아서 COMPLETED와 CANCELLED 모두 가져옴
+      }
+      // 필터가 있는 경우 필터 적용
+      else if (Object.keys(mappedFilter).length > 0) {
+        // 매핑된 필터에서 bidStatus나 orderStatus가 있다면 적용
+        bidStatus = mappedFilter.bidStatus || bidStatus;
+        orderStatus = mappedFilter.orderStatus;
+      }
+
+      const response = await orderBidService.getOrderBids(
+        bidStatus,
+        orderStatus
+      );
+
+      setOrders(response.content);
+    } catch (error) {
+      console.error("주문 목록 로드 실패:", error);
+      setOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 탭 변경 시
   const handleTabChange = (index: number) => {
-    setActiveTab(index);
+    setActiveTabIndex(index);
+    setFilter("전체"); // 탭 변경 시 필터 초기화
   };
 
-  // 현재 탭 이름
-  const tabs = Object.keys(purchaseData) as Array<keyof typeof purchaseData>;
-  const currentTab = tabs[activeTab];
+  // 필터 변경 시
+  const handleFilterChange = (newFilter: string) => {
+    setFilter(newFilter);
+  };
+
+  // 컴포넌트 마운트 시 데이터 로드
+  useEffect(() => {
+    loadCounts();
+  }, []);
+
+  // 탭 또는 필터 변경 시 주문 데이터 다시 로드
+  useEffect(() => {
+    loadOrders();
+  }, [activeTabIndex, filter]);
+
+  // PurchaseBox 컴포넌트에 사용할 탭 데이터
+  const purchaseBoxTabs = tabMapping.map((tab, index) => ({
+    title: tab.title,
+    count: tab.getCount(counts),
+    isTotal: activeTabIndex === index,
+    href: tab.href,
+  }));
+
+  // PurchaseBox에서 탭 클릭 시 이벤트 처리
+  const handlePurchaseBoxTabClick = (href: string) => {
+    const tabIndex = tabMapping.findIndex((tab) => tab.href === href);
+    if (tabIndex !== -1) {
+      handleTabChange(tabIndex);
+    }
+  };
 
   return (
     <PageContainer>
-      {/* 구매 내역 탭 */}
       <MyAccount>
-        <ContentTitle>
-          <Title>구매 내역</Title>
-        </ContentTitle>
-        <PurchaseListTab>
-          {tabs.map((tab, index) => (
-            <TabItem
-              key={tab}
-              isActive={activeTab === index}
-              onClick={() => handleTabChange(index)}
-            >
-              <span className="count">{counts[tab]}</span>
-              <a href="#">{tab}</a>
-            </TabItem>
-          ))}
-        </PurchaseListTab>
-        <PurchaseHeader onFilterChange={setFilter} />
-        {/* 구매 내역 데이터 조건부 렌더링 */}
-        {purchaseData[currentTab].length === 0 ? (
+        {/* PurchaseBoxComponent를 사용하여 탭 렌더링 */}
+        <PurchaseBoxComponent
+          title="구매 내역"
+          tabs={purchaseBoxTabs}
+          onTabClick={handlePurchaseBoxTabClick}
+        />
+
+        {/* 필터 헤더 */}
+        <PurchaseHeader
+          onFilterChange={handleFilterChange}
+          currentFilter={filter}
+        />
+
+        {/* 주문 목록 또는 빈 상태 표시 */}
+        {isLoading ? (
+          <LoadingIndicator>로딩 중...</LoadingIndicator>
+        ) : orders.length === 0 ? (
           <EmptyPage>
-            <EmptyText>{`${currentTab} 내역이 없습니다.`}</EmptyText>
+            <EmptyText>{`${currentTab.title} 내역이 없습니다.`}</EmptyText>
             <ShopButton href="/search">SHOP 바로가기</ShopButton>
           </EmptyPage>
         ) : (
-          <OrderList orders={dummyOrders[currentTab]} />
+          <OrderList orders={orders} />
         )}
       </MyAccount>
     </PageContainer>

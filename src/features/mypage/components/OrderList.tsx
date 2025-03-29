@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { OrderBidResponseDto } from "../types/mypageTypes";
-// DTO 파일 import
+import { OrderBidResponseDto } from "../types/order";
 
 const OrderListContainer = styled.div`
   margin-top: 20px;
@@ -14,9 +13,6 @@ const OrderItem = styled.div`
   border-top: 1px solid #ebebeb;
   border-bottom: 1px solid #ebebeb;
 `;
-// &:last-child {
-//     border-bottom: none;
-//   }
 
 const ImageWrapper = styled.div`
   flex: 0 0 80px;
@@ -81,18 +77,31 @@ const StatusContainer = styled.div`
 `;
 
 const OrderList: React.FC<{ orders: OrderBidResponseDto[] }> = ({ orders }) => {
+  // 날짜 포맷 헬퍼 함수
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
   return (
     <OrderListContainer>
       {orders.map((order) => (
         <OrderItem key={order.orderBidId}>
           <ImageWrapper>
-            <img src={order.imageUrl} alt={order.productName} />
+            <img
+              src={order.imageUrl || "https://via.placeholder.com/80"}
+              alt={order.productName}
+            />
           </ImageWrapper>
           <ProductInfo>
             <div className="product-name">{order.productName}</div>
             <div className="product-size">{order.size}</div>
           </ProductInfo>
-          <OrderDate>{order.createdDate.toLocaleDateString()}</OrderDate>
+          <OrderDate>{formatDate(order.createdDate)}</OrderDate>
           <StatusContainer>
             <div className="status">{order.shipmentStatus}</div>
             {order.shipmentStatus === "배송완료" && (
