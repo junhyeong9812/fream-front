@@ -5,7 +5,11 @@ import OAuthSizeModal from "../components/OAuthSizeModal";
 import { useNavigate } from "react-router-dom";
 import { useHeader } from "src/global/context/HeaderContext";
 import { AuthContext } from "src/global/context/AuthContext";
-import { Gender, OAuthCompleteSignupData } from "../types/OAuthSignupTypes";
+import {
+  Gender,
+  OAuthCompleteSignupData,
+  ShoeSize,
+} from "../types/OAuthSignupTypes";
 import {
   completeOAuthSignup,
   extractTokenFromUrl,
@@ -89,11 +93,25 @@ const OAuthCompleteSignupPage: React.FC = () => {
   const [sizeModal, setSizeModal] = useState<boolean>(false);
   const [selectedSize, setSelectedSize] = useState<string>("선택하세요");
 
+  // useEffect(() => {
+  //   setSignupData((prev) => ({
+  //     ...prev,
+  //     shoeSize: selectedSize === "선택하세요" ? "" : selectedSize,
+  //   }));
+  // }, [selectedSize]);
   useEffect(() => {
-    setSignupData((prev) => ({
-      ...prev,
-      shoeSize: selectedSize === "선택하세요" ? "" : selectedSize,
-    }));
+    if (selectedSize !== "선택하세요") {
+      const shoeSizeKey = `SIZE_${selectedSize}` as keyof typeof ShoeSize;
+      setSignupData((prev) => ({
+        ...prev,
+        shoeSize: ShoeSize[shoeSizeKey],
+      }));
+    } else {
+      setSignupData((prev) => ({
+        ...prev,
+        shoeSize: "",
+      }));
+    }
   }, [selectedSize]);
 
   // 동의사항 관련
