@@ -11,7 +11,7 @@ const MonitoringPage: React.FC = () => {
       {/* Kibana 대시보드 iframe */}
       <Paper sx={{ p: 2, height: "calc(100vh - 120px)" }}>
         <iframe
-          src="https://www.pinjun.xyz/kibana/kibana/app/dashboards/view/Metricbeat-system-overview-ecs"
+          src="https://www.pinjun.xyz/kibana/app/dashboards/view/Metricbeat-system-overview-ecs"
           width="100%"
           height="100%"
           style={{ border: "none" }}
