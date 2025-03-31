@@ -18,7 +18,7 @@ const AdminRoutes: React.FC = () => {
         path="/admin/login/find_password"
         element={<AdminFindPassword />}
       />
-      <Route path="monitoring" element={<MonitoringPage />} />
+      <Route path="/admin/monitoring" element={<MonitoringPage />} />
       {/* 보호된 관리자 경로들 */}
       <Route
         path="/admin"
