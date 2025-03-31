@@ -154,6 +154,9 @@ const Header: React.FC = () => {
             <div className="top-nav">
               <ul>
                 <li>
+                  <Link to="/admin/monitoring">모니터링</Link>
+                </li>
+                <li>
                   <Link to="/support/notice">고객센터</Link>
                 </li>
                 <li>
