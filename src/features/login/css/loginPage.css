@@ -271,3 +271,91 @@
   cursor: default !important;
   pointer-events: none;
 }
+/* 수정된 SNS 로그인 관련 CSS */
+/* 기본 SNS 버튼 스타일 - 모두 흰색 배경으로 변경 */
+.login_form_sns_content {
+  height: 50px;
+  border: 1px solid #ebebeb;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  cursor: pointer;
+  background-color: #fff;
+  transition: all 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+.login_form_sns_icon_content {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login_form_sns_text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  display: flex;
+  align-items: center;
+  margin-left: 96.5px;
+  transition: color 0.3s ease; /* 텍스트 색상 변화도 부드럽게 */
+}
+
+/* 네이버 버튼 호버 효과 */
+.login_form_sns_content:has(.login_form_sns_naver):hover {
+  background-color: #03c75a;
+  border-color: #03c75a;
+}
+
+.login_form_sns_content:has(.login_form_sns_naver):hover .login_form_sns_text {
+  color: #fff;
+}
+
+.login_form_sns_content:has(.login_form_sns_naver):hover .login_form_sns_naver {
+  color: #fff;
+}
+
+/* 구글 버튼 호버 효과 */
+.login_form_sns_content:has(.login_form_sns_google):hover {
+  background-color: #4285f4;
+  border-color: #4285f4;
+}
+
+.login_form_sns_content:has(.login_form_sns_google):hover .login_form_sns_text {
+  color: #fff;
+}
+
+.login_form_sns_content:has(.login_form_sns_google):hover
+  .login_form_sns_google {
+  color: #fff;
+}
+
+/* 카카오 버튼 호버 효과 */
+.login_form_sns_content:has(.login_form_sns_kakao):hover {
+  background-color: #fee500;
+  border-color: #fee500;
+}
+
+.login_form_sns_content:has(.login_form_sns_kakao):hover .login_form_sns_text {
+  color: #000000;
+}
+
+/* 기존 아이콘 스타일 */
+.login_form_sns_naver {
+  color: #03c75a;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.login_form_sns_google {
+  color: #4285f4;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.login_form_sns_kakao {
+  color: #000000;
+  font-size: 22px;
+  transition: color 0.3s ease;
+}

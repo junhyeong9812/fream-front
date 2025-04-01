@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SiNaver } from "react-icons/si";
 import { FaGoogle } from "react-icons/fa";
-import { FaApple } from "react-icons/fa";
+import { RiKakaoTalkFill } from "react-icons/ri";
 import { LoginData } from "../types/loginTypes";
 import { fetchLoginData, checkLoginStatus } from "../services/loginService";
 import { AuthContext } from "src/global/context/AuthContext";
@@ -123,13 +123,14 @@ const LoginPage: React.FC = () => {
   };
 
   // OAuth 로그인 핸들러 추가
-  const handleOAuthLogin = (provider: "google" | "naver") => {
+  const handleOAuthLogin = (provider: "google" | "naver" | "kakao") => {
     if (isLoading) return;
 
     // OAuth 로그인 URL (하드코딩)
     const oauthUrls = {
       google: `https://www.pinjun.xyz/api/oauth2/authorization/google`,
       naver: `https://www.pinjun.xyz/api/oauth2/authorization/naver`,
+      kakao: `https://www.pinjun.xyz/api/oauth2/authorization/kakao`,
     };
 
     // 해당 OAuth 제공자의 로그인 페이지로 리다이렉트
@@ -302,6 +303,17 @@ const LoginPage: React.FC = () => {
               <FaGoogle className="login_form_sns_google" />
             </div>
             <div className="login_form_sns_text">Google로 로그인</div>
+          </div>
+          <div
+            className={`login_form_sns_content ${
+              isLoading ? "login_form_disabled" : ""
+            }`}
+            onClick={() => handleOAuthLogin("kakao")}
+          >
+            <div className="login_form_sns_icon_content">
+              <RiKakaoTalkFill className="login_form_sns_kakao" />
+            </div>
+            <div className="login_form_sns_text">카카오로 로그인</div>
           </div>
         </div>
       </div>
