@@ -73,7 +73,7 @@ const AdminLoginPage: React.FC = () => {
 
     // 비밀번호 정규식
     const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>~\-=_+\[\]/])[A-Za-z\d!@#$%^&*(),.?":{}|<>~\-=_+\[\]/]{8,16}$/;
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>~\-=_+\[\]/])[A-Za-z\d!@#$%^&*(),.?":{}|<>~\-=_+\[\]/]{8,17}$/;
     if (loginData.password.length > 0) {
       if (passwordRegex.test(loginData.password)) {
         setPasswordWarn(false);
