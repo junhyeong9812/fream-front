@@ -1,0 +1,146 @@
+.dashboardContainer {
+  padding: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.pageTitle {
+  margin-bottom: 24px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .pageTitle {
+  color: #e6e9ec;
+}
+
+.dashboardCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.dark .dashboardCard {
+  background-color: #2b2b40;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark .dashboardCard:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+}
+
+.cardTitle {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.dark .cardTitle {
+  color: #a2a3b7;
+}
+
+.cardValue {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c7be5;
+}
+
+.dark .cardValue {
+  color: #4a89dc;
+}
+
+.analyticsSection {
+  margin-top: 30px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.dark .sectionTitle {
+  color: #e6e9ec;
+}
+
+.tableContainer {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.dark .tableContainer {
+  background-color: #2b2b40;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  padding: 15px;
+  font-weight: 600;
+  text-align: left;
+  background-color: #f8f9fa;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.dark .table th {
+  background-color: #1e1e2d;
+  color: #e6e9ec;
+  border-bottom: 1px solid #2b2b40;
+}
+
+.table td {
+  padding: 15px;
+  border-bottom: 1px solid #dee2e6;
+  color: #212529;
+}
+
+.dark .table td {
+  border-bottom: 1px solid #2b2b40;
+  color: #e6e9ec;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dark .table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+@media screen and (max-width: 768px) {
+  .dashboardContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .pageTitle {
+    font-size: 24px;
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+  }
+}

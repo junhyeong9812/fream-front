@@ -12,8 +12,8 @@ const AdminLoginPage: React.FC = () => {
   const { setIsAdminLoggedIn } = useAdminAuth();
 
   const [loginData, setLoginData] = useState<AdminLoginData>({
-    email: "",
-    password: "",
+    email: "admin@example.com",
+    password: "adminpassword!",
   });
 
   // 로딩 상태 추가

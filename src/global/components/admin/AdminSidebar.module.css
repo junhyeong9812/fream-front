@@ -1,0 +1,280 @@
+.adminSidebar {
+  width: 280px;
+  height: 100vh;
+  background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+}
+
+.adminSidebar.dark {
+  background-color: #1e1e2d;
+  color: #a2a3b7;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.logoContainer {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #e6e9ec;
+  height: 60px;
+}
+
+.dark .logoContainer {
+  border-bottom: 1px solid #2b2b40;
+}
+
+.logoLink {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.logoText {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #212529;
+  position: relative;
+}
+
+.dark .logoText {
+  color: #ffffff;
+}
+
+.adminBadge {
+  position: relative;
+  top: -8px;
+  right: -5px;
+  font-size: 12px;
+  background-color: #dc3545;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.profileContainer {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e6e9ec;
+}
+
+.dark .profileContainer {
+  border-bottom: 1px solid #2b2b40;
+}
+
+.profileImage {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 12px;
+  background-color: #f8f9fa;
+}
+
+.dark .profileImage {
+  background-color: #2b2b40;
+}
+
+.profileImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileInfo {
+  flex: 1;
+}
+
+.adminName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 4px;
+}
+
+.dark .adminName {
+  color: #ffffff;
+}
+
+.adminRole {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.dark .adminRole {
+  color: #a2a3b7;
+}
+
+.navigation {
+  flex: 1;
+  padding: 15px 0;
+  overflow-y: auto;
+}
+
+.menuList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuItem {
+  margin-bottom: 5px;
+}
+
+.menuHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menuHeader:hover,
+.menuLink:hover {
+  background-color: #f8f9fa;
+}
+
+.dark .menuHeader:hover,
+.dark .menuLink:hover {
+  background-color: #2b2b40;
+}
+
+.menuIconAndTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+.dark .menuIcon {
+  color: #a2a3b7;
+}
+
+.menuTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+}
+
+.dark .menuTitle {
+  color: #e6e9ec;
+}
+
+.expandIcon {
+  font-size: 16px;
+  color: #6c757d;
+  transition: transform 0.3s ease;
+}
+
+.dark .expandIcon {
+  color: #a2a3b7;
+}
+
+.expanded .expandIcon {
+  transform: rotate(180deg);
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.submenuList {
+  list-style-type: none;
+  padding: 0;
+  margin: 5px 0;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dark .submenuList {
+  background-color: #2b2b40;
+}
+
+.submenuItem {
+  margin: 0;
+}
+
+.submenuLink {
+  display: block;
+  padding: 10px 20px 10px 48px;
+  text-decoration: none;
+  font-size: 13px;
+  color: #212529;
+  transition: all 0.2s ease;
+}
+
+.dark .submenuLink {
+  color: #a2a3b7;
+}
+
+.submenuLink:hover {
+  background-color: #e9ecef;
+}
+
+.dark .submenuLink:hover {
+  background-color: #1b1b28;
+}
+
+.active {
+  background-color: #e9ecef;
+  color: #0d6efd !important;
+}
+
+.dark .active {
+  background-color: #1b1b28;
+  color: #0d6efd !important;
+}
+
+@media screen and (max-width: 768px) {
+  .adminSidebar {
+    transform: translateX(-100%);
+    width: 240px;
+  }
+
+  .adminSidebar.open {
+    transform: translateX(0);
+  }
+
+  .logoText {
+    font-size: 22px;
+  }
+
+  .profileImage {
+    width: 40px;
+    height: 40px;
+  }
+
+  .adminName {
+    font-size: 14px;
+  }
+
+  .adminRole {
+    font-size: 11px;
+  }
+}

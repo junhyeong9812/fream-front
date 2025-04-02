@@ -5,13 +5,15 @@ import Footer from "./global/components/footer/Footer";
 import styled from "styled-components";
 import { UserAccessLogDto } from "./global/types/accessLog";
 import { sendAccessLog } from "./global/services/accessLogService";
-import AppRoutes from "./routers/AppRouters";
+
 import { AuthProvider } from "./global/context/AuthContext";
+import { AdminAuthProvider } from "./global/context/AdminAuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HeaderProvider, useHeader } from "./global/context/HeaderContext";
 import FloatingButtons from "./global/components/floatingButtons/FloatingButtons";
 import { useLocation } from "react-router-dom";
 import AdminRoutes from "./routers/AdminRoutes";
+import AppRoutes from "./routers/AppRouters";
 
 const AppContainer = styled.div`
   display: flex;
@@ -45,8 +47,8 @@ const StyledHeader = styled(Header)`
 
 const AppContent = () => {
   const { headerHeight, refreshAccessCount } = useHeader();
-  const location = useLocation(); // 현재 경로 확인용
-  const isAdminRoute = location.pathname.startsWith("/admin"); // admin 경로 체크
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
     const sendLogAndUpdateCount = async () => {
@@ -69,11 +71,18 @@ const AppContent = () => {
       }
     };
 
-    sendLogAndUpdateCount();
+    // 어드민 경로가 아닐 때만 로그 전송
+    if (!isAdminRoute) {
+      sendLogAndUpdateCount();
+    }
   }, [refreshAccessCount, location.pathname, isAdminRoute]);
+
+  // 어드민 경로면 AdminRoutes 컴포넌트 반환
   if (isAdminRoute) {
     return <AdminRoutes />;
   }
+
+  // 일반 사용자 경로이면 일반 레이아웃 반환
   return (
     <AppContainer>
       <StyledHeader />
@@ -90,9 +99,11 @@ const AppContent = () => {
 function App() {
   return (
     <AuthProvider>
-      <HeaderProvider>
-        <AppContent />
-      </HeaderProvider>
+      <AdminAuthProvider>
+        <HeaderProvider>
+          <AppContent />
+        </HeaderProvider>
+      </AdminAuthProvider>
     </AuthProvider>
   );
 }
