@@ -13,7 +13,7 @@ const AdminLoginPage: React.FC = () => {
 
   const [loginData, setLoginData] = useState<AdminLoginData>({
     email: "admin@example.com",
-    password: "adminpassword!",
+    password: "adminpassword123!",
   });
 
   // 로딩 상태 추가
