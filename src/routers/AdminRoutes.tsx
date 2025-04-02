@@ -7,7 +7,7 @@ import AdminPage from "../features/admin/pages/adminPage";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 import { ThemeProvider } from "../global/context/ThemeContext";
 import AdminLayout from "src/global/components/admin/AdminLayout";
-import AdminLoginPage from "@features/admin/pages/AdminLoginPage";
+import AdminLoginPage from "../features/admin/pages/AdminLoginPage";
 
 const AdminRoutes: React.FC = () => {
   return (
