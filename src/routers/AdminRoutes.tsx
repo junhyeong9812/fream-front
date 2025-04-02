@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import AdminLoginPage from "../features/admin/pages/AdminLoginPage";
 import AdminFindEmail from "../features/admin/pages/AdminFindEmailPage";
 import AdminFindPassword from "../features/admin/pages/AdminFindPasswordPage";
 import MonitoringPage from "../features/admin/pages/MonitoringPage";
@@ -8,6 +7,7 @@ import AdminPage from "../features/admin/pages/adminPage";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 import { ThemeProvider } from "../global/context/ThemeContext";
 import AdminLayout from "src/global/components/admin/AdminLayout";
+import AdminLoginPage from "@features/admin/pages/AdminLoginPage";
 
 const AdminRoutes: React.FC = () => {
   return (
