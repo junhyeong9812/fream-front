@@ -5,7 +5,7 @@ import { SortOption, getSortOption } from "../types/sortOptions";
 /**
  * 필터 적용하여 상품 데이터 가져오기
  * @param filters 선택한 필터 값들
- * @param page 페이지 번호 (0부터 시작)
+ * @param page 페이지 번호 (1부터 시작)
  * @param size 페이지 크기
  * @param sortOption 정렬 옵션
  * @returns 필터링된 상품 데이터와 페이징 정보를 포함한 응답
@@ -24,7 +24,7 @@ export const fetchShopData = async (
   try {
     const params = new URLSearchParams();
 
-    // 페이징 파라미터 추가
+    // 페이징 파라미터 추가 - 백엔드도 1부터 시작하므로 변환 필요 없음
     params.append("page", page.toString());
     params.append("size", size.toString());
 
@@ -76,6 +76,22 @@ export const fetchShopData = async (
     if (filters.maxPrice) {
       params.append("maxPrice", filters.maxPrice.toString());
     }
+
+    // 백엔드에서 아직 지원하지 않는 파라미터 (주석 처리)
+
+    // 배송 옵션 추가 - 현재 백엔드에서 지원하지 않음
+    // if (filters.deliveryOption) {
+    //   params.append("deliveryOption", filters.deliveryOption);
+    // }
+
+    // 추가 필터 옵션 - 현재 백엔드에서 지원하지 않음
+    // if (filters.isBelowOriginalPrice !== undefined) {
+    //   params.append("isBelowOriginalPrice", filters.isBelowOriginalPrice.toString());
+    // }
+
+    // if (filters.isExcludeSoldOut !== undefined) {
+    //   params.append("isExcludeSoldOut", filters.isExcludeSoldOut.toString());
+    // }
 
     // API 엔드포인트 호출
     const url = `/es/products${

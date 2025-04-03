@@ -132,25 +132,38 @@ export const prepareFilterPayload = (
     payload.keyword = keyword;
   }
 
-  // 카테고리 ID가 있으면 추가
-  if (
-    selectedFilters["신발"] ||
-    selectedFilters["상의"] ||
-    selectedFilters["하의"]
-  ) {
-    payload.categoryIds = [];
+  // 카테고리 ID 처리
+  const categoryIds: number[] = [];
 
-    // 카테고리 처리 (문자열 ID를 숫자로 변환)
-    ["신발", "상의", "하의", "아우터"].forEach((categoryName) => {
-      if (selectedFilters[categoryName]) {
-        selectedFilters[categoryName].forEach((value) => {
-          const numValue = parseInt(value, 10);
-          if (!isNaN(numValue)) {
-            payload.categoryIds!.push(numValue);
-          }
-        });
-      }
-    });
+  // 신발, 상의, 하의, 아우터 등의 카테고리 처리
+  [
+    "신발",
+    "상의",
+    "하의",
+    "아우터",
+    "가방",
+    "지갑",
+    "시계",
+    "패션잡화",
+    "컬렉터블",
+    "뷰티",
+    "테크",
+    "캠핑",
+    "가구/리빙",
+    "럭셔리",
+  ].forEach((categoryName) => {
+    if (selectedFilters[categoryName]) {
+      selectedFilters[categoryName].forEach((value) => {
+        const numValue = parseInt(value, 10);
+        if (!isNaN(numValue) && !categoryIds.includes(numValue)) {
+          categoryIds.push(numValue);
+        }
+      });
+    }
+  });
+
+  if (categoryIds.length > 0) {
+    payload.categoryIds = categoryIds;
   }
 
   // 성별이 있으면 추가
@@ -164,19 +177,21 @@ export const prepareFilterPayload = (
   }
 
   // 사이즈가 있으면 추가
-  if (
-    selectedFilters.SHOES ||
-    selectedFilters.CLOTHING ||
-    selectedFilters.ACCESSORIES
-  ) {
-    payload.sizes = [];
+  const sizes: string[] = [];
 
-    // 다양한 카테고리의 사이즈 처리
-    ["SHOES", "CLOTHING", "ACCESSORIES"].forEach((sizeCategory) => {
-      if (selectedFilters[sizeCategory]) {
-        payload.sizes!.push(...Array.from(selectedFilters[sizeCategory]));
-      }
-    });
+  // 다양한 카테고리의 사이즈 처리
+  ["SHOES", "CLOTHING", "ACCESSORIES"].forEach((sizeCategory) => {
+    if (selectedFilters[sizeCategory]) {
+      Array.from(selectedFilters[sizeCategory]).forEach((size) => {
+        if (!sizes.includes(size)) {
+          sizes.push(size);
+        }
+      });
+    }
+  });
+
+  if (sizes.length > 0) {
+    payload.sizes = sizes;
   }
 
   // 가격 범위 처리
@@ -198,12 +213,53 @@ export const prepareFilterPayload = (
     }
   }
 
-  // 브랜드가 있으면 추가
+  // 브랜드 ID 처리
   if (selectedFilters.brands && selectedFilters.brands.size > 0) {
     payload.brandIds = Array.from(selectedFilters.brands)
       .map((id) => parseInt(id, 10))
       .filter((id) => !isNaN(id));
   }
+
+  // 백엔드에서 아직 지원하지 않는 필터들 (주석 처리)
+
+  // 혜택 필터 처리 - 현재 백엔드에서 지원하지 않음
+  // if (selectedFilters["혜택"]) {
+  //   const benefits = Array.from(selectedFilters["혜택"]);
+  //
+  //   // 무료배송 옵션 처리
+  //   if (benefits.includes("무료배송")) {
+  //     payload.freeShipping = true;
+  //   }
+  //
+  //   // 정가이하 옵션 처리
+  //   if (benefits.includes("정가이하")) {
+  //     payload.isBelowOriginalPrice = true;
+  //   }
+  // }
+
+  // 할인율 필터 처리 - 현재 백엔드에서 지원하지 않음
+  // if (selectedFilters["할인율"]) {
+  //   const discounts = Array.from(selectedFilters["할인율"]);
+  //
+  //   // 할인율 범위를 백엔드 파라미터로 변환
+  //   if (discounts.length > 0) {
+  //     const discountRanges = discounts.map(range => {
+  //       if (range === "30% 이하") return { min: 0, max: 30 };
+  //       if (range === "30%~50%") return { min: 30, max: 50 };
+  //       if (range === "50% 이상") return { min: 50, max: 100 };
+  //       return null;
+  //     }).filter(range => range !== null);
+  //
+  //     if (discountRanges.length > 0) {
+  //       // 최소, 최대 할인율 계산
+  //       const minDiscount = Math.min(...discountRanges.map(range => range?.min || 0));
+  //       const maxDiscount = Math.max(...discountRanges.map(range => range?.max || 0));
+  //
+  //       payload.minDiscountRate = minDiscount;
+  //       payload.maxDiscountRate = maxDiscount;
+  //     }
+  //   }
+  // }
 
   return payload;
 };

@@ -119,6 +119,82 @@ const ShopPage: React.FC = () => {
     { id: "living", label: "가구/리빙", filterValue: "55" },
   ];
 
+  // URL 쿼리 파라미터에서 필터 초기화 로직 (컴포넌트 마운트 시 실행)
+  useEffect(() => {
+    // URL 쿼리 파라미터에서 필터 값 추출
+    const initialFilters: SelectedFiltersPayload = {};
+
+    // 키워드
+    const keyword = searchParams.get("keyword");
+    if (keyword) {
+      initialFilters.keyword = keyword;
+    }
+
+    // 카테고리 ID
+    const categoryIdParam = searchParams.get("categoryIds");
+    if (categoryIdParam) {
+      initialFilters.categoryIds = categoryIdParam
+        .split(",")
+        .map((id) => parseInt(id, 10));
+    }
+
+    // 브랜드 ID
+    const brandIdParam = searchParams.get("brandIds");
+    if (brandIdParam) {
+      initialFilters.brandIds = brandIdParam
+        .split(",")
+        .map((id) => parseInt(id, 10));
+    }
+
+    // 컬렉션 ID
+    const collectionIdParam = searchParams.get("collectionIds");
+    if (collectionIdParam) {
+      initialFilters.collectionIds = collectionIdParam
+        .split(",")
+        .map((id) => parseInt(id, 10));
+    }
+
+    // 성별
+    const gendersParam = searchParams.get("genders");
+    if (gendersParam) {
+      initialFilters.genders = gendersParam.split(",");
+    }
+
+    // 색상
+    const colorsParam = searchParams.get("colors");
+    if (colorsParam) {
+      initialFilters.colors = colorsParam.split(",");
+    }
+
+    // 사이즈
+    const sizesParam = searchParams.get("sizes");
+    if (sizesParam) {
+      initialFilters.sizes = sizesParam.split(",");
+    }
+
+    // 가격 범위
+    const minPriceParam = searchParams.get("minPrice");
+    if (minPriceParam) {
+      initialFilters.minPrice = parseInt(minPriceParam, 10);
+    }
+
+    const maxPriceParam = searchParams.get("maxPrice");
+    if (maxPriceParam) {
+      initialFilters.maxPrice = parseInt(maxPriceParam, 10);
+    }
+
+    // 추출한 필터 적용
+    if (Object.keys(initialFilters).length > 0) {
+      setAppliedFilters(initialFilters);
+    }
+
+    // URL에 탭 ID가 있으면 해당 탭 활성화
+    const tabParam = searchParams.get("tab");
+    if (tabParam && TAB_MENU_DATA.some((tab) => tab.id === tabParam)) {
+      setActiveTabId(tabParam);
+    }
+  }, [searchParams]); // 컴포넌트 마운트 시와 URL 변경 시 실행
+
   // 스크롤 감지 및 페이지 로드 로직
   useEffect(() => {
     const handleScroll = () => {
@@ -143,8 +219,8 @@ const ShopPage: React.FC = () => {
     async (pageToLoad: number) => {
       if (
         isLoading ||
-        !hasMore || // (pageToLoad > 1 && !hasMore) ||
-        (totalPages > 0 && pageToLoad >= totalPages)
+        !hasMore ||
+        (totalPages > 0 && pageToLoad > totalPages) // 페이지가 총 페이지 수보다 크면 중단
       )
         return;
 
@@ -161,14 +237,31 @@ const ShopPage: React.FC = () => {
         if (activeTabId !== "all") {
           const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
           if (activeTab && activeTab.filterValue) {
-            filterPayload.categoryIds = [parseInt(activeTab.filterValue, 10)];
+            filterPayload.categoryIds = filterPayload.categoryIds || [];
+
+            // 중복 필터 방지 - 이미 카테고리 ID가 있는지 확인
+            const categoryId = parseInt(activeTab.filterValue, 10);
+            if (!filterPayload.categoryIds.includes(categoryId)) {
+              filterPayload.categoryIds.push(categoryId);
+            }
           }
         }
+
+        // 백엔드에서 아직 지원하지 않는 필터들 주석 처리
+
+        // 배송 옵션 추가 (백엔드에서 지원하지 않음)
+        // if (clickedButton) {
+        //   filterPayload.deliveryOption = clickedButton;
+        // }
+
+        // 추가 필터 옵션 추가 (백엔드에서 지원하지 않음)
+        // filterPayload.isBelowOriginalPrice = additionalFilters.isBelowOriginalPrice;
+        // filterPayload.isExcludeSoldOut = additionalFilters.isExcludeSoldOut;
 
         // 상품 가져오기
         const result = await fetchShopData(
           filterPayload,
-          pageToLoad,
+          pageToLoad, // 페이지 번호 그대로 전달 (백엔드도 1부터 시작)
           20,
           selectedSortOption
         );
@@ -183,14 +276,13 @@ const ShopPage: React.FC = () => {
         // 페이징 상태 업데이트
         setTotalPages(result.totalPages);
         setHasMore(pageToLoad < result.totalPages);
-        // setHasMore(!result.last);
       } catch (error) {
         console.error("상품 로드 실패:", error);
       } finally {
         setIsLoading(false);
       }
     },
-    [appliedFilters, searchParams, activeTabId, selectedSortOption]
+    [appliedFilters, searchParams, activeTabId, selectedSortOption, totalPages]
   );
 
   // 페이지 변경시 상품 로드
@@ -216,9 +308,10 @@ const ShopPage: React.FC = () => {
     const newValue = clickedButton === buttonLabel ? null : buttonLabel;
     setClickedButton(newValue);
 
-    if (newValue) {
-      await setDeliveryOption(newValue);
-    }
+    // 백엔드에서 지원하지 않는 API 호출 주석 처리
+    // if (newValue) {
+    //   await setDeliveryOption(newValue);
+    // }
   };
 
   // 추가 필터 토글 핸들러
@@ -231,9 +324,11 @@ const ShopPage: React.FC = () => {
     };
 
     setAdditionalFilters(newFilters);
-    await setAdditionalFilters(newFilters);
 
-    // 필터 변경시 첫 페이지부터 다시 로드
+    // 백엔드에서 지원하지 않는 API 호출 주석 처리
+    // await setAdditionalFilters(newFilters);
+
+    // 필터 변경시 첫 페이지부터 다시 로드하도록 상태 초기화
     setPage(1);
     setHasMore(true);
     loadProducts(1);
@@ -307,6 +402,11 @@ const ShopPage: React.FC = () => {
     }
 
     setSearchParams(newParams);
+
+    // 필터 변경 시 첫 페이지부터 다시 로드하도록 상태 초기화
+    setPage(1);
+    setHasMore(true);
+    // loadProducts(1)은 useEffect를 통해 실행됨
   };
 
   // 상품 클릭 핸들러
@@ -317,6 +417,15 @@ const ShopPage: React.FC = () => {
   // 탭 클릭 핸들러
   const handleTabClick = (tabId: string) => {
     setActiveTabId(tabId);
+
+    // 탭 변경 시 URL 파라미터에 탭 ID 추가
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("tab", tabId);
+    setSearchParams(newParams);
+
+    // 탭 변경 시 첫 페이지부터 다시 로드
+    setPage(1);
+    setHasMore(true);
   };
 
   return (

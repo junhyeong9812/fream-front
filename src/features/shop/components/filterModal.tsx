@@ -11,7 +11,7 @@ import {
   FilterModalProps,
   SelectedFiltersPayload,
   GroupedBrands,
-  BrandItem
+  BrandItem,
 } from "../types/filterTypes";
 import {
   fetchFilterData,
@@ -19,7 +19,7 @@ import {
   prepareFilterPayload,
   resetFilters,
   groupBrandsByFirstChar,
-  getSortedGroupKeys
+  getSortedGroupKeys,
 } from "../services/filterService";
 import { useSearchParams } from "react-router-dom";
 
@@ -33,13 +33,13 @@ const initialFilters = {
   brands: [],
 };
 
-const FilterModal: React.FC<FilterModalProps> = ({ 
-  open, 
-  onClose, 
-  onApplyFilters, 
-  categoryList, 
-  outerwearList, 
-  shirtsList 
+const FilterModal: React.FC<FilterModalProps> = ({
+  open,
+  onClose,
+  onApplyFilters,
+  categoryList,
+  outerwearList,
+  shirtsList,
 }) => {
   // 아코디언 섹션 상태
   const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
@@ -68,10 +68,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
     collections: [],
   });
   const [categoryData, setCategoryData] = useState<CategoryDataItem[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({});
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, Set<string>>
+  >({});
   const [filteredProductCount, setFilteredProductCount] = useState<number>(0);
   const [searchParams] = useSearchParams();
-  
+
   // 브랜드 그룹 상태 추가
   const [groupedBrands, setGroupedBrands] = useState<GroupedBrands>({});
   const [groupKeys, setGroupKeys] = useState<string[]>([]);
@@ -97,12 +99,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
         );
         setCategoryData(newCategoryData);
       }
-      
+
       // 브랜드 데이터 그룹화
       if (data.brands && data.brands.length > 0) {
         const grouped = groupBrandsByFirstChar(data.brands);
         setGroupedBrands(grouped);
-        
+
         // 그룹 키 정렬 (특수문자, 숫자, 알파벳 순)
         const keys = getSortedGroupKeys(grouped);
         setGroupKeys(keys);
@@ -543,25 +545,39 @@ const FilterModal: React.FC<FilterModalProps> = ({
                         <div className={styles.groupTitle}>{key}</div>
 
                         {/* 그룹 아이템들 */}
-                        {groupedBrands[key] && groupedBrands[key].map((brand) => (
-                          <div key={brand.id} className={styles.item}>
-                            <label className={styles.brandLabel}>
-                              <input
-                                type="checkbox"
-                                checked={selectedFilters.brands?.has(String(brand.id)) || false}
-                                onChange={() => handleFilterClick('brands', String(brand.id))}
-                                className={styles.brandCheckbox}
-                              />
-                              <span className={
-                                selectedFilters.brands?.has(String(brand.id))
-                                  ? styles.selectedBrand
-                                  : ''
-                              }>
-                                {brand.label}
-                              </span>
-                            </label>
-                          </div>
-                        ))}
+                        {groupedBrands[key] &&
+                          groupedBrands[key].map((brand) => (
+                            <div key={brand.id} className={styles.item}>
+                              <label className={styles.brandLabel}>
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    selectedFilters.brands?.has(
+                                      String(brand.id)
+                                    ) || false
+                                  }
+                                  onChange={() =>
+                                    handleFilterClick(
+                                      "brands",
+                                      String(brand.id)
+                                    )
+                                  }
+                                  className={styles.brandCheckbox}
+                                />
+                                <span
+                                  className={
+                                    selectedFilters.brands?.has(
+                                      String(brand.id)
+                                    )
+                                      ? styles.selectedBrand
+                                      : ""
+                                  }
+                                >
+                                  {brand.label}
+                                </span>
+                              </label>
+                            </div>
+                          ))}
 
                         {/* 구분선 */}
                         <hr className={styles.divider} />
