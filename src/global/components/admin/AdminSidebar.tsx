@@ -171,6 +171,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           title: "공지사항 관리",
           link: "/admin/customer-service/notices",
         },
+        {
+          id: "cs-inspection",
+          title: "검수 기준 관리",
+          link: "/admin/customer-service/inspection-standards",
+        },
       ],
     },
     {

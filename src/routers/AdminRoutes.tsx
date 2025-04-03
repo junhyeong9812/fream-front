@@ -8,6 +8,7 @@ import ProtectedAdminRoute from "./ProtectedAdminRoute";
 import { ThemeProvider } from "../global/context/ThemeContext";
 import AdminLayout from "src/global/components/admin/AdminLayout";
 import AdminLoginPage from "../features/admin/pages/AdminLoginPage";
+import InspectionManagement from "../features/admin/pages/InspectionManagementPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -21,9 +22,6 @@ const AdminRoutes: React.FC = () => {
           element={<AdminFindPassword />}
         />
 
-        {/* 특별한 경우: 모니터링 페이지는 로그인 필요하지만 별도 레이아웃 */}
-        
-
         {/* 보호된 관리자 경로 - AdminLayout 적용 */}
         <Route
           path="/admin"
@@ -35,7 +33,8 @@ const AdminRoutes: React.FC = () => {
         >
           <Route index element={<AdminPage />} />
 
-          <Route path="/admin/monitoring" element={<MonitoringPage />}/>
+          <Route path="/admin/monitoring" element={<MonitoringPage />} />
+
           {/* 상품 관리 */}
           <Route path="products" element={<div>상품 목록 페이지</div>} />
           <Route path="products/add" element={<div>상품 등록 페이지</div>} />
@@ -93,6 +92,11 @@ const AdminRoutes: React.FC = () => {
           <Route
             path="customer-service/notices"
             element={<div>공지사항 관리 페이지</div>}
+          />
+          {/* 검수 기준 관리 추가 */}
+          <Route
+            path="customer-service/inspection-standards"
+            element={<InspectionManagement />}
           />
 
           {/* 설정 */}

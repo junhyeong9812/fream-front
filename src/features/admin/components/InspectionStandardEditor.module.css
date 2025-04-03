@@ -1,0 +1,306 @@
+.editor {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.editorTitle {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.select {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.htmlEditor {
+  margin-bottom: 1rem;
+}
+
+/* Quill Editor 컨테이너 높이 */
+.htmlEditor :global(.quill) {
+  height: auto;
+}
+
+/* Quill Editor 콘텐츠 영역 높이 */
+.htmlEditor :global(.ql-container) {
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.fileInput {
+  display: block;
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.uploadButton {
+  padding: 0.6rem 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.uploadButton:hover {
+  background-color: #e6e6e6;
+}
+
+.fileList {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.fileListTitle {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 0.75rem;
+}
+
+.fileItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.fileName {
+  font-size: 0.9rem;
+  color: #333;
+  word-break: break-all;
+}
+
+.removeButton {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.removeButton:hover {
+  background-color: #f5c6cb;
+}
+
+.error {
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cancelButton {
+  padding: 0.6rem 1.5rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.cancelButton:hover {
+  background-color: #e6e6e6;
+}
+
+.saveButton {
+  padding: 0.6rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.saveButton:hover {
+  background-color: #0069d9;
+}
+
+.saveButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 이미지 가이드 */
+.imageGuide {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* 다크 모드 */
+.dark {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+.dark .editorTitle {
+  color: #f3f4f6;
+}
+
+.dark .label {
+  color: #f3f4f6;
+}
+
+.dark .select {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .uploadButton {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .uploadButton:hover {
+  background-color: #4b5563;
+}
+
+.dark .fileList {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark .fileListTitle {
+  color: #f3f4f6;
+}
+
+.dark .fileItem {
+  border-bottom-color: #4b5563;
+}
+
+.dark .fileName {
+  color: #f3f4f6;
+}
+
+.dark .removeButton {
+  background-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.dark .removeButton:hover {
+  background-color: #b91c1c;
+}
+
+.dark .error {
+  background-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.dark .cancelButton {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .cancelButton:hover {
+  background-color: #4b5563;
+}
+
+.dark .saveButton {
+  background-color: #3b82f6;
+}
+
+.dark .saveButton:hover {
+  background-color: #2563eb;
+}
+
+.dark .imageGuide {
+  color: #d1d5db;
+}
+
+/* 다크 모드 Quill 에디터 */
+.dark :global(.ql-toolbar.ql-snow) {
+  border-color: #4b5563;
+  background-color: #374151;
+}
+
+.dark :global(.ql-container.ql-snow) {
+  border-color: #4b5563;
+  background-color: #1f2937;
+}
+
+.dark :global(.ql-editor) {
+  color: #f3f4f6;
+}
+
+.dark :global(.ql-snow .ql-stroke) {
+  stroke: #d1d5db;
+}
+
+.dark :global(.ql-snow .ql-fill) {
+  fill: #d1d5db;
+}
+
+.dark :global(.ql-snow .ql-picker) {
+  color: #d1d5db;
+}
+
+.dark :global(.ql-snow .ql-picker-options) {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark :global(.ql-snow .ql-picker-item) {
+  color: #d1d5db;
+}
+
+.dark :global(.ql-snow.ql-toolbar button:hover),
+.dark :global(.ql-snow.ql-toolbar button.ql-active) {
+  color: #3b82f6;
+}
+
+.dark :global(.ql-snow.ql-toolbar button:hover .ql-stroke),
+.dark :global(.ql-snow.ql-toolbar button.ql-active .ql-stroke) {
+  stroke: #3b82f6;
+}
+
+.dark :global(.ql-snow.ql-toolbar button:hover .ql-fill),
+.dark :global(.ql-snow.ql-toolbar button.ql-active .ql-fill) {
+  fill: #3b82f6;
+}
+
+.dark :global(.ql-editor.ql-blank::before) {
+  color: #9ca3af;
+}
