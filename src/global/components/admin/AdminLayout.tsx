@@ -226,3 +226,5 @@ const AdminLayout: React.FC = () => {
     </ThemeProvider>
   );
 };
+
+export default AdminLayout;
