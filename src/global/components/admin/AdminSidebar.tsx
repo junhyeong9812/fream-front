@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FiChevronDown,
@@ -43,7 +43,26 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const location = useLocation();
   const { theme } = useContext(ThemeContext);
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-  const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+  const submenuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // 외부 클릭 감지를 위한 이벤트 리스너 추가
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        activeSubmenu &&
+        submenuRefs.current[activeSubmenu] &&
+        !submenuRefs.current[activeSubmenu]?.contains(event.target as Node)
+      ) {
+        setActiveSubmenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [activeSubmenu]);
 
   // 사이드바 메뉴 데이터
   const menuItems: MenuItem[] = [
@@ -203,7 +222,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const toggleMenu = (menuId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     if (isCollapsed) {
-      // 축소 모드에서는 토글하지 않음 - 호버로 처리됨
+      // 축소 모드에서는 모달 방식으로 처리
       return;
     }
 
@@ -222,34 +241,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     return location.pathname.startsWith(link) && link !== "/admin";
   };
 
-  // 사이드바가 축소되었을 때 메뉴 항목에 마우스 오버 처리
-  const handleMouseEnter = (menuId: string) => {
-    if (isCollapsed) {
-      setHoveredMenu(menuId);
-    }
-  };
+  // 축소 상태에서 하위 메뉴 토글 처리
+  const toggleSubmenu = (menuId: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-  // 사이드바가 축소되었을 때 메뉴 항목 클릭 처리
-  const handleCollapsedMenuClick = (
-    menuId: string,
-    event: React.MouseEvent
-  ) => {
-    if (isCollapsed) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      // 이미 선택된 메뉴를 다시 클릭하면 닫히도록 토글 기능 추가
-      if (hoveredMenu === menuId) {
-        setHoveredMenu(null);
-      } else {
-        setHoveredMenu(menuId);
-      }
-    }
-  };
-
-  // 사이드바가 축소되었을 때 메뉴 항목에서 마우스 아웃 처리
-  const handleMouseLeave = () => {
-    setHoveredMenu(null);
+    setActiveSubmenu(activeSubmenu === menuId ? null : menuId);
   };
 
   return (
@@ -298,11 +295,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               className={`${styles.menuItem} ${
                 isActive(item.link || "") ? styles.active : ""
               }`}
-              onMouseEnter={() => handleMouseEnter(item.id)}
-              onMouseLeave={handleMouseLeave}
             >
               {item.submenus ? (
-                <>
+                <div
+                  ref={(el) => (submenuRefs.current[item.id] = el)}
+                  className={styles.submenuContainer}
+                >
                   <div
                     className={`${styles.menuHeader} ${
                       expandedMenus.includes(item.id) ? styles.expanded : ""
@@ -318,7 +316,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     {isCollapsed ? (
                       <span
                         className={styles.collapsedExpandIcon}
-                        onClick={(e) => handleCollapsedMenuClick(item.id, e)}
+                        onClick={(e) => toggleSubmenu(item.id, e)}
                       >
                         <FiChevronRightIcon />
                       </span>
@@ -333,19 +331,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     )}
                   </div>
 
-                  {/* 조건에 따라 하위 메뉴 표시 */}
-                  {((!isCollapsed && expandedMenus.includes(item.id)) ||
-                    (isCollapsed && hoveredMenu === item.id)) && (
-                    <ul
-                      className={`${styles.submenuList} ${
-                        isCollapsed ? styles.floatingMenu : ""
-                      }`}
-                    >
-                      {isCollapsed && (
-                        <div className={styles.floatingMenuTitle}>
-                          {item.title}
-                        </div>
-                      )}
+                  {/* 확장 모드에서의 하위 메뉴 표시 */}
+                  {!isCollapsed && expandedMenus.includes(item.id) && (
+                    <ul className={styles.submenuList}>
                       {item.submenus.map((submenu) => (
                         <li key={submenu.id} className={styles.submenuItem}>
                           <Link
@@ -360,25 +348,42 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                       ))}
                     </ul>
                   )}
-                </>
-              ) : (
-                <>
-                  <Link
-                    to={item.link || "#"}
-                    className={`${styles.menuLink} ${
-                      isActive(item.link || "") ? styles.active : ""
-                    }`}
-                  >
-                    <span className={styles.menuIcon}>{item.icon}</span>
-                    {!isCollapsed && (
-                      <span className={styles.menuTitle}>{item.title}</span>
-                    )}
-                  </Link>
-                  {/* 축소된 사이드바를 위한 툴팁 표시 */}
-                  {isCollapsed && hoveredMenu === item.id && (
-                    <div className={styles.tooltip}>{item.title}</div>
+
+                  {/* 축소 모드에서의 모달 형태 하위 메뉴 */}
+                  {isCollapsed && activeSubmenu === item.id && (
+                    <div className={styles.submenuModal}>
+                      <div className={styles.submenuModalHeader}>
+                        {item.title}
+                      </div>
+                      <ul className={styles.submenuModalList}>
+                        {item.submenus.map((submenu) => (
+                          <li key={submenu.id} className={styles.submenuItem}>
+                            <Link
+                              to={submenu.link}
+                              className={`${styles.submenuLink} ${
+                                isActive(submenu.link) ? styles.active : ""
+                              }`}
+                            >
+                              {submenu.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                </>
+                </div>
+              ) : (
+                <Link
+                  to={item.link || "#"}
+                  className={`${styles.menuLink} ${
+                    isActive(item.link || "") ? styles.active : ""
+                  }`}
+                >
+                  <span className={styles.menuIcon}>{item.icon}</span>
+                  {!isCollapsed && (
+                    <span className={styles.menuTitle}>{item.title}</span>
+                  )}
+                </Link>
               )}
             </li>
           ))}
