@@ -230,6 +230,18 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     }
   };
 
+  // Handle click for menu items when sidebar is collapsed
+  const handleCollapsedMenuClick = (
+    menuId: string,
+    event: React.MouseEvent
+  ) => {
+    if (isCollapsed && !expandedMenus.includes(menuId)) {
+      event.preventDefault();
+      event.stopPropagation();
+      setHoveredMenu(menuId);
+    }
+  };
+
   // Handle mouse leave for menu items when sidebar is collapsed
   const handleMouseLeave = () => {
     setHoveredMenu(null);
@@ -298,7 +310,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                         <span className={styles.menuTitle}>{item.title}</span>
                       )}
                     </div>
-                    {!isCollapsed && (
+                    {isCollapsed ? (
+                      <span
+                        className={styles.collapsedExpandIcon}
+                        onClick={(e) => handleCollapsedMenuClick(item.id, e)}
+                      >
+                        <FiChevronRightIcon />
+                      </span>
+                    ) : (
                       <span className={styles.expandIcon}>
                         {expandedMenus.includes(item.id) ? (
                           <FiChevronDown />

@@ -10,7 +10,11 @@ const AdminLayout: React.FC = () => {
   const location = useLocation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    // Check localStorage for saved preference, default to false
+    const savedState = localStorage.getItem("sidebarCollapsed");
+    return savedState === "true";
+  });
 
   // 모바일 화면 감지 및 사이드바 상태 관리
   useEffect(() => {

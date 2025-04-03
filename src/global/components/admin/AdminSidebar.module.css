@@ -196,8 +196,26 @@
 }
 
 .collapsed .menuHeader {
-  padding: 12px;
+  padding: 12px 8px;
+  justify-content: space-between;
+  position: relative;
+}
+
+.collapsedExpandIcon {
+  font-size: 14px;
+  color: #6c757d;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+
+.dark .collapsedExpandIcon {
+  color: #a2a3b7;
 }
 
 .menuHeader:hover,
@@ -302,11 +320,12 @@
   top: 0;
   width: 200px;
   border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   background-color: #fff;
   overflow-y: auto;
   max-height: 80vh;
+  border: 1px solid #e6e9ec;
 }
 
 .dark .floatingMenu {

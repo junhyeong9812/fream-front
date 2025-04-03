@@ -6,6 +6,7 @@
   font-size: 13px;
   margin-left: 280px;
   width: calc(100% - 280px);
+  border-top: 1px solid #dee2e6;
 }
 
 /* Adjust margin and width when sidebar is collapsed */

@@ -43,6 +43,9 @@
 .contentArea {
   padding: 80px 30px 20px;
   flex: 1;
+  min-height: calc(
+    100vh - 60px - 120px
+  ); /* 헤더(60px)와 푸터(120px) 높이를 제외한 최소 높이 */
 }
 
 /* 사이드바 토글 버튼 */
