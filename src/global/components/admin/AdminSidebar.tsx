@@ -72,7 +72,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         },
       ],
     },
-    // ... other menu items from your original code ...
     {
       id: "orders",
       title: "주문/배송 관리",
@@ -204,7 +203,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const toggleMenu = (menuId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     if (isCollapsed) {
-      // In collapsed mode, don't toggle - it's handled by hover
+      // 축소 모드에서는 토글하지 않음 - 호버로 처리됨
       return;
     }
 
@@ -223,26 +222,32 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     return location.pathname.startsWith(link) && link !== "/admin";
   };
 
-  // Handle mouse enter for menu items when sidebar is collapsed
+  // 사이드바가 축소되었을 때 메뉴 항목에 마우스 오버 처리
   const handleMouseEnter = (menuId: string) => {
     if (isCollapsed) {
       setHoveredMenu(menuId);
     }
   };
 
-  // Handle click for menu items when sidebar is collapsed
+  // 사이드바가 축소되었을 때 메뉴 항목 클릭 처리
   const handleCollapsedMenuClick = (
     menuId: string,
     event: React.MouseEvent
   ) => {
-    if (isCollapsed && !expandedMenus.includes(menuId)) {
+    if (isCollapsed) {
       event.preventDefault();
       event.stopPropagation();
-      setHoveredMenu(menuId);
+
+      // 이미 선택된 메뉴를 다시 클릭하면 닫히도록 토글 기능 추가
+      if (hoveredMenu === menuId) {
+        setHoveredMenu(null);
+      } else {
+        setHoveredMenu(menuId);
+      }
     }
   };
 
-  // Handle mouse leave for menu items when sidebar is collapsed
+  // 사이드바가 축소되었을 때 메뉴 항목에서 마우스 아웃 처리
   const handleMouseLeave = () => {
     setHoveredMenu(null);
   };
@@ -328,7 +333,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     )}
                   </div>
 
-                  {/* Display submenus based on condition */}
+                  {/* 조건에 따라 하위 메뉴 표시 */}
                   {((!isCollapsed && expandedMenus.includes(item.id)) ||
                     (isCollapsed && hoveredMenu === item.id)) && (
                     <ul
@@ -369,7 +374,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                       <span className={styles.menuTitle}>{item.title}</span>
                     )}
                   </Link>
-                  {/* Display tooltip for collapsed sidebar */}
+                  {/* 축소된 사이드바를 위한 툴팁 표시 */}
                   {isCollapsed && hoveredMenu === item.id && (
                     <div className={styles.tooltip}>{item.title}</div>
                   )}

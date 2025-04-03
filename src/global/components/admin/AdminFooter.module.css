@@ -4,14 +4,14 @@
   margin-top: auto;
   transition: all 0.3s ease;
   font-size: 13px;
-  margin-left: 280px;
+  /* margin-left: 280px; */
   width: calc(100% - 280px);
   border-top: 1px solid #dee2e6;
 }
 
 /* Adjust margin and width when sidebar is collapsed */
 .adminFooter.collapsed {
-  margin-left: 70px;
+  /* margin-left: 70px; */
   width: calc(100% - 70px);
 }
 
