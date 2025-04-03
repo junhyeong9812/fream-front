@@ -101,10 +101,121 @@
   display: none;
 }
 
-/* 다크 테마 전역 설정 */
+/* 하위 메뉴 모달 컨테이너 */
+.submenuModalContainer {
+  position: fixed;
+  z-index: 1500;
+}
+
+/* 하위 메뉴 모달 */
+.submenuModal {
+  width: 220px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: 1px solid #e6e9ec;
+  position: relative;
+}
+
+.submenuModal::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  background-color: #fff;
+  transform: rotate(45deg);
+  border-left: 1px solid #e6e9ec;
+  border-bottom: 1px solid #e6e9ec;
+  z-index: -1;
+}
+
+.submenuModalHeader {
+  padding: 15px;
+  font-weight: 600;
+  color: #212529;
+  border-bottom: 1px solid #e6e9ec;
+  background-color: #f8f9fa;
+}
+
+.submenuModalList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Chrome, Safari, Opera를 위한 스크롤바 숨기기 */
+.submenuModalList::-webkit-scrollbar {
+  display: none;
+}
+
+/* IE, Edge, Firefox를 위한 스크롤바 숨기기 */
+.submenuModalList {
+  -ms-overflow-style: none; /* IE와 Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.submenuItem {
+  margin: 0;
+}
+
+.submenuLink {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-size: 13px;
+  color: #212529;
+  transition: all 0.2s ease;
+}
+
+.submenuLink:hover {
+  background-color: #e9ecef;
+}
+
+.submenuLink.active {
+  background-color: #e9ecef;
+  color: #0d6efd !important;
+}
+
+/* 다크 테마 스타일 */
 :global(.dark-theme) .adminLayout {
   background-color: #151521;
   color: #e6e9ec;
+}
+
+:global(.dark-theme) .submenuModal {
+  background-color: #1e1e2d;
+  border: 1px solid #2b2b40;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+:global(.dark-theme) .submenuModal::before {
+  background-color: #1e1e2d;
+  border-left: 1px solid #2b2b40;
+  border-bottom: 1px solid #2b2b40;
+}
+
+:global(.dark-theme) .submenuModalHeader {
+  color: #fff;
+  border-bottom: 1px solid #2b2b40;
+  background-color: #2b2b40;
+}
+
+:global(.dark-theme) .submenuLink {
+  color: #a2a3b7;
+}
+
+:global(.dark-theme) .submenuLink:hover {
+  background-color: #1b1b28;
+}
+
+:global(.dark-theme) .submenuLink.active {
+  background-color: #1b1b28;
+  color: #0d6efd !important;
 }
 
 /* 반응형 스타일 */
@@ -132,5 +243,24 @@
 
   .contentArea {
     padding: 80px 15px 15px;
+  }
+
+  .submenuModalContainer {
+    left: auto !important;
+    right: 20px;
+  }
+
+  .submenuModal::before {
+    left: auto;
+    right: -6px;
+    border-left: none;
+    border-right: 1px solid #e6e9ec;
+    border-bottom: 1px solid #e6e9ec;
+  }
+
+  :global(.dark-theme) .submenuModal::before {
+    border-left: none;
+    border-right: 1px solid #2b2b40;
+    border-bottom: 1px solid #2b2b40;
   }
 }

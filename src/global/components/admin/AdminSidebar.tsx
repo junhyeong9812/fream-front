@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FiChevronDown,
@@ -34,35 +34,26 @@ interface MenuItem {
 interface AdminSidebarProps {
   isCollapsed: boolean;
   toggleSidebar: () => void;
+  activeSubmenu: string | null;
+  onSubmenuActivate: (
+    menuId: string,
+    position: { top: number; left: number },
+    menuData: any
+  ) => void;
+  onSubmenuDeactivate: () => void;
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({
   isCollapsed,
   toggleSidebar,
+  activeSubmenu,
+  onSubmenuActivate,
+  onSubmenuDeactivate,
 }) => {
   const location = useLocation();
   const { theme } = useContext(ThemeContext);
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
-  const submenuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-
-  // 외부 클릭 감지를 위한 이벤트 리스너 추가
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        activeSubmenu &&
-        submenuRefs.current[activeSubmenu] &&
-        !submenuRefs.current[activeSubmenu]?.contains(event.target as Node)
-      ) {
-        setActiveSubmenu(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [activeSubmenu]);
+  const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   // 사이드바 메뉴 데이터
   const menuItems: MenuItem[] = [
@@ -242,11 +233,24 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   };
 
   // 축소 상태에서 하위 메뉴 토글 처리
-  const toggleSubmenu = (menuId: string, event: React.MouseEvent) => {
+  const toggleSubmenu = (
+    menuId: string,
+    item: MenuItem,
+    event: React.MouseEvent
+  ) => {
     event.preventDefault();
     event.stopPropagation();
 
-    setActiveSubmenu(activeSubmenu === menuId ? null : menuId);
+    const menuElement = menuRefs.current[menuId];
+    if (!menuElement) return;
+
+    const rect = menuElement.getBoundingClientRect();
+
+    if (activeSubmenu === menuId) {
+      onSubmenuDeactivate();
+    } else {
+      onSubmenuActivate(menuId, { top: rect.top, left: rect.left }, item);
+    }
   };
 
   return (
@@ -298,13 +302,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             >
               {item.submenus ? (
                 <div
-                  ref={(el) => (submenuRefs.current[item.id] = el)}
+                  ref={(el) => (menuRefs.current[item.id] = el)}
                   className={styles.submenuContainer}
                 >
                   <div
                     className={`${styles.menuHeader} ${
                       expandedMenus.includes(item.id) ? styles.expanded : ""
-                    }`}
+                    } ${activeSubmenu === item.id ? styles.activeSubmenu : ""}`}
                     onClick={(e) => toggleMenu(item.id, e)}
                   >
                     <div className={styles.menuIconAndTitle}>
@@ -316,7 +320,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     {isCollapsed ? (
                       <span
                         className={styles.collapsedExpandIcon}
-                        onClick={(e) => toggleSubmenu(item.id, e)}
+                        onClick={(e) => toggleSubmenu(item.id, item, e)}
                       >
                         <FiChevronRightIcon />
                       </span>
@@ -347,29 +351,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                         </li>
                       ))}
                     </ul>
-                  )}
-
-                  {/* 축소 모드에서의 모달 형태 하위 메뉴 */}
-                  {isCollapsed && activeSubmenu === item.id && (
-                    <div className={styles.submenuModal}>
-                      <div className={styles.submenuModalHeader}>
-                        {item.title}
-                      </div>
-                      <ul className={styles.submenuModalList}>
-                        {item.submenus.map((submenu) => (
-                          <li key={submenu.id} className={styles.submenuItem}>
-                            <Link
-                              to={submenu.link}
-                              className={`${styles.submenuLink} ${
-                                isActive(submenu.link) ? styles.active : ""
-                              }`}
-                            >
-                              {submenu.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
                   )}
                 </div>
               ) : (

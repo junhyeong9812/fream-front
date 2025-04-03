@@ -205,6 +205,14 @@
   position: relative;
 }
 
+.activeSubmenu {
+  background-color: #f0f7ff;
+}
+
+.dark .activeSubmenu {
+  background-color: #2b2b40;
+}
+
 .collapsedExpandIcon {
   font-size: 14px;
   color: #6c757d;
@@ -331,79 +339,6 @@
   background-color: #2b2b40;
 }
 
-/* 축소 모드에서의 모달 형태 서브메뉴 */
-.submenuModal {
-  position: absolute;
-  left: 65px;
-  top: 0;
-  width: 220px;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  z-index: 1500;
-  overflow: hidden;
-  border: 1px solid #e6e9ec;
-}
-
-.dark .submenuModal {
-  background-color: #1e1e2d;
-  border: 1px solid #2b2b40;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-}
-
-.submenuModal::before {
-  content: "";
-  position: absolute;
-  top: 15px;
-  left: -6px;
-  width: 12px;
-  height: 12px;
-  background-color: #fff;
-  transform: rotate(45deg);
-  border-left: 1px solid #e6e9ec;
-  border-bottom: 1px solid #e6e9ec;
-  z-index: -1;
-}
-
-.dark .submenuModal::before {
-  background-color: #1e1e2d;
-  border-left: 1px solid #2b2b40;
-  border-bottom: 1px solid #2b2b40;
-}
-
-.submenuModalHeader {
-  padding: 15px;
-  font-weight: 600;
-  color: #212529;
-  border-bottom: 1px solid #e6e9ec;
-  background-color: #f8f9fa;
-}
-
-.dark .submenuModalHeader {
-  color: #fff;
-  border-bottom: 1px solid #2b2b40;
-  background-color: #2b2b40;
-}
-
-.submenuModalList {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-/* Chrome, Safari, Opera를 위한 스크롤바 숨기기 */
-.submenuModalList::-webkit-scrollbar {
-  display: none;
-}
-
-/* IE, Edge, Firefox를 위한 스크롤바 숨기기 */
-.submenuModalList {
-  -ms-overflow-style: none; /* IE와 Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
 .submenuItem {
   margin: 0;
 }
@@ -464,14 +399,5 @@
 
   .adminRole {
     font-size: 11px;
-  }
-
-  .submenuModal {
-    left: auto;
-    right: -220px;
-  }
-
-  .submenuModal::before {
-    left: -5px;
   }
 }

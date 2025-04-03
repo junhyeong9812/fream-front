@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import AdminHeader from "./AdminHeader";
 import AdminSidebar from "./AdminSidebar";
 import AdminFooter from "./AdminFooter";
 import { ThemeProvider } from "src/global/context/ThemeContext";
 import styles from "./AdminLayout.module.css";
+
+interface SubmenuPosition {
+  top: number;
+  left: number;
+}
 
 const AdminLayout: React.FC = () => {
   const location = useLocation();
@@ -15,6 +20,14 @@ const AdminLayout: React.FC = () => {
     const savedState = localStorage.getItem("sidebarCollapsed");
     return savedState === "true";
   });
+
+  // 하위 메뉴 모달 상태 관리
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+  const [submenuPosition, setSubmenuPosition] = useState<SubmenuPosition>({
+    top: 0,
+    left: 0,
+  });
+  const [activeSubmenuData, setActiveSubmenuData] = useState<any>(null);
 
   // 모바일 화면 감지 및 사이드바 상태 관리
   useEffect(() => {
@@ -48,6 +61,36 @@ const AdminLayout: React.FC = () => {
     };
   }, []);
 
+  // 페이지 이동 시 모달 닫기
+  useEffect(() => {
+    setActiveSubmenu(null);
+  }, [location.pathname]);
+
+  // 외부 클릭 시 모달 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const modalElement = document.getElementById("submenu-modal-container");
+      const target = event.target as Node;
+
+      if (activeSubmenu && modalElement && !modalElement.contains(target)) {
+        // 사이드바 내부의 화살표 버튼 클릭은 무시 (이미 토글 처리됨)
+        const sidebarElement = document.querySelector(
+          `.${styles.adminSidebar}`
+        );
+        if (sidebarElement && sidebarElement.contains(target)) {
+          return;
+        }
+
+        setActiveSubmenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [activeSubmenu, styles.adminSidebar]);
+
   // 모바일에서 사이드바 토글 함수
   const toggleMobileSidebar = () => {
     setSidebarOpen((prev) => !prev);
@@ -59,6 +102,41 @@ const AdminLayout: React.FC = () => {
     setSidebarCollapsed(newState);
     // Save preference to localStorage
     localStorage.setItem("sidebarCollapsed", String(newState));
+    // 축소/확장 시 하위 메뉴 모달 닫기
+    setActiveSubmenu(null);
+  };
+
+  // 하위 메뉴 활성화 함수
+  const handleSubmenuActivate = (
+    menuId: string,
+    position: SubmenuPosition,
+    menuData: any
+  ) => {
+    setActiveSubmenu(menuId);
+    setSubmenuPosition(position);
+    setActiveSubmenuData(menuData);
+  };
+
+  // 하위 메뉴 비활성화 함수
+  const handleSubmenuDeactivate = () => {
+    setActiveSubmenu(null);
+  };
+
+  // 모달 위치를 계산하는 함수
+  const calculateModalPosition = () => {
+    // 모바일에서는 다른 위치 계산
+    if (isMobile) {
+      return {
+        top: `${submenuPosition.top}px`,
+        left: "70px",
+      };
+    }
+
+    // 기본 위치 계산
+    return {
+      top: `${submenuPosition.top}px`,
+      left: isSidebarCollapsed ? "70px" : "280px",
+    };
   };
 
   return (
@@ -87,6 +165,9 @@ const AdminLayout: React.FC = () => {
           <AdminSidebar
             isCollapsed={isSidebarCollapsed}
             toggleSidebar={toggleSidebarCollapse}
+            activeSubmenu={activeSubmenu}
+            onSubmenuActivate={handleSubmenuActivate}
+            onSubmenuDeactivate={handleSubmenuDeactivate}
           />
           {/* 모바일에서 사이드바 오픈 시 오버레이 */}
           {isMobile && isSidebarOpen && (
@@ -109,9 +190,39 @@ const AdminLayout: React.FC = () => {
           </main>
           <AdminFooter isCollapsed={isSidebarCollapsed} />
         </div>
+
+        {/* 하위 메뉴 모달 (레이아웃 레벨에서 렌더링) */}
+        {activeSubmenu && activeSubmenuData && (
+          <div
+            id="submenu-modal-container"
+            className={styles.submenuModalContainer}
+            style={calculateModalPosition()}
+          >
+            <div className={styles.submenuModal}>
+              <div className={styles.submenuModalHeader}>
+                {activeSubmenuData.title}
+              </div>
+              <ul className={styles.submenuModalList}>
+                {activeSubmenuData.submenus.map((submenu: any) => (
+                  <li key={submenu.id} className={styles.submenuItem}>
+                    <Link
+                      to={submenu.link}
+                      className={`${styles.submenuLink} ${
+                        location.pathname.startsWith(submenu.link)
+                          ? styles.active
+                          : ""
+                      }`}
+                      onClick={handleSubmenuDeactivate}
+                    >
+                      {submenu.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
     </ThemeProvider>
   );
 };
-
-export default AdminLayout;
