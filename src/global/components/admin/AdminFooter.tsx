@@ -3,13 +3,19 @@ import { Link } from "react-router-dom";
 import styles from "./AdminFooter.module.css";
 import { ThemeContext } from "src/global/context/ThemeContext";
 
-const AdminFooter: React.FC = () => {
+interface AdminFooterProps {
+  isCollapsed: boolean;
+}
+
+const AdminFooter: React.FC<AdminFooterProps> = ({ isCollapsed }) => {
   const { theme } = useContext(ThemeContext);
   const currentYear = new Date().getFullYear();
 
   return (
     <footer
-      className={`${styles.adminFooter} ${theme === "dark" ? styles.dark : ""}`}
+      className={`${styles.adminFooter} ${
+        theme === "dark" ? styles.dark : ""
+      } ${isCollapsed ? styles.collapsed : ""}`}
     >
       <div className={styles.footerContent}>
         <div className={styles.footerLinks}>

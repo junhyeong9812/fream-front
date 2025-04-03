@@ -25,6 +25,12 @@
   transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
+/* When sidebar is collapsed */
+.mainContent.sidebarCollapsed {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
 /* 사이드바 래퍼 */
 .sidebarWrapper {
   position: fixed;

@@ -11,6 +11,12 @@
   flex-direction: column;
   transition: all 0.3s ease;
   overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Collapsed sidebar */
+.adminSidebar.collapsed {
+  width: 70px;
 }
 
 .adminSidebar.dark {
@@ -22,10 +28,11 @@
 .logoContainer {
   padding: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #e6e9ec;
   height: 60px;
+  position: relative;
 }
 
 .dark .logoContainer {
@@ -46,6 +53,11 @@
   text-transform: uppercase;
   color: #212529;
   position: relative;
+  transition: font-size 0.3s ease;
+}
+
+.collapsed .logoText {
+  font-size: 22px;
 }
 
 .dark .logoText {
@@ -61,6 +73,35 @@
   padding: 2px 6px;
   border-radius: 4px;
   color: #fff;
+}
+
+.collapseButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.collapseButton:hover {
+  color: #0d6efd;
+  background-color: #f8f9fa;
+}
+
+.dark .collapseButton {
+  color: #a2a3b7;
+}
+
+.dark .collapseButton:hover {
+  color: #0d6efd;
+  background-color: #2b2b40;
 }
 
 .profileContainer {
@@ -123,6 +164,17 @@
   overflow-y: auto;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.navigation::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.navigation {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .menuList {
   list-style-type: none;
   padding: 0;
@@ -131,6 +183,7 @@
 
 .menuItem {
   margin-bottom: 5px;
+  position: relative;
 }
 
 .menuHeader {
@@ -140,6 +193,11 @@
   padding: 12px 20px;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.collapsed .menuHeader {
+  padding: 12px;
+  justify-content: center;
 }
 
 .menuHeader:hover,
@@ -163,6 +221,8 @@
   align-items: center;
   font-size: 18px;
   color: #6c757d;
+  min-width: 20px;
+  justify-content: center;
 }
 
 .dark .menuIcon {
@@ -173,6 +233,7 @@
   font-size: 14px;
   font-weight: 500;
   color: #212529;
+  white-space: nowrap;
 }
 
 .dark .menuTitle {
@@ -203,6 +264,11 @@
   transition: all 0.2s ease;
 }
 
+.collapsed .menuLink {
+  padding: 12px;
+  justify-content: center;
+}
+
 .submenuList {
   list-style-type: none;
   padding: 0;
@@ -210,10 +276,81 @@
   background-color: #f8f9fa;
   border-radius: 4px;
   overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.submenuList::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.submenuList {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .dark .submenuList {
   background-color: #2b2b40;
+}
+
+/* Floating menu for collapsed sidebar */
+.floatingMenu {
+  position: absolute;
+  left: 70px;
+  top: 0;
+  width: 200px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  background-color: #fff;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.dark .floatingMenu {
+  background-color: #1e1e2d;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.floatingMenuTitle {
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #212529;
+  border-bottom: 1px solid #e6e9ec;
+}
+
+.dark .floatingMenuTitle {
+  color: #fff;
+  border-bottom: 1px solid #2b2b40;
+}
+
+/* Tooltip for collapsed sidebar */
+.tooltip {
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  transform: translateY(-50%);
+  border-width: 6px 6px 6px 0;
+  border-style: solid;
+  border-color: transparent #333 transparent transparent;
 }
 
 .submenuItem {
@@ -227,6 +364,10 @@
   font-size: 13px;
   color: #212529;
   transition: all 0.2s ease;
+}
+
+.floatingMenu .submenuLink {
+  padding: 10px 20px;
 }
 
 .dark .submenuLink {

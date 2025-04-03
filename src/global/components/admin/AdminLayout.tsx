@@ -3,22 +3,32 @@ import { Outlet, useLocation } from "react-router-dom";
 import AdminHeader from "./AdminHeader";
 import AdminSidebar from "./AdminSidebar";
 import AdminFooter from "./AdminFooter";
-import { ThemeProvider } from "../../context/ThemeContext";
+import { ThemeProvider } from "src/global/context/ThemeContext";
 import styles from "./AdminLayout.module.css";
 
 const AdminLayout: React.FC = () => {
   const location = useLocation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // 모바일 화면 감지
+  // 모바일 화면 감지 및 사이드바 상태 관리
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      if (window.innerWidth <= 768) {
+      const isMobileView = window.innerWidth <= 768;
+      setIsMobile(isMobileView);
+
+      if (isMobileView) {
         setSidebarOpen(false);
+        // On mobile, always show the full sidebar when opened
+        setSidebarCollapsed(false);
       } else {
         setSidebarOpen(true);
+        // Restore sidebar state from localStorage on desktop
+        const savedCollapseState = localStorage.getItem("sidebarCollapsed");
+        if (savedCollapseState !== null) {
+          setSidebarCollapsed(savedCollapseState === "true");
+        }
       }
     };
 
@@ -34,9 +44,17 @@ const AdminLayout: React.FC = () => {
     };
   }, []);
 
-  // 사이드바 토글 함수
-  const toggleSidebar = () => {
+  // 모바일에서 사이드바 토글 함수
+  const toggleMobileSidebar = () => {
     setSidebarOpen((prev) => !prev);
+  };
+
+  // 사이드바 확장/축소 토글 함수
+  const toggleSidebarCollapse = () => {
+    const newState = !isSidebarCollapsed;
+    setSidebarCollapsed(newState);
+    // Save preference to localStorage
+    localStorage.setItem("sidebarCollapsed", String(newState));
   };
 
   return (
@@ -48,7 +66,7 @@ const AdminLayout: React.FC = () => {
             className={`${styles.sidebarToggle} ${
               isSidebarOpen ? styles.open : ""
             }`}
-            onClick={toggleSidebar}
+            onClick={toggleMobileSidebar}
           >
             <span></span>
             <span></span>
@@ -62,7 +80,10 @@ const AdminLayout: React.FC = () => {
             isSidebarOpen ? styles.open : ""
           }`}
         >
-          <AdminSidebar />
+          <AdminSidebar
+            isCollapsed={isSidebarCollapsed}
+            toggleSidebar={toggleSidebarCollapse}
+          />
           {/* 모바일에서 사이드바 오픈 시 오버레이 */}
           {isMobile && isSidebarOpen && (
             <div
@@ -73,12 +94,16 @@ const AdminLayout: React.FC = () => {
         </div>
 
         {/* 메인 콘텐츠 영역 */}
-        <div className={styles.mainContent}>
+        <div
+          className={`${styles.mainContent} ${
+            isSidebarCollapsed ? styles.sidebarCollapsed : ""
+          }`}
+        >
           <AdminHeader />
           <main className={styles.contentArea}>
             <Outlet />
           </main>
-          <AdminFooter />
+          <AdminFooter isCollapsed={isSidebarCollapsed} />
         </div>
       </div>
     </ThemeProvider>
