@@ -24,6 +24,7 @@ import {
 import styles from "./shopPage.module.css";
 import FilterModal from "../components/filterModal";
 import PopularityModal from "../components/popularityModal";
+import ShopTabs from "../components/ShopTabs";
 
 const ShopPage: React.FC = () => {
   const location = useLocation();
@@ -47,6 +48,7 @@ const ShopPage: React.FC = () => {
   // 상품 데이터 상태
   const [productData, setProductData] = useState<ImageData[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>("all");
+  const [activeTabFilterValue, setActiveTabFilterValue] = useState<string>("");
 
   // 페이징 상태
   const [page, setPage] = useState<number>(1);
@@ -100,25 +102,6 @@ const ShopPage: React.FC = () => {
   const totalSlidePage = Math.ceil(SLIDE_DATA.length / itemsPerPage);
   const offset = (slidePage - 1) * itemsPerPage;
   const currentPageData = SLIDE_DATA.slice(offset, offset + itemsPerPage);
-
-  // 탭 데이터
-  const TAB_MENU_DATA = [
-    { id: "all", label: "전체", filterValue: "" },
-    { id: "luxury", label: "럭셔리", filterValue: "43" },
-    { id: "outer", label: "아우터", filterValue: "49" },
-    { id: "tops", label: "상의", filterValue: "50" },
-    { id: "shoes", label: "신발", filterValue: "44" },
-    { id: "pants", label: "하의", filterValue: "51" },
-    { id: "bag", label: "가방", filterValue: "63" },
-    { id: "wallet", label: "지갑", filterValue: "53" },
-    { id: "watch", label: "시계", filterValue: "64" },
-    { id: "accessory", label: "패션잡화", filterValue: "46" },
-    { id: "collectible", label: "컬렉터블", filterValue: "54" },
-    { id: "beauty", label: "뷰티", filterValue: "65" },
-    { id: "tech", label: "테크", filterValue: "48" },
-    { id: "camping", label: "캠핑", filterValue: "66" },
-    { id: "living", label: "가구/리빙", filterValue: "55" },
-  ];
 
   // URL 쿼리 파라미터에서 필터 초기화 로직 (컴포넌트 마운트 시 실행)
   useEffect(() => {
@@ -191,7 +174,7 @@ const ShopPage: React.FC = () => {
 
     // URL에 탭 ID가 있으면 해당 탭 활성화
     const tabParam = searchParams.get("tab");
-    if (tabParam && TAB_MENU_DATA.some((tab) => tab.id === tabParam)) {
+    if (tabParam) {
       setActiveTabId(tabParam);
     }
   }, [searchParams]); // 컴포넌트 마운트 시와 URL 변경 시 실행
@@ -235,29 +218,15 @@ const ShopPage: React.FC = () => {
         };
 
         // 카테고리 필터 추가
-        if (activeTabId !== "all") {
-          const activeTab = TAB_MENU_DATA.find((tab) => tab.id === activeTabId);
-          if (activeTab && activeTab.filterValue) {
+        if (activeTabId !== "all" && activeTabFilterValue) {
+          const categoryId = parseInt(activeTabFilterValue, 10);
+          if (!isNaN(categoryId)) {
             filterPayload.categoryIds = filterPayload.categoryIds || [];
-
-            // 중복 필터 방지 - 이미 카테고리 ID가 있는지 확인
-            const categoryId = parseInt(activeTab.filterValue, 10);
             if (!filterPayload.categoryIds.includes(categoryId)) {
               filterPayload.categoryIds.push(categoryId);
             }
           }
         }
-
-        // 백엔드에서 아직 지원하지 않는 필터들 주석 처리
-
-        // 배송 옵션 추가 (백엔드에서 지원하지 않음)
-        // if (clickedButton) {
-        //   filterPayload.deliveryOption = clickedButton;
-        // }
-
-        // 추가 필터 옵션 추가 (백엔드에서 지원하지 않음)
-        // filterPayload.isBelowOriginalPrice = additionalFilters.isBelowOriginalPrice;
-        // filterPayload.isExcludeSoldOut = additionalFilters.isExcludeSoldOut;
 
         // 상품 가져오기
         const result = await fetchShopData(
@@ -269,8 +238,6 @@ const ShopPage: React.FC = () => {
 
         // 첫 페이지면 데이터 교체, 아니면 추가
         if (pageToLoad === 1) {
-          // setProductData(result.content);
-          // setIsFilterChanged(false);
           setProductData([]); // 강제 초기화 추가
           setTimeout(() => {
             setProductData(result.content);
@@ -293,6 +260,7 @@ const ShopPage: React.FC = () => {
       appliedFilters,
       searchParams,
       activeTabId,
+      activeTabFilterValue,
       selectedSortOption,
       totalPages,
       isFilterChanged,
@@ -315,6 +283,7 @@ const ShopPage: React.FC = () => {
   }, [
     appliedFilters,
     activeTabId,
+    activeTabFilterValue,
     selectedSortOption,
     location.state,
     searchParams,
@@ -324,11 +293,6 @@ const ShopPage: React.FC = () => {
   const handleDeliveryButtonClick = async (buttonLabel: string) => {
     const newValue = clickedButton === buttonLabel ? null : buttonLabel;
     setClickedButton(newValue);
-
-    // 백엔드에서 지원하지 않는 API 호출 주석 처리
-    // if (newValue) {
-    //   await setDeliveryOption(newValue);
-    // }
   };
 
   // 추가 필터 토글 핸들러
@@ -341,9 +305,6 @@ const ShopPage: React.FC = () => {
     };
 
     setAdditionalFilters(newFilters);
-
-    // 백엔드에서 지원하지 않는 API 호출 주석 처리
-    // await setAdditionalFilters(newFilters);
 
     // 필터 변경시 첫 페이지부터 다시 로드하도록 상태 초기화
     setPage(1);
@@ -432,8 +393,9 @@ const ShopPage: React.FC = () => {
   };
 
   // 탭 클릭 핸들러
-  const handleTabClick = (tabId: string) => {
+  const handleTabClick = (tabId: string, filterValue: string) => {
     setActiveTabId(tabId);
+    setActiveTabFilterValue(filterValue);
 
     // 탭 변경 시 URL 파라미터에 탭 ID 추가
     const newParams = new URLSearchParams(searchParams);
@@ -466,25 +428,8 @@ const ShopPage: React.FC = () => {
           <h1 className={styles.titleText}>SHOP</h1>
         </div>
 
-        {/* Navigation tabs */}
-        <nav className={styles.shopTab} style={{ top: `${headerHeight}px` }}>
-          <div className={styles.tabs}>
-            <ul className={styles.ulTab}>
-              {TAB_MENU_DATA.map((menu) => (
-                <li key={menu.id} className={styles.liTab}>
-                  <a
-                    className={`${styles.tabLink} ${
-                      activeTabId === menu.id ? styles.tabLinkActive : ""
-                    }`}
-                    onClick={() => handleTabClick(menu.id)}
-                  >
-                    {menu.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
+        {/* Navigation tabs - Using ShopTabs component */}
+        <ShopTabs activeTabId={activeTabId} onTabClick={handleTabClick} />
 
         {/* Trend keywords slider */}
         <div className={styles.trendContainer}>

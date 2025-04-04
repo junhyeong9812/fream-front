@@ -1,0 +1,79 @@
+/* 네비게이션 탭 */
+.shopTab {
+  background: #fff;
+  position: sticky;
+  padding-left: 40px;
+  padding-right: 40px;
+  z-index: 1;
+}
+
+@media (min-width: 961px) {
+  .shopTab {
+    z-index: 2;
+  }
+}
+
+.tabs {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.ulTab {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 45px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  margin: 0;
+  list-style-type: none;
+}
+
+.liTab {
+  display: inline-flex;
+  padding: 0 12px 0 0;
+}
+
+.tabLink {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding-top: 15px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+  color: #999;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+}
+
+.tabLink::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 1;
+}
+
+.tabLinkActive::after {
+  background-color: #222;
+}
+
+.tabLinkActive {
+  color: #222;
+  border-bottom-color: #222;
+  font-weight: 700;
+}
