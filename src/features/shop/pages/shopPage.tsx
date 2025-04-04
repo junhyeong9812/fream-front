@@ -269,7 +269,12 @@ const ShopPage: React.FC = () => {
 
         // 첫 페이지면 데이터 교체, 아니면 추가
         if (pageToLoad === 1) {
-          setProductData(result.content);
+          // setProductData(result.content);
+          // setIsFilterChanged(false);
+          setProductData([]); // 강제 초기화 추가
+          setTimeout(() => {
+            setProductData(result.content);
+          }, 0);
           setIsFilterChanged(false);
         } else {
           setProductData((prev) => [...prev, ...result.content]);
