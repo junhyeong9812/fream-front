@@ -62,6 +62,7 @@ const ShopPage: React.FC = () => {
   const [appliedFilters, setAppliedFilters] = useState<SelectedFiltersPayload>(
     {}
   );
+  const [isFilterChanged, setIsFilterChanged] = useState(false);
 
   // 예시 데이터
   const categories = [
@@ -269,6 +270,7 @@ const ShopPage: React.FC = () => {
         // 첫 페이지면 데이터 교체, 아니면 추가
         if (pageToLoad === 1) {
           setProductData(result.content);
+          setIsFilterChanged(false);
         } else {
           setProductData((prev) => [...prev, ...result.content]);
         }
@@ -282,7 +284,14 @@ const ShopPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [appliedFilters, searchParams, activeTabId, selectedSortOption, totalPages]
+    [
+      appliedFilters,
+      searchParams,
+      activeTabId,
+      selectedSortOption,
+      totalPages,
+      isFilterChanged,
+    ]
   );
 
   // 페이지 변경시 상품 로드
@@ -294,6 +303,9 @@ const ShopPage: React.FC = () => {
   useEffect(() => {
     setPage(1);
     setHasMore(true);
+    if (Object.keys(appliedFilters).length > 0) {
+      setIsFilterChanged(true);
+    }
     loadProducts(1);
   }, [
     appliedFilters,
@@ -350,11 +362,11 @@ const ShopPage: React.FC = () => {
 
   // 필터 적용 핸들러
   const handleApplyFilters = (filters: SelectedFiltersPayload) => {
+    setIsFilterChanged(true);
     setAppliedFilters(filters);
 
     const newParams = new URLSearchParams(searchParams);
 
-    // 기존 필터 파라미터 제거
     [
       "categoryIds",
       "brandIds",
@@ -368,7 +380,6 @@ const ShopPage: React.FC = () => {
       newParams.delete(param);
     });
 
-    // 새 필터 파라미터 추가
     if (filters.categoryIds?.length) {
       newParams.set("categoryIds", filters.categoryIds.join(","));
     }
@@ -406,6 +417,7 @@ const ShopPage: React.FC = () => {
     // 필터 변경 시 첫 페이지부터 다시 로드하도록 상태 초기화
     setPage(1);
     setHasMore(true);
+    window.scrollTo(0, 0);
     // loadProducts(1)은 useEffect를 통해 실행됨
   };
 
