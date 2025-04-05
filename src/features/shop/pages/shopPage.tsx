@@ -25,6 +25,7 @@ import styles from "./shopPage.module.css";
 import FilterModal from "../components/filterModal";
 import PopularityModal from "../components/popularityModal";
 import ShopTabs from "../components/ShopTabs";
+import { fetchFilterData } from "../services/filterService";
 
 const ShopPage: React.FC = () => {
   const location = useLocation();
@@ -60,6 +61,11 @@ const ShopPage: React.FC = () => {
   const [slidePage, setSlidePage] = useState<number>(1);
   const itemsPerPage = 9;
 
+  // 동적 슬라이드 데이터 상태 추가
+  const [slideData, setSlideData] = useState<
+    Array<{ id: number; imgUrl: string; name: string }>
+  >([]);
+
   // 필터 상태
   const [appliedFilters, setAppliedFilters] = useState<SelectedFiltersPayload>(
     {}
@@ -83,25 +89,59 @@ const ShopPage: React.FC = () => {
   ];
 
   // 슬라이드 데이터
-  const SLIDE_DATA = [
-    { id: 1, imgUrl: "https://via.placeholder.com/90", name: "패딩 계급도" },
-    { id: 2, imgUrl: "https://via.placeholder.com/90", name: "올해의 신발?" },
-    { id: 3, imgUrl: "https://via.placeholder.com/90", name: "푸른 뱀의 해" },
-    { id: 4, imgUrl: "https://via.placeholder.com/90", name: "어그 총정리" },
-    { id: 5, imgUrl: "https://via.placeholder.com/90", name: "인기 니트" },
-    { id: 6, imgUrl: "https://via.placeholder.com/90", name: "인기 후드" },
-    { id: 7, imgUrl: "https://via.placeholder.com/90", name: "인기 맨투맨" },
-    { id: 8, imgUrl: "https://via.placeholder.com/90", name: "나이키" },
-    { id: 9, imgUrl: "https://via.placeholder.com/90", name: "아디다스" },
-    { id: 10, imgUrl: "https://via.placeholder.com/90", name: "아식스" },
-    { id: 11, imgUrl: "https://via.placeholder.com/90", name: "베이프" },
-    { id: 12, imgUrl: "https://via.placeholder.com/90", name: "살로몬" },
-  ];
+  useEffect(() => {
+    const loadBrandData = async () => {
+      try {
+        const filterData = await fetchFilterData();
+
+        if (filterData.brands && filterData.brands.length > 0) {
+          // 브랜드 데이터를 기반으로 슬라이드 데이터 생성
+          const newSlideData = filterData.brands.map((brand) => ({
+            id: brand.id,
+            // 브랜드 값을 사용하여 이미지 경로 생성 (public/brand 폴더 아래 Nike.png 형식)
+            imgUrl: `/brand/${brand.value}.png`,
+            name: brand.label,
+          }));
+
+          setSlideData(newSlideData);
+        }
+      } catch (error) {
+        console.error("브랜드 데이터 로드 실패:", error);
+        // 오류 발생 시 기본 데이터 사용
+        setSlideData([]);
+      }
+    };
+
+    loadBrandData();
+  }, []);
 
   // 슬라이드 페이지네이션 계산
-  const totalSlidePage = Math.ceil(SLIDE_DATA.length / itemsPerPage);
+  const totalSlidePage = Math.ceil(slideData.length / itemsPerPage);
   const offset = (slidePage - 1) * itemsPerPage;
-  const currentPageData = SLIDE_DATA.slice(offset, offset + itemsPerPage);
+  const currentPageData = slideData.slice(offset, offset + itemsPerPage);
+
+  // 슬라이드 아이템 클릭 핸들러 추가
+  const handleSlideItemClick = (item: {
+    id: number;
+    imgUrl: string;
+    name: string;
+  }) => {
+    // 브랜드 ID로 검색 필터 설정
+    const newFilters = {
+      ...appliedFilters,
+      brandIds: [item.id],
+    };
+
+    setAppliedFilters(newFilters);
+
+    // URL 파라미터 업데이트
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("brandIds", item.id.toString());
+    setSearchParams(newParams);
+
+    // 페이지 상단으로 스크롤
+    window.scrollTo(0, 0);
+  };
 
   // URL 쿼리 파라미터에서 필터 초기화 로직 (컴포넌트 마운트 시 실행)
   useEffect(() => {
