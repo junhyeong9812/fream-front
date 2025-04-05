@@ -481,6 +481,7 @@ const ShopPage: React.FC = () => {
                     key={item.id}
                     className={styles.trendingKeywordSlide}
                     style={{ width: "133.333px" }}
+                    onClick={() => handleSlideItemClick(item)}
                   >
                     <a style={{ userSelect: "none", touchAction: "pan-y" }}>
                       <div className={styles.trendKeyword}>
