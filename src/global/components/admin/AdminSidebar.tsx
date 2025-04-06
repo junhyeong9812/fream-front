@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FiChevronDown,
@@ -18,18 +18,9 @@ import {
 } from "react-icons/fi";
 import styles from "./AdminSidebar.module.css";
 import { ThemeContext } from "src/global/context/ThemeContext";
-
-interface MenuItem {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  link?: string;
-  submenus?: Array<{
-    id: string;
-    title: string;
-    link: string;
-  }>;
-}
+import { fetchAdminProfileInfo } from "./services/sidebarService";
+import { MenuItem, AdminProfileInfo } from "./types/sidebarTypes";
+import { useAdminAuth } from "src/global/context/AdminAuthContext";
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
@@ -52,8 +43,30 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 }) => {
   const location = useLocation();
   const { theme } = useContext(ThemeContext);
+  const { isAdminLoggedIn } = useAdminAuth();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+  const [profileInfo, setProfileInfo] = useState<AdminProfileInfo | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(true);
   const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // 관리자 프로필 정보 가져오기
+  useEffect(() => {
+    const getProfileInfo = async () => {
+      if (isAdminLoggedIn) {
+        try {
+          setIsLoadingProfile(true);
+          const data = await fetchAdminProfileInfo();
+          setProfileInfo(data);
+        } catch (error) {
+          console.error("프로필 정보 로딩 중 오류:", error);
+        } finally {
+          setIsLoadingProfile(false);
+        }
+      }
+    };
+
+    getProfileInfo();
+  }, [isAdminLoggedIn]);
 
   // 사이드바 메뉴 데이터
   const menuItems: MenuItem[] = [
@@ -258,6 +271,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     }
   };
 
+  // 이미지 로드 오류 처리
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
+    e.currentTarget.src = "https://via.placeholder.com/150";
+  };
+
   return (
     <div
       className={`${styles.adminSidebar} ${
@@ -281,16 +301,24 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       {!isCollapsed && (
         <div className={styles.profileContainer}>
           <div className={styles.profileImage}>
-            <img
-              src="/admin-avatar.png"
-              alt="Admin"
-              onError={(e) => {
-                e.currentTarget.src = "https://via.placeholder.com/150";
-              }}
-            />
+            {isLoadingProfile ? (
+              <div className={styles.profileImagePlaceholder}></div>
+            ) : (
+              <img
+                src={
+                  profileInfo?.profileImage || "https://via.placeholder.com/150"
+                }
+                alt="Admin"
+                onError={handleImageError}
+              />
+            )}
           </div>
           <div className={styles.profileInfo}>
-            <div className={styles.adminName}>관리자</div>
+            <div className={styles.adminName}>
+              {isLoadingProfile
+                ? "로딩 중..."
+                : profileInfo?.realName || "관리자"}
+            </div>
             <div className={styles.adminRole}>시스템 관리자</div>
           </div>
         </div>
