@@ -34,14 +34,14 @@ export const fetchAdminLoginData = async (
     // 서버 응답이 성공이면 로그인 상태 저장
     if (response.status === 200) {
       console.log("adminAuthService: 로그인 성공");
-      
-      // 로그인 상태 저장
+
+      // 로그인 상태 저장 - 액세스 토큰과 동일한 30분으로 설정
       const loginStatus: AdminLoginStatus = {
         value: "true",
-        expire: Date.now() + 24 * 60 * 60 * 1000, // 24시간 (리프레시 토큰의 만료시간과 일치)
+        expire: Date.now() + 30 * 60 * 1000, // 30분
       };
       localStorage.setItem(ADMIN_LOGIN_STATUS_KEY, JSON.stringify(loginStatus));
-      
+
       return "yes";
     }
 
@@ -91,14 +91,14 @@ export const checkAdminLoginStatus = async (): Promise<boolean> => {
     // 이전 방식 (문자열로만 저장된 경우) 처리
     if (loginDataStr === "true") {
       console.log("adminAuthService: 이전 방식 로그인 정보 확인");
-      
-      // 업데이트된 형식으로 저장
+
+      // 업데이트된 형식으로 저장 - 30분 설정
       const loginStatus: AdminLoginStatus = {
         value: "true",
-        expire: Date.now() + 24 * 60 * 60 * 1000, // 24시간
+        expire: Date.now() + 30 * 60 * 1000, // 30분
       };
       localStorage.setItem(ADMIN_LOGIN_STATUS_KEY, JSON.stringify(loginStatus));
-      
+
       return true;
     }
 
@@ -113,8 +113,16 @@ export const checkAdminLoginStatus = async (): Promise<boolean> => {
 
     // 만료 시간이 지났는지 확인
     if (loginData.expire <= Date.now() || loginData.value !== "true") {
-      console.log("adminAuthService: 로그인 상태 만료됨");
-      return false;
+      console.log("adminAuthService: 로그인 상태 만료됨, 리프레시 시도");
+
+      // 리프레시 토큰으로 액세스 토큰 갱신 시도
+      try {
+        const refreshed = await refreshAdminToken();
+        return refreshed; // 리프레시 성공 여부 반환
+      } catch (error) {
+        console.log("adminAuthService: 토큰 갱신 실패");
+        return false;
+      }
     }
 
     console.log("adminAuthService: 로그인 상태 유효함");
@@ -134,7 +142,9 @@ export const isAdminTokenValid = async (): Promise<boolean> => {
     // 토큰 유효성 확인 API 호출
     console.log("adminAuthService: 토큰 유효성 확인 API 호출");
     const response = await apiClient.get("/admin/auth/check");
-    console.log("adminAuthService: 토큰 유효성 확인 성공", { status: response.status });
+    console.log("adminAuthService: 토큰 유효성 확인 성공", {
+      status: response.status,
+    });
     return response.status === 200;
   } catch (error) {
     console.log("adminAuthService: 토큰 유효성 확인 실패", error);
@@ -153,19 +163,19 @@ export const refreshAdminToken = async (): Promise<boolean> => {
     const response = await apiClient.post("/admin/auth/refresh");
 
     console.log("adminAuthService: 토큰 갱신 응답 받음", {
-      status: response.status
+      status: response.status,
     });
 
     if (response.status === 200) {
       console.log("adminAuthService: 토큰 갱신 성공");
-      
-      // 로그인 상태 갱신
+
+      // 로그인 상태 갱신 - 액세스 토큰과 동일한 30분으로 설정
       const loginStatus: AdminLoginStatus = {
         value: "true",
-        expire: Date.now() + 24 * 60 * 60 * 1000, // 24시간
+        expire: Date.now() + 30 * 60 * 1000, // 30분
       };
       localStorage.setItem(ADMIN_LOGIN_STATUS_KEY, JSON.stringify(loginStatus));
-      
+
       return true;
     }
 

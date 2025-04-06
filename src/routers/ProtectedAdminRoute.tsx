@@ -22,30 +22,10 @@ const ProtectedAdminRoute: React.FC<Props> = ({ children }) => {
 
         // 현재 컨텍스트 상태 확인
         if (isAdminLoggedIn) {
-          console.log(
-            "ProtectedAdminRoute: 로그인 상태 확인됨, 토큰 유효성 검사 중"
-          );
+          console.log("ProtectedAdminRoute: 로그인 상태 확인됨");
 
-          // 토큰 유효성 확인
-          const isValid = await isAdminTokenValid();
-
-          // 토큰이 유효하지 않을 때만 리프레시 시도
-          if (!isValid) {
-            console.log("ProtectedAdminRoute: 토큰 만료됨, 리프레시 시도");
-
-            // 토큰이 만료된 경우, 리프레시 시도
-            const refreshed = await refreshAdminToken();
-
-            if (!refreshed) {
-              console.log("ProtectedAdminRoute: 토큰 리프레시 실패");
-              // 리프레시 실패 시 로그아웃 상태로 전환
-              setIsAdminLoggedIn(false);
-            } else {
-              console.log("ProtectedAdminRoute: 토큰 리프레시 성공");
-            }
-          } else {
-            console.log("ProtectedAdminRoute: 토큰 유효함");
-          }
+          // checkAdminLoginStatus 함수 내에서 이미 토큰 만료 시 리프레시를 시도하므로
+          // 여기서는 별도의 토큰 유효성 확인이나 리프레시 로직이 필요 없음
         } else {
           console.log("ProtectedAdminRoute: 로그인 상태 아님, 재확인 중");
 
