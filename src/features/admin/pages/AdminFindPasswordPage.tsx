@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminFindPasswordPage.module.css";
 import { fetchAdminFindPasswordData } from "../services/adminAuthService";
-import { AdminFindPasswordData } from "../types/AdminLoginTypes";
+import { AdminFindPasswordRequest } from "../types/AdminLoginTypes";
 
 const AdminFindPassword: React.FC = () => {
   const navigate = useNavigate();
 
   const [findPasswordBtn, setFindPasswordBtn] = useState<boolean>(false);
   const [findPasswordData, setFindPasswordData] =
-    useState<AdminFindPasswordData>({
-      phone: "",
+    useState<AdminFindPasswordRequest>({
+      phoneNumber: "",
       email: "",
     });
 
@@ -86,7 +86,7 @@ const AdminFindPassword: React.FC = () => {
 
     try {
       const result = await fetchAdminFindPasswordData(
-        findPasswordData.phone,
+        findPasswordData.phoneNumber,
         findPasswordData.email
       );
 
@@ -159,7 +159,7 @@ const AdminFindPassword: React.FC = () => {
               className={styles.inputField}
               placeholder="가입하신 휴대폰 번호"
               type="text"
-              value={findPasswordData.phone}
+              value={findPasswordData.phoneNumber}
               onChange={handleInputPhoneChange}
               disabled={isLoading}
             />

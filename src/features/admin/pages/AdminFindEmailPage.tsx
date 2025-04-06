@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminFindEmailPage.module.css";
 import { fetchAdminFindEmailData } from "../services/adminAuthService";
-import { AdminFindEmailData } from "../types/AdminLoginTypes";
+import { AdminFindEmailRequest } from "../types/AdminLoginTypes";
 
 const AdminFindEmail: React.FC = () => {
   const navigate = useNavigate();
 
   const [findEmailBtn, setFindEmailBtn] = useState<boolean>(false);
-  const [phoneNumber, setPhoneNumber] = useState<AdminFindEmailData>({
-    phone: "",
+  const [phoneNumber, setPhoneNumber] = useState<AdminFindEmailRequest>({
+    phoneNumber: "",
   });
   const [isValid, setIsValid] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -33,7 +33,7 @@ const AdminFindEmail: React.FC = () => {
     setFindEmailBtn(validPhone);
     setErrorMessage(null);
 
-    setPhoneNumber({ phone: value }); // 상태에 입력된 전화번호 업데이트
+    setPhoneNumber({ phoneNumber: value }); // 상태에 입력된 전화번호 업데이트
   };
 
   const maskEmail = (email: string): string => {
@@ -59,7 +59,7 @@ const AdminFindEmail: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      const result = await fetchAdminFindEmailData(phoneNumber.phone);
+      const result = await fetchAdminFindEmailData(phoneNumber.phoneNumber);
 
       if (result === "no") {
         setErrorMessage("일치하는 관리자 정보를 찾을 수 없습니다.");
@@ -139,7 +139,7 @@ const AdminFindEmail: React.FC = () => {
               className={styles.inputField}
               placeholder="가입하신 휴대폰 번호"
               type="text"
-              value={phoneNumber.phone}
+              value={phoneNumber.phoneNumber}
               onChange={handleInputChange}
               disabled={isLoading}
             />
