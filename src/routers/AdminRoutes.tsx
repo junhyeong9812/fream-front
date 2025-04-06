@@ -9,6 +9,7 @@ import { ThemeProvider } from "../global/context/ThemeContext";
 import AdminLayout from "src/global/components/admin/AdminLayout";
 import AdminLoginPage from "../features/admin/pages/AdminLoginPage";
 import InspectionManagement from "../features/admin/pages/InspectionManagementPage";
+import NoticeManagementPage from "../features/admin/pages/NoticeManagementPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -91,7 +92,7 @@ const AdminRoutes: React.FC = () => {
           />
           <Route
             path="customer-service/notices"
-            element={<div>공지사항 관리 페이지</div>}
+            element={<NoticeManagementPage />}
           />
           {/* 검수 기준 관리 추가 */}
           <Route
