@@ -1,0 +1,164 @@
+.faqListContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.faqListContainer.dark {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.faqTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.faqTable th,
+.faqTable td {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.dark .faqTable th,
+.dark .faqTable td {
+  border-bottom-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+.faqTable th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dark .faqTable th {
+  background-color: #333;
+  color: #f0f0f0;
+}
+
+.faqRow {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.faqRow:hover {
+  background-color: #f9f9f9;
+}
+
+.dark .faqRow:hover {
+  background-color: #333;
+}
+
+.idCol {
+  width: 80px;
+  text-align: center;
+}
+
+.categoryCol {
+  width: 110px;
+}
+
+.questionCol {
+  min-width: 300px;
+}
+
+.dateCol {
+  width: 120px;
+  white-space: nowrap;
+}
+
+.actionCol {
+  width: 80px;
+  text-align: center;
+}
+
+.viewButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.viewButton:hover {
+  background-color: #3b5cb8;
+}
+
+.dark .viewButton {
+  background-color: #5d82e5;
+}
+
+.dark .viewButton:hover {
+  background-color: #4a6fdc;
+}
+
+.emptyFaq {
+  padding: 3rem;
+  text-align: center;
+  color: #666;
+}
+
+.dark .emptyFaq {
+  color: #aaa;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1.5rem 0;
+}
+
+.pageButton {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pageButton:hover {
+  background-color: #f5f5f5;
+}
+
+.pageButton.activePage {
+  background-color: #4a6fdc;
+  color: white;
+  border-color: #4a6fdc;
+}
+
+.dark .pageButton {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.dark .pageButton:hover {
+  background-color: #333;
+}
+
+.dark .pageButton.activePage {
+  background-color: #5d82e5;
+  border-color: #5d82e5;
+  color: white;
+}

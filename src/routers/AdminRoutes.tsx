@@ -10,6 +10,7 @@ import AdminLayout from "src/global/components/admin/AdminLayout";
 import AdminLoginPage from "../features/admin/pages/AdminLoginPage";
 import InspectionManagement from "../features/admin/pages/InspectionManagementPage";
 import NoticeManagementPage from "../features/admin/pages/NoticeManagementPage";
+import FAQManagementPage from "../features/admin/pages/FAQManagementPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -86,10 +87,7 @@ const AdminRoutes: React.FC = () => {
             path="customer-service/inquiries"
             element={<div>1:1 문의 페이지</div>}
           />
-          <Route
-            path="customer-service/faq"
-            element={<div>FAQ 관리 페이지</div>}
-          />
+          <Route path="customer-service/faq" element={<FAQManagementPage />} />
           <Route
             path="customer-service/notices"
             element={<NoticeManagementPage />}

@@ -1,0 +1,86 @@
+.searchBar {
+  width: 100%;
+  max-width: 500px;
+}
+
+.searchForm {
+  display: flex;
+  position: relative;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px 0 0 4px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #4a6fdc;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
+}
+
+.dark .searchInput {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.dark .searchInput:focus {
+  border-color: #5d82e5;
+  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
+}
+
+.clearButton {
+  position: absolute;
+  right: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearButton:hover {
+  color: #666;
+}
+
+.dark .clearButton {
+  color: #aaa;
+}
+
+.dark .clearButton:hover {
+  color: #ddd;
+}
+
+.searchButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  padding: 0 1.2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.searchButton:hover {
+  background-color: #3b5cb8;
+}
+
+.dark .searchButton {
+  background-color: #5d82e5;
+}
+
+.dark .searchButton:hover {
+  background-color: #4a6fdc;
+}
