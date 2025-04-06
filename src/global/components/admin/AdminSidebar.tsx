@@ -300,19 +300,15 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
       {!isCollapsed && (
         <div className={styles.profileContainer}>
-          <div className={styles.profileImage}>
-            {isLoadingProfile ? (
-              <div className={styles.profileImagePlaceholder}></div>
-            ) : (
+          {!isLoadingProfile && profileInfo?.profileImage && (
+            <div className={styles.profileImage}>
               <img
-                src={
-                  profileInfo?.profileImage || "https://via.placeholder.com/150"
-                }
+                src={profileInfo.profileImage}
                 alt="Admin"
-                onError={handleImageError}
+                onError={(e) => (e.currentTarget.style.display = "none")}
               />
-            )}
-          </div>
+            </div>
+          )}
           <div className={styles.profileInfo}>
             <div className={styles.adminName}>
               {isLoadingProfile
