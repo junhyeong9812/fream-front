@@ -44,13 +44,16 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({
   useEffect(() => {
     const initializeAuth = async () => {
       setIsLoading(true);
+      console.log("AdminAuthContext: 인증 초기화 시작");
 
       try {
         // 로그인 상태 및 토큰 유효성 확인
         const isLoggedIn = await checkAdminLoginStatus();
+        console.log("AdminAuthContext: 로그인 상태 확인 결과", { isLoggedIn });
+
         setIsAdminLoggedIn(isLoggedIn);
       } catch (error) {
-        console.error("관리자 인증 초기화 오류:", error);
+        console.error("AdminAuthContext: 관리자 인증 초기화 오류:", error);
         setIsAdminLoggedIn(false);
       } finally {
         setIsLoading(false);
@@ -65,16 +68,23 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({
     let tokenCheckInterval: NodeJS.Timeout;
 
     if (isAdminLoggedIn) {
+      console.log("AdminAuthContext: 로그인 상태, 토큰 검사 타이머 설정");
+
       // 토큰 유효성을 주기적으로 확인하는 타이머 (5분마다)
       tokenCheckInterval = setInterval(async () => {
         // 토큰 유효성 확인
         if (!isAdminTokenValid()) {
+          console.log("AdminAuthContext: 토큰 만료 감지, 리프레시 시도");
+
           // 토큰이 만료되면 리프레시 시도
           const refreshed = await refreshAdminTokenHandler();
 
           // 리프레시 실패 시 로그아웃
           if (!refreshed) {
+            console.log("AdminAuthContext: 토큰 리프레시 실패, 로그아웃 처리");
             await adminLogout();
+          } else {
+            console.log("AdminAuthContext: 토큰 리프레시 성공");
           }
         }
       }, 5 * 60 * 1000); // 5분마다
@@ -83,17 +93,25 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({
     return () => {
       if (tokenCheckInterval) {
         clearInterval(tokenCheckInterval);
+        console.log("AdminAuthContext: 토큰 검사 타이머 정리");
       }
     };
+  }, [isAdminLoggedIn]);
+
+  // 상태 변화 디버깅
+  useEffect(() => {
+    console.log("AdminAuthContext: 로그인 상태 변경", { isAdminLoggedIn });
   }, [isAdminLoggedIn]);
 
   // 토큰 갱신 함수
   const refreshAdminTokenHandler = async (): Promise<boolean> => {
     try {
+      console.log("AdminAuthContext: 토큰 갱신 요청");
       const result = await refreshAdminToken();
+      console.log("AdminAuthContext: 토큰 갱신 결과", { result });
       return result;
     } catch (error) {
-      console.error("토큰 갱신 중 오류:", error);
+      console.error("AdminAuthContext: 토큰 갱신 중 오류:", error);
       return false;
     }
   };
@@ -101,24 +119,26 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({
   // 로그아웃 함수
   const adminLogout = async (): Promise<void> => {
     try {
+      console.log("AdminAuthContext: 로그아웃 시작");
       await logoutService();
+      console.log("AdminAuthContext: 로그아웃 완료");
     } catch (error) {
-      console.error("로그아웃 중 오류:", error);
+      console.error("AdminAuthContext: 로그아웃 중 오류:", error);
     } finally {
       setIsAdminLoggedIn(false);
     }
   };
 
+  const contextValue = {
+    isAdminLoggedIn,
+    setIsAdminLoggedIn,
+    adminLogout,
+    refreshAdminToken: refreshAdminTokenHandler,
+    isLoading,
+  };
+
   return (
-    <AdminAuthContext.Provider
-      value={{
-        isAdminLoggedIn,
-        setIsAdminLoggedIn,
-        adminLogout,
-        refreshAdminToken: refreshAdminTokenHandler,
-        isLoading,
-      }}
-    >
+    <AdminAuthContext.Provider value={contextValue}>
       {children}
     </AdminAuthContext.Provider>
   );

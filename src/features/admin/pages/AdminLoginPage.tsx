@@ -27,11 +27,14 @@ const AdminLoginPage: React.FC = () => {
     const checkLoginStatus = async () => {
       try {
         if (await checkAdminLoginStatus()) {
+          console.log(
+            "AdminLoginPage: 이미 로그인된 상태, 대시보드로 리다이렉트"
+          );
           setIsAdminLoggedIn(true);
           navigate("/admin");
         }
       } catch (error) {
-        console.error("로그인 상태 확인 중 오류:", error);
+        console.error("AdminLoginPage: 로그인 상태 확인 중 오류:", error);
       }
     };
 
@@ -118,6 +121,10 @@ const AdminLoginPage: React.FC = () => {
     setErrorMessage(null);
 
     try {
+      console.log("AdminLoginPage: 로그인 요청 시작", {
+        email: loginData.email,
+      });
+
       // 관리자 로그인 API 호출
       const result = await fetchAdminLoginData(
         loginData.email,
@@ -125,14 +132,16 @@ const AdminLoginPage: React.FC = () => {
       );
 
       if (result === "yes") {
-        console.log("로그인 성공, 상태 업데이트 및 리다이렉트");
-        // 로그인 성공
+        console.log("AdminLoginPage: 로그인 성공, 상태 업데이트");
+
+        // 로그인 성공 - 상태 업데이트
         setIsAdminLoggedIn(true);
 
-        // 약간의 지연을 두고 리다이렉트
+        // 충분한 지연을 두고 리다이렉트 - 상태 업데이트가 완료되도록
         setTimeout(() => {
+          console.log("AdminLoginPage: 관리자 대시보드로 리다이렉트");
           navigate("/admin");
-        }, 100);
+        }, 500);
       } else if (result === "not_admin") {
         // 관리자 권한 없음
         setErrorMessage("관리자 권한이 없는 계정입니다.");
@@ -149,7 +158,7 @@ const AdminLoginPage: React.FC = () => {
         setIsLoading(false);
       }
     } catch (error) {
-      console.error("로그인 처리 중 오류:", error);
+      console.error("AdminLoginPage: 로그인 처리 중 오류:", error);
       setErrorMessage("로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
       setIsLoading(false);
     }
@@ -238,11 +247,7 @@ const AdminLoginPage: React.FC = () => {
           {isLoading ? (
             <LoadingButton />
           ) : loginBtn ? (
-            <button
-              type="submit"
-              className={styles.loginButton}
-              onClick={handleAdminLoginFetch}
-            >
+            <button type="submit" className={styles.loginButton}>
               관리자 로그인
             </button>
           ) : (
