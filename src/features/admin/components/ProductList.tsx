@@ -139,7 +139,7 @@ const ProductList: React.FC<ProductListProps> = ({
                     className={styles.productRow}
                     onClick={() => onViewProduct(product)}
                   >
-                    <td className={styles.idCol}>{product.id}</td>
+                    <td className={styles.idCol}>{product.colorId}</td>
                     <td className={styles.imageCol}>
                       <img
                         src={
