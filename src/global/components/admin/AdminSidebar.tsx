@@ -81,7 +81,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       title: "상품 관리",
       icon: <FiShoppingBag />,
       submenus: [
-        { id: "product-list", title: "상품 목록", link: "/admin/products" },
+        {
+          id: "product-list",
+          title: "상품 목록/수정",
+          link: "/admin/products",
+        },
         { id: "product-add", title: "상품 등록", link: "/admin/products/add" },
         {
           id: "product-categories",

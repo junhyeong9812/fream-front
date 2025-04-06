@@ -10,11 +10,11 @@
   transition: all 0.3s ease;
 }
 
-.dark .filterContainer {
+.darkFilterContainer {
   background-color: #2a2a2a;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   color: #f0f0f0;
   border: 1px solid #3a3a3a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .filterHeader {
@@ -30,7 +30,7 @@
   color: #333;
 }
 
-.dark .filterTitle {
+.darkFilterTitle {
   color: #e0e0e0;
 }
 
@@ -50,11 +50,11 @@
   text-decoration: underline;
 }
 
-.dark .resetButton {
+.darkResetButton {
   color: #5d82e5;
 }
 
-.dark .resetButton:hover {
+.darkResetButton:hover {
   background-color: rgba(93, 130, 229, 0.2);
 }
 
@@ -77,7 +77,7 @@
   font-size: 0.9rem;
 }
 
-.dark .filterLabel {
+.darkFilterLabel {
   color: #aaa;
 }
 
@@ -103,20 +103,15 @@
   outline: none;
 }
 
-.dark .select {
+.darkSelect {
   background-color: #333;
   border-color: #444;
   color: #f0f0f0;
 }
 
-.dark .select:focus {
+.darkSelect:focus {
   border-color: #5d82e5;
   box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
-}
-
-.dark select option {
-  background-color: #333;
-  color: #f0f0f0;
 }
 
 .selectArrow {
@@ -128,7 +123,7 @@
   color: #777;
 }
 
-.dark .selectArrow {
+.darkSelectArrow {
   color: #aaa;
 }
 
@@ -153,13 +148,13 @@
   outline: none;
 }
 
-.dark .priceInput {
+.darkPriceInput {
   background-color: #333;
   border-color: #444;
   color: #f0f0f0;
 }
 
-.dark .priceInput:focus {
+.darkPriceInput:focus {
   border-color: #5d82e5;
   box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
 }
@@ -168,7 +163,7 @@
   color: #777;
 }
 
-.dark .priceSeparator {
+.darkPriceSeparator {
   color: #aaa;
 }
 
@@ -195,15 +190,15 @@
   cursor: not-allowed;
 }
 
-.dark .applyButton {
+.darkApplyButton {
   background-color: #5d82e5;
 }
 
-.dark .applyButton:hover {
+.darkApplyButton:hover {
   background-color: #4a6fdc;
 }
 
-.dark .applyButton:disabled {
+.darkApplyButton:disabled {
   background-color: #595959;
 }
 
@@ -233,104 +228,17 @@
   border-color: #4a6fdc;
 }
 
-.dark .genderButton {
+.darkGenderButton {
   background-color: #333;
   border-color: #444;
   color: #ddd;
 }
 
-.dark .genderButton:hover {
+.darkGenderButton:hover {
   background-color: #3a3a3a;
 }
 
-.dark .genderButton.active {
+.darkGenderButtonActive {
   background-color: #5d82e5;
   border-color: #5d82e5;
-}
-
-.multiselect {
-  width: 100%;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.multiselect:focus-within {
-  border-color: #4a6fdc;
-  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
-}
-
-.dark .multiselect {
-  border-color: #444;
-}
-
-.dark .multiselect:focus-within {
-  border-color: #5d82e5;
-  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
-}
-
-.multiselectHeader {
-  padding: 0.6rem 0.75rem;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 0.9rem;
-  color: #555;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.dark .multiselectHeader {
-  background-color: #333;
-  border-color: #444;
-  color: #ddd;
-}
-
-.multiselectOptions {
-  max-height: 200px;
-  overflow-y: auto;
-  background-color: #fff;
-}
-
-.dark .multiselectOptions {
-  background-color: #2a2a2a;
-}
-
-.multiselectOption {
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  color: #555;
-  cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
-  display: flex;
-  align-items: center;
-}
-
-.multiselectOption:last-child {
-  border-bottom: none;
-}
-
-.multiselectOption:hover {
-  background-color: #f5f5f5;
-}
-
-.multiselectOption.selected {
-  background-color: #f0f7ff;
-  color: #4a6fdc;
-}
-
-.dark .multiselectOption {
-  border-color: #3a3a3a;
-  color: #ddd;
-}
-
-.dark .multiselectOption:hover {
-  background-color: #3a3a3a;
-}
-
-.dark .multiselectOption.selected {
-  background-color: #2c3b5c;
-  color: #5d82e5;
 }

@@ -186,15 +186,29 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
     return filter.genders?.includes(gender) || false;
   };
 
+  // 다크 모드 여부
+  const isDark = theme === "dark";
+
   return (
     <div
       className={`${styles.filterContainer} ${
-        theme === "dark" ? styles.dark : ""
+        isDark ? styles.darkFilterContainer : ""
       }`}
     >
       <div className={styles.filterHeader}>
-        <h3 className={styles.filterTitle}>상품 필터</h3>
-        <button className={styles.resetButton} onClick={handleResetFilter}>
+        <h3
+          className={`${styles.filterTitle} ${
+            isDark ? styles.darkFilterTitle : ""
+          }`}
+        >
+          상품 필터
+        </h3>
+        <button
+          className={`${styles.resetButton} ${
+            isDark ? styles.darkResetButton : ""
+          }`}
+          onClick={handleResetFilter}
+        >
           필터 초기화
         </button>
       </div>
@@ -202,10 +216,16 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       <div className={styles.filterRow}>
         {/* 메인 카테고리 필터 */}
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>메인 카테고리</label>
+          <label
+            className={`${styles.filterLabel} ${
+              isDark ? styles.darkFilterLabel : ""
+            }`}
+          >
+            메인 카테고리
+          </label>
           <div className={styles.selectContainer}>
             <select
-              className={styles.select}
+              className={`${styles.select} ${isDark ? styles.darkSelect : ""}`}
               value={selectedMainCategory}
               onChange={handleMainCategoryChange}
               disabled={loading}
@@ -217,7 +237,11 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                 </option>
               ))}
             </select>
-            <span className={styles.selectArrow}>
+            <span
+              className={`${styles.selectArrow} ${
+                isDark ? styles.darkSelectArrow : ""
+              }`}
+            >
               <FiChevronDown />
             </span>
           </div>
@@ -225,10 +249,16 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
 
         {/* 서브 카테고리 필터 */}
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>서브 카테고리</label>
+          <label
+            className={`${styles.filterLabel} ${
+              isDark ? styles.darkFilterLabel : ""
+            }`}
+          >
+            서브 카테고리
+          </label>
           <div className={styles.selectContainer}>
             <select
-              className={styles.select}
+              className={`${styles.select} ${isDark ? styles.darkSelect : ""}`}
               value={filter.categoryIds?.[0] || ""}
               onChange={handleCategoryChange}
               disabled={!selectedMainCategory || loading}
@@ -240,7 +270,11 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                 </option>
               ))}
             </select>
-            <span className={styles.selectArrow}>
+            <span
+              className={`${styles.selectArrow} ${
+                isDark ? styles.darkSelectArrow : ""
+              }`}
+            >
               <FiChevronDown />
             </span>
           </div>
@@ -248,10 +282,16 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
 
         {/* 브랜드 필터 */}
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>브랜드</label>
+          <label
+            className={`${styles.filterLabel} ${
+              isDark ? styles.darkFilterLabel : ""
+            }`}
+          >
+            브랜드
+          </label>
           <div className={styles.selectContainer}>
             <select
-              className={styles.select}
+              className={`${styles.select} ${isDark ? styles.darkSelect : ""}`}
               value={filter.brandIds?.[0] || ""}
               onChange={handleBrandChange}
               disabled={loading}
@@ -263,7 +303,11 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                 </option>
               ))}
             </select>
-            <span className={styles.selectArrow}>
+            <span
+              className={`${styles.selectArrow} ${
+                isDark ? styles.darkSelectArrow : ""
+              }`}
+            >
               <FiChevronDown />
             </span>
           </div>
@@ -271,10 +315,16 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
 
         {/* 컬렉션 필터 */}
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>컬렉션</label>
+          <label
+            className={`${styles.filterLabel} ${
+              isDark ? styles.darkFilterLabel : ""
+            }`}
+          >
+            컬렉션
+          </label>
           <div className={styles.selectContainer}>
             <select
-              className={styles.select}
+              className={`${styles.select} ${isDark ? styles.darkSelect : ""}`}
               value={filter.collectionIds?.[0] || ""}
               onChange={handleCollectionChange}
               disabled={loading}
@@ -286,7 +336,11 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                 </option>
               ))}
             </select>
-            <span className={styles.selectArrow}>
+            <span
+              className={`${styles.selectArrow} ${
+                isDark ? styles.darkSelectArrow : ""
+              }`}
+            >
               <FiChevronDown />
             </span>
           </div>
@@ -296,14 +350,28 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       <div className={styles.filterRow}>
         {/* 성별 필터 */}
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>성별</label>
+          <label
+            className={`${styles.filterLabel} ${
+              isDark ? styles.darkFilterLabel : ""
+            }`}
+          >
+            성별
+          </label>
           <div className={styles.genderSelector}>
             {Object.values(GenderType).map((gender) => (
               <button
                 key={gender}
-                className={`${styles.genderButton} ${
-                  isGenderSelected(gender) ? styles.active : ""
-                }`}
+                className={`
+                  ${styles.genderButton} 
+                  ${isDark ? styles.darkGenderButton : ""}
+                  ${
+                    isGenderSelected(gender)
+                      ? isDark
+                        ? styles.darkGenderButtonActive
+                        : styles.active
+                      : ""
+                  }
+                `}
                 onClick={() => handleGenderToggle(gender)}
               >
                 {GenderKoreanMap[gender]}
@@ -314,21 +382,37 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
 
         {/* 가격 범위 필터 */}
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>가격 범위</label>
+          <label
+            className={`${styles.filterLabel} ${
+              isDark ? styles.darkFilterLabel : ""
+            }`}
+          >
+            가격 범위
+          </label>
           <div className={styles.priceRangeContainer}>
             <input
               type="number"
               placeholder="최소 가격"
-              className={styles.priceInput}
+              className={`${styles.priceInput} ${
+                isDark ? styles.darkPriceInput : ""
+              }`}
               value={filter.minPrice || ""}
               onChange={handleMinPriceChange}
               min={0}
             />
-            <span className={styles.priceSeparator}>~</span>
+            <span
+              className={`${styles.priceSeparator} ${
+                isDark ? styles.darkPriceSeparator : ""
+              }`}
+            >
+              ~
+            </span>
             <input
               type="number"
               placeholder="최대 가격"
-              className={styles.priceInput}
+              className={`${styles.priceInput} ${
+                isDark ? styles.darkPriceInput : ""
+              }`}
               value={filter.maxPrice || ""}
               onChange={handleMaxPriceChange}
               min={0}
@@ -338,7 +422,9 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       </div>
 
       <button
-        className={styles.applyButton}
+        className={`${styles.applyButton} ${
+          isDark ? styles.darkApplyButton : ""
+        }`}
         onClick={handleApplyFilter}
         disabled={loading}
       >
