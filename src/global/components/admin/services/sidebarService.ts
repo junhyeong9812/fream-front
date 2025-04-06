@@ -9,17 +9,8 @@ export const fetchAdminProfileInfo = async (): Promise<AdminProfileInfo> => {
   try {
     const response = await apiClient.get<AdminProfileInfo>("/profiles");
 
-    // 프로필 이미지 URL 처리
-    if (response.data.profileImage) {
-      // 이미지 URL이 이미 전체 경로라면 그대로 사용
-      if (response.data.profileImage.startsWith("http")) {
-        // 그대로 사용
-      } else {
-        // profileId로 이미지 URL 생성
-        const profileId = response.data.profileId;
-        response.data.profileImage = `/profiles/${profileId}/image`;
-      }
-    }
+    // 프로필 이미지 URL 처리 - getProfileImageUrl 함수 사용
+    response.data.profileImage = getProfileImageUrl(response.data.profileId);
 
     return response.data;
   } catch (error) {

@@ -1,0 +1,329 @@
+.filterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dark .filterContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  color: #f0f0f0;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filterTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .filterTitle {
+  color: #e0e0e0;
+}
+
+.resetButton {
+  background-color: transparent;
+  border: none;
+  color: #4a6fdc;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.resetButton:hover {
+  background-color: rgba(74, 111, 220, 0.1);
+  text-decoration: underline;
+}
+
+.dark .resetButton {
+  color: #5d82e5;
+}
+
+.dark .resetButton:hover {
+  background-color: rgba(93, 130, 229, 0.2);
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filterGroup {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filterLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.dark .filterLabel {
+  color: #aaa;
+}
+
+.selectContainer {
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  padding: 0.6rem 2rem 0.6rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: #fff;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.select:focus {
+  border-color: #4a6fdc;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
+  outline: none;
+}
+
+.dark .select {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.dark .select:focus {
+  border-color: #5d82e5;
+  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
+}
+
+.selectArrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #777;
+}
+
+.dark .selectArrow {
+  color: #aaa;
+}
+
+.priceRangeContainer {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.priceInput {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.priceInput:focus {
+  border-color: #4a6fdc;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
+  outline: none;
+}
+
+.dark .priceInput {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.dark .priceInput:focus {
+  border-color: #5d82e5;
+  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
+}
+
+.priceSeparator {
+  color: #777;
+}
+
+.dark .priceSeparator {
+  color: #aaa;
+}
+
+.applyButton {
+  margin-top: 1.5rem;
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-end;
+}
+
+.applyButton:hover {
+  background-color: #3b5cb8;
+}
+
+.applyButton:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+.dark .applyButton {
+  background-color: #5d82e5;
+}
+
+.dark .applyButton:hover {
+  background-color: #4a6fdc;
+}
+
+.dark .applyButton:disabled {
+  background-color: #595959;
+}
+
+.genderSelector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.genderButton {
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.genderButton:hover {
+  background-color: #eaeaea;
+}
+
+.genderButton.active {
+  background-color: #4a6fdc;
+  color: white;
+  border-color: #4a6fdc;
+}
+
+.dark .genderButton {
+  background-color: #333;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark .genderButton:hover {
+  background-color: #3a3a3a;
+}
+
+.dark .genderButton.active {
+  background-color: #5d82e5;
+  border-color: #5d82e5;
+}
+
+.multiselect {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.multiselect:focus-within {
+  border-color: #4a6fdc;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
+}
+
+.dark .multiselect {
+  border-color: #444;
+}
+
+.dark .multiselect:focus-within {
+  border-color: #5d82e5;
+  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
+}
+
+.multiselectHeader {
+  padding: 0.6rem 0.75rem;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dark .multiselectHeader {
+  background-color: #333;
+  border-color: #444;
+  color: #ddd;
+}
+
+.multiselectOptions {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.dark .multiselectOptions {
+  background-color: #2a2a2a;
+}
+
+.multiselectOption {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+}
+
+.multiselectOption:last-child {
+  border-bottom: none;
+}
+
+.multiselectOption:hover {
+  background-color: #f5f5f5;
+}
+
+.multiselectOption.selected {
+  background-color: #f0f7ff;
+  color: #4a6fdc;
+}
+
+.dark .multiselectOption {
+  border-color: #3a3a3a;
+  color: #ddd;
+}
+
+.dark .multiselectOption:hover {
+  background-color: #3a3a3a;
+}
+
+.dark .multiselectOption.selected {
+  background-color: #2c3b5c;
+  color: #5d82e5;
+}

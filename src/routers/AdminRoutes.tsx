@@ -11,6 +11,7 @@ import AdminLoginPage from "../features/admin/pages/AdminLoginPage";
 import InspectionManagement from "../features/admin/pages/InspectionManagementPage";
 import NoticeManagementPage from "../features/admin/pages/NoticeManagementPage";
 import FAQManagementPage from "../features/admin/pages/FAQManagementPage";
+import ProductManagementPage from "../features/admin/pages/ProductManagementPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -38,7 +39,7 @@ const AdminRoutes: React.FC = () => {
           <Route path="/admin/monitoring" element={<MonitoringPage />} />
 
           {/* 상품 관리 */}
-          <Route path="products" element={<div>상품 목록 페이지</div>} />
+          <Route path="products" element={<ProductManagementPage />} />
           <Route path="products/add" element={<div>상품 등록 페이지</div>} />
           <Route
             path="products/categories"
@@ -47,6 +48,10 @@ const AdminRoutes: React.FC = () => {
           <Route
             path="products/brands"
             element={<div>브랜드 관리 페이지</div>}
+          />
+          <Route
+            path="products/collections"
+            element={<div>컬렉션 관리 페이지</div>}
           />
 
           {/* 주문/배송 관리 */}

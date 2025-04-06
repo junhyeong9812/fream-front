@@ -1,0 +1,57 @@
+.sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.sortLabel {
+  font-weight: 500;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.dark .sortLabel {
+  color: #aaa;
+}
+
+.sortOptions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sortOption {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sortOption:hover {
+  background-color: #eaeaea;
+}
+
+.sortOption.active {
+  background-color: #4a6fdc;
+  color: white;
+  border-color: #4a6fdc;
+}
+
+.dark .sortOption {
+  background-color: #333;
+  border-color: #444;
+  color: #ddd;
+}
+
+.dark .sortOption:hover {
+  background-color: #3a3a3a;
+}
+
+.dark .sortOption.active {
+  background-color: #5d82e5;
+  border-color: #5d82e5;
+}

@@ -93,6 +93,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           title: "브랜드 관리",
           link: "/admin/products/brands",
         },
+        {
+          id: "product-collections",
+          title: "컬렉션 관리",
+          link: "/admin/products/collections",
+        },
       ],
     },
     {
