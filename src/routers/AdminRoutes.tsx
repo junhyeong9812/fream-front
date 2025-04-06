@@ -12,6 +12,7 @@ import InspectionManagement from "../features/admin/pages/InspectionManagementPa
 import NoticeManagementPage from "../features/admin/pages/NoticeManagementPage";
 import FAQManagementPage from "../features/admin/pages/FAQManagementPage";
 import ProductManagementPage from "../features/admin/pages/ProductManagementPage";
+import BrandManagementPage from "../features/admin/pages/BrandManagementPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -45,10 +46,7 @@ const AdminRoutes: React.FC = () => {
             path="products/categories"
             element={<div>카테고리 관리 페이지</div>}
           />
-          <Route
-            path="products/brands"
-            element={<div>브랜드 관리 페이지</div>}
-          />
+          <Route path="products/brands" element={<BrandManagementPage />} />
           <Route
             path="products/collections"
             element={<div>컬렉션 관리 페이지</div>}
