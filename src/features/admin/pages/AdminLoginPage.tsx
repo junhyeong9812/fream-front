@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "src/global/context/AdminAuthContext";
 import styles from "./AdminLoginPage.module.css";
@@ -10,7 +10,7 @@ import { AdminLoginData } from "../types/AdminLoginTypes";
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { setIsAdminLoggedIn } = useAdminAuth();
+  const { setIsAdminLoggedIn, isLoading: authLoading } = useAdminAuth();
 
   const [loginData, setLoginData] = useState<AdminLoginData>({
     email: "admin@example.com",
@@ -24,11 +24,17 @@ const AdminLoginPage: React.FC = () => {
 
   // 이미 로그인 상태라면 관리자 대시보드로 리다이렉트
   useEffect(() => {
-    if (checkAdminLoginStatus()) {
-      setIsAdminLoggedIn(true);
-      navigate("/admin");
+    const checkLoginStatus = async () => {
+      if (await checkAdminLoginStatus()) {
+        setIsAdminLoggedIn(true);
+        navigate("/admin");
+      }
+    };
+
+    if (!authLoading) {
+      checkLoginStatus();
     }
-  }, [navigate, setIsAdminLoggedIn]);
+  }, [navigate, setIsAdminLoggedIn, authLoading]);
 
   // 이메일 변경 함수
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
