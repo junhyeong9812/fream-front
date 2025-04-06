@@ -6,28 +6,7 @@ import {
 } from "src/features/admin/types/AdminLoginTypes";
 
 // 로컬 스토리지 키 상수
-const ADMIN_AUTH_TOKEN_KEY = "adminAuthToken";
-const ADMIN_TOKEN_EXPIRY_KEY = "adminTokenExpiry";
-const ADMIN_REFRESH_TOKEN_KEY = "adminRefreshToken";
 const ADMIN_LOGIN_STATUS_KEY = "isAdminLoggedIn";
-
-/**
- * 로컬 스토리지 디버깅 헬퍼 함수
- */
-const debugLocalStorage = () => {
-  console.group("관리자 인증 로컬 스토리지 상태");
-  console.log(
-    "액세스 토큰:",
-    localStorage.getItem(ADMIN_AUTH_TOKEN_KEY) ? "존재함" : "없음"
-  );
-  console.log("토큰 만료 시간:", localStorage.getItem(ADMIN_TOKEN_EXPIRY_KEY));
-  console.log(
-    "리프레시 토큰:",
-    localStorage.getItem(ADMIN_REFRESH_TOKEN_KEY) ? "존재함" : "없음"
-  );
-  console.log("로그인 상태:", localStorage.getItem(ADMIN_LOGIN_STATUS_KEY));
-  console.groupEnd();
-};
 
 /**
  * 관리자 로그인 요청 함수
@@ -43,38 +22,30 @@ export const fetchAdminLoginData = async (
 
   try {
     // 실제 API 호출
-    const response = await apiClient.post<AdminLoginResponse>(
-      "/admin/auth/login",
-      {
-        email,
-        password,
-      }
-    );
+    const response = await apiClient.post("/admin/auth/login", {
+      email,
+      password,
+    });
 
     console.log("adminAuthService: 로그인 응답 받음", {
       status: response.status,
     });
 
-    // 서버 응답이 성공이면 토큰 정보 저장
-    if (response.data && response.data.accessToken) {
-      console.log("adminAuthService: 토큰 정보 저장 시작");
-
-      // 토큰 및 만료 시간 저장
-      saveAdminTokenInfo(
-        response.data.accessToken,
-        response.data.refreshToken,
-        response.data.accessTokenExpiry,
-        response.data.refreshTokenExpiry
-      );
-
-      // 로컬 스토리지 상태 디버깅
-      debugLocalStorage();
-
+    // 서버 응답이 성공이면 로그인 상태 저장
+    if (response.status === 200) {
       console.log("adminAuthService: 로그인 성공");
+
+      // 로그인 상태 저장
+      const loginStatus: AdminLoginStatus = {
+        value: "true",
+        expire: Date.now() + 24 * 60 * 60 * 1000, // 24시간 (리프레시 토큰의 만료시간과 일치)
+      };
+      localStorage.setItem(ADMIN_LOGIN_STATUS_KEY, JSON.stringify(loginStatus));
+
       return "yes";
     }
 
-    console.log("adminAuthService: 토큰 정보 없음");
+    console.log("adminAuthService: 로그인 실패");
     return "no";
   } catch (error) {
     console.error("adminAuthService: 로그인 중 오류:", error);
@@ -101,54 +72,13 @@ export const fetchAdminLoginData = async (
 };
 
 /**
- * 관리자 토큰 정보 저장
- * @param accessToken 액세스 토큰
- * @param refreshToken 리프레시 토큰
- * @param accessTokenExpiry 액세스 토큰 만료 시간(초)
- * @param refreshTokenExpiry 리프레시 토큰 만료 시간(초)
- */
-export const saveAdminTokenInfo = (
-  accessToken: string,
-  refreshToken: string,
-  accessTokenExpiry: number,
-  refreshTokenExpiry: number
-): void => {
-  console.log("adminAuthService: 토큰 정보 저장", {
-    accessTokenExpirySeconds: accessTokenExpiry,
-    refreshTokenExpirySeconds: refreshTokenExpiry,
-  });
-
-  const now = Date.now();
-
-  // 액세스 토큰 저장
-  localStorage.setItem(ADMIN_AUTH_TOKEN_KEY, accessToken);
-  // 액세스 토큰 만료 시간 저장 (현재 시간 + 만료 시간)
-  const accessExpiry = now + accessTokenExpiry * 1000;
-  localStorage.setItem(ADMIN_TOKEN_EXPIRY_KEY, accessExpiry.toString());
-  // 리프레시 토큰 저장
-  localStorage.setItem(ADMIN_REFRESH_TOKEN_KEY, refreshToken);
-
-  // 로그인 상태 저장
-  const loginStatus: AdminLoginStatus = {
-    value: "true",
-    expire: now + refreshTokenExpiry * 1000, // 리프레시 토큰 만료 시간까지 로그인 상태 유지
-  };
-  localStorage.setItem(ADMIN_LOGIN_STATUS_KEY, JSON.stringify(loginStatus));
-
-  console.log("adminAuthService: 토큰 정보 저장 완료", {
-    accessExpiry: new Date(accessExpiry).toISOString(),
-    loginStatusExpire: new Date(loginStatus.expire).toISOString(),
-  });
-};
-
-/**
  * 관리자 로그인 상태 확인
- * @returns 로그인 상태 여부 (true/false) 또는 Promise<boolean>
+ * @returns 로그인 상태 여부 (true/false)
  */
 export const checkAdminLoginStatus = async (): Promise<boolean> => {
   console.log("adminAuthService: 로그인 상태 확인 시작");
 
-  // 1. 로그인 상태 확인
+  // 로그인 상태 확인
   const loginDataStr = localStorage.getItem(ADMIN_LOGIN_STATUS_KEY);
   if (!loginDataStr) {
     console.log("adminAuthService: 로그인 상태 정보 없음");
@@ -162,28 +92,14 @@ export const checkAdminLoginStatus = async (): Promise<boolean> => {
     if (loginDataStr === "true") {
       console.log("adminAuthService: 이전 방식 로그인 정보 확인");
 
-      // 이전 방식으로 저장된 경우, 새 방식으로 업데이트
-      const accessTokenExpiry = localStorage.getItem(ADMIN_TOKEN_EXPIRY_KEY);
-      if (accessTokenExpiry) {
-        const tokenExpiryTime = parseInt(accessTokenExpiry, 10);
-        console.log("adminAuthService: 토큰 만료 시간 확인", {
-          tokenExpiryTime,
-          currentTime: Date.now(),
-          isValid: tokenExpiryTime > Date.now(),
-        });
+      // 업데이트된 형식으로 저장
+      const loginStatus: AdminLoginStatus = {
+        value: "true",
+        expire: Date.now() + 24 * 60 * 60 * 1000, // 24시간
+      };
+      localStorage.setItem(ADMIN_LOGIN_STATUS_KEY, JSON.stringify(loginStatus));
 
-        const loginStatus: AdminLoginStatus = {
-          value: "true",
-          expire: tokenExpiryTime,
-        };
-        localStorage.setItem(
-          ADMIN_LOGIN_STATUS_KEY,
-          JSON.stringify(loginStatus)
-        );
-        return tokenExpiryTime > Date.now();
-      }
-      console.log("adminAuthService: 토큰 만료 시간 정보 없음");
-      return false;
+      return true;
     }
 
     // 새 방식 (객체로 저장된 경우)
@@ -197,38 +113,32 @@ export const checkAdminLoginStatus = async (): Promise<boolean> => {
 
     // 만료 시간이 지났는지 확인
     if (loginData.expire <= Date.now() || loginData.value !== "true") {
-      console.log("adminAuthService: 로그인 상태 만료됨, 토큰 확인");
+      console.log("adminAuthService: 로그인 상태 만료됨");
 
-      // 만료된 경우, 액세스 토큰 만료 시간 확인
-      const tokenExpiry = localStorage.getItem(ADMIN_TOKEN_EXPIRY_KEY);
-
-      // 액세스 토큰이 유효하면 그대로 유지
-      if (tokenExpiry && parseInt(tokenExpiry, 10) > Date.now()) {
-        console.log("adminAuthService: 액세스 토큰 여전히 유효함");
-
-        // 로그인 상태 업데이트 (토큰이 유효한 동안)
-        const newLoginStatus: AdminLoginStatus = {
-          value: "true",
-          expire: parseInt(tokenExpiry, 10),
-        };
-        localStorage.setItem(
-          ADMIN_LOGIN_STATUS_KEY,
-          JSON.stringify(newLoginStatus)
-        );
-
-        return true;
-      }
-
-      console.log("adminAuthService: 액세스 토큰 만료됨, 리프레시 시도");
-      // 액세스 토큰도 만료되었으면 리프레시 시도
+      // API 호출을 통해 토큰이 유효한지 확인
       try {
-        const refreshed = await refreshAdminToken();
-        console.log("adminAuthService: 토큰 리프레시 결과", { refreshed });
-        return refreshed;
+        const isValid = await isAdminTokenValid();
+        if (isValid) {
+          console.log("adminAuthService: 토큰 유효함, 로그인 상태 갱신");
+
+          // 로그인 상태 업데이트
+          const newLoginStatus: AdminLoginStatus = {
+            value: "true",
+            expire: Date.now() + 24 * 60 * 60 * 1000,
+          };
+          localStorage.setItem(
+            ADMIN_LOGIN_STATUS_KEY,
+            JSON.stringify(newLoginStatus)
+          );
+
+          return true;
+        }
       } catch (error) {
-        console.error("adminAuthService: 토큰 갱신 중 오류:", error);
+        console.log("adminAuthService: 토큰 검증 실패, 로그아웃 필요");
         return false;
       }
+
+      return false;
     }
 
     console.log("adminAuthService: 로그인 상태 유효함");
@@ -240,29 +150,18 @@ export const checkAdminLoginStatus = async (): Promise<boolean> => {
 };
 
 /**
- * 관리자 토큰 유효성 확인
+ * 관리자 토큰 유효성 확인을 위한 API 호출
  * @returns 토큰 유효 여부
  */
-export const isAdminTokenValid = (): boolean => {
-  const tokenExpiry = localStorage.getItem(ADMIN_TOKEN_EXPIRY_KEY);
-  if (!tokenExpiry) {
-    console.log("adminAuthService: 토큰 만료 시간 정보 없음");
+export const isAdminTokenValid = async (): Promise<boolean> => {
+  try {
+    // 토큰 유효성 확인 API 호출
+    const response = await apiClient.get("/admin/auth/check");
+    return response.status === 200;
+  } catch (error) {
+    console.log("adminAuthService: 토큰 유효성 확인 실패", error);
     return false;
   }
-
-  // 만료 시간 확인
-  const expiryTime = parseInt(tokenExpiry, 10);
-  const now = Date.now();
-  const isValid = expiryTime > now;
-
-  console.log("adminAuthService: 토큰 유효성 확인", {
-    expiryTime,
-    now,
-    isValid,
-    timeLeft: (expiryTime - now) / 1000 / 60 + "분",
-  });
-
-  return isValid;
 };
 
 /**
@@ -273,48 +172,26 @@ export const refreshAdminToken = async (): Promise<boolean> => {
   console.log("adminAuthService: 토큰 갱신 시도");
 
   try {
-    const response = await apiClient.post<AdminTokenResponse>(
-      "/admin/auth/refresh"
-    );
+    const response = await apiClient.post("/admin/auth/refresh");
 
     console.log("adminAuthService: 토큰 갱신 응답 받음", {
       status: response.status,
-      hasToken: !!response.data?.accessToken,
     });
 
-    if (response.data && response.data.accessToken) {
-      // 새로운 액세스 토큰 저장
-      localStorage.setItem(ADMIN_AUTH_TOKEN_KEY, response.data.accessToken);
+    if (response.status === 200) {
+      console.log("adminAuthService: 토큰 갱신 성공");
 
-      // 만료 시간 업데이트
-      const now = Date.now();
-      const newExpiry = now + response.data.accessTokenExpiry * 1000;
-      localStorage.setItem(ADMIN_TOKEN_EXPIRY_KEY, newExpiry.toString());
-
-      console.log("adminAuthService: 새 토큰 저장 완료", {
-        expiryDate: new Date(newExpiry).toISOString(),
-      });
-
-      // 로그인 상태 업데이트 (리프레시 토큰 만료 시간으로 설정)
+      // 로그인 상태 갱신
       const loginStatus: AdminLoginStatus = {
         value: "true",
-        expire: response.data.refreshTokenExpiry
-          ? now + response.data.refreshTokenExpiry * 1000
-          : newExpiry + 86400000, // 기본값 24시간
+        expire: Date.now() + 24 * 60 * 60 * 1000, // 24시간
       };
       localStorage.setItem(ADMIN_LOGIN_STATUS_KEY, JSON.stringify(loginStatus));
-
-      console.log("adminAuthService: 로그인 상태 업데이트 완료", {
-        expireDate: new Date(loginStatus.expire).toISOString(),
-      });
-
-      // 디버그용 로컬 스토리지 상태 출력
-      debugLocalStorage();
 
       return true;
     }
 
-    console.log("adminAuthService: 토큰 갱신 실패 - 응답에 새 토큰 없음");
+    console.log("adminAuthService: 토큰 갱신 실패");
     return false;
   } catch (error) {
     console.error("adminAuthService: 토큰 갱신 중 오류:", error);
@@ -344,25 +221,14 @@ export const adminLogout = async (): Promise<boolean> => {
   try {
     await apiClient.post("/admin/auth/logout");
     console.log("adminAuthService: 서버 로그아웃 요청 성공");
-    clearAdminTokens();
+    localStorage.removeItem(ADMIN_LOGIN_STATUS_KEY);
     return true;
   } catch (error) {
     console.error("adminAuthService: 관리자 로그아웃 중 오류:", error);
     // 오류가 발생해도 로컬 스토리지는 초기화
-    clearAdminTokens();
+    localStorage.removeItem(ADMIN_LOGIN_STATUS_KEY);
     return false;
   }
-};
-
-/**
- * 관리자 토큰 및 로그인 상태 제거
- */
-export const clearAdminTokens = (): void => {
-  console.log("adminAuthService: 로컬 스토리지 인증 정보 제거");
-  localStorage.removeItem(ADMIN_AUTH_TOKEN_KEY);
-  localStorage.removeItem(ADMIN_TOKEN_EXPIRY_KEY);
-  localStorage.removeItem(ADMIN_REFRESH_TOKEN_KEY);
-  localStorage.removeItem(ADMIN_LOGIN_STATUS_KEY);
 };
 
 /**
@@ -430,15 +296,6 @@ export const fetchAdminFindPasswordData = async (
 
     return "no";
   }
-};
-
-/**
- * API 요청에 사용할 인증 헤더 가져오기
- * @returns 인증 헤더 객체 또는 빈 객체
- */
-export const getAuthHeaders = (): { Authorization?: string } => {
-  const token = localStorage.getItem(ADMIN_AUTH_TOKEN_KEY);
-  return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
 /**

@@ -27,7 +27,8 @@ const ProtectedAdminRoute: React.FC<Props> = ({ children }) => {
           );
 
           // 토큰 유효성 확인
-          if (!isAdminTokenValid()) {
+          const isValid = await isAdminTokenValid();
+          if (!isValid) {
             console.log("ProtectedAdminRoute: 토큰 만료됨, 리프레시 시도");
 
             // 토큰이 만료된 경우, 리프레시 시도
@@ -46,7 +47,7 @@ const ProtectedAdminRoute: React.FC<Props> = ({ children }) => {
         } else {
           console.log("ProtectedAdminRoute: 로그인 상태 아님, 재확인 중");
 
-          // 로그인 상태 재확인 (로컬 스토리지 기반)
+          // 로그인 상태 재확인
           const isLoggedIn = await checkAdminLoginStatus();
           console.log("ProtectedAdminRoute: 로그인 상태 재확인 결과", {
             isLoggedIn,

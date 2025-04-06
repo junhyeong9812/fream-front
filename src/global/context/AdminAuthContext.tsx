@@ -47,7 +47,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({
       console.log("AdminAuthContext: 인증 초기화 시작");
 
       try {
-        // 로그인 상태 및 토큰 유효성 확인
+        // 로그인 상태 확인
         const isLoggedIn = await checkAdminLoginStatus();
         console.log("AdminAuthContext: 로그인 상태 확인 결과", { isLoggedIn });
 
@@ -73,10 +73,11 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({
       // 토큰 유효성을 주기적으로 확인하는 타이머 (5분마다)
       tokenCheckInterval = setInterval(async () => {
         // 토큰 유효성 확인
-        if (!isAdminTokenValid()) {
+        const isValid = await isAdminTokenValid();
+        if (!isValid) {
           console.log("AdminAuthContext: 토큰 만료 감지, 리프레시 시도");
 
-          // 토큰이 만료되면 리프레시 시도
+          // 토큰이 만료된 경우, 리프레시 시도
           const refreshed = await refreshAdminTokenHandler();
 
           // 리프레시 실패 시 로그아웃
