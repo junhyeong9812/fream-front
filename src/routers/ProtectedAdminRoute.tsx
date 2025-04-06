@@ -28,6 +28,8 @@ const ProtectedAdminRoute: React.FC<Props> = ({ children }) => {
 
           // 토큰 유효성 확인
           const isValid = await isAdminTokenValid();
+
+          // 토큰이 유효하지 않을 때만 리프레시 시도
           if (!isValid) {
             console.log("ProtectedAdminRoute: 토큰 만료됨, 리프레시 시도");
 
