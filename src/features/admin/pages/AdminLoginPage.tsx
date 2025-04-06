@@ -14,7 +14,7 @@ const AdminLoginPage: React.FC = () => {
 
   const [loginData, setLoginData] = useState<AdminLoginData>({
     email: "admin@example.com",
-    password: "adminpassword123!", //adminPassword?
+    password: "adminpassword123!",
   });
 
   // 로딩 상태 추가
@@ -25,9 +25,13 @@ const AdminLoginPage: React.FC = () => {
   // 이미 로그인 상태라면 관리자 대시보드로 리다이렉트
   useEffect(() => {
     const checkLoginStatus = async () => {
-      if (await checkAdminLoginStatus()) {
-        setIsAdminLoggedIn(true);
-        navigate("/admin");
+      try {
+        if (await checkAdminLoginStatus()) {
+          setIsAdminLoggedIn(true);
+          navigate("/admin");
+        }
+      } catch (error) {
+        console.error("로그인 상태 확인 중 오류:", error);
       }
     };
 
@@ -100,6 +104,11 @@ const AdminLoginPage: React.FC = () => {
     }
   }, [loginData.email, loginData.password, emailSuccess, passwordSuccess]);
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleAdminLoginFetch();
+  };
+
   const handleAdminLoginFetch = async () => {
     // 로딩 중이거나 버튼이 비활성화된 경우 요청 방지
     if (isLoading || !loginBtn) return;
@@ -116,9 +125,14 @@ const AdminLoginPage: React.FC = () => {
       );
 
       if (result === "yes") {
+        console.log("로그인 성공, 상태 업데이트 및 리다이렉트");
         // 로그인 성공
         setIsAdminLoggedIn(true);
-        navigate("/admin");
+
+        // 약간의 지연을 두고 리다이렉트
+        setTimeout(() => {
+          navigate("/admin");
+        }, 100);
       } else if (result === "not_admin") {
         // 관리자 권한 없음
         setErrorMessage("관리자 권한이 없는 계정입니다.");
@@ -165,70 +179,76 @@ const AdminLoginPage: React.FC = () => {
           <div className={styles.errorMessage}>{errorMessage}</div>
         )}
 
-        <div className={styles.inputContainer}>
-          <div
-            className={`${styles.inputTitle} ${
-              emailWarn ? styles.inputTitleWarn : ""
-            }`}
-          >
-            이메일 주소
+        <form onSubmit={handleFormSubmit}>
+          <div className={styles.inputContainer}>
+            <div
+              className={`${styles.inputTitle} ${
+                emailWarn ? styles.inputTitleWarn : ""
+              }`}
+            >
+              이메일 주소
+            </div>
+            <input
+              className={`${styles.input} ${emailWarn ? styles.inputWarn : ""}`}
+              value={loginData.email}
+              onChange={handleEmailChange}
+              type="email"
+              placeholder="예) admin@fream.co.kr"
+              disabled={isLoading}
+            />
+            <div
+              className={`${styles.inputBottom} ${
+                emailWarn ? styles.inputBottomWarn : ""
+              }`}
+            >
+              {emailWarn ? "이메일 주소를 정확히 입력해주세요." : ""}
+            </div>
           </div>
-          <input
-            className={`${styles.input} ${emailWarn ? styles.inputWarn : ""}`}
-            value={loginData.email}
-            onChange={handleEmailChange}
-            type="text"
-            placeholder="예) admin@fream.co.kr"
-            disabled={isLoading}
-          />
-          <div
-            className={`${styles.inputBottom} ${
-              emailWarn ? styles.inputBottomWarn : ""
-            }`}
-          >
-            {emailWarn ? "이메일 주소를 정확히 입력해주세요." : ""}
-          </div>
-        </div>
 
-        <div className={styles.inputContainer}>
-          <div
-            className={`${styles.inputTitle} ${
-              passwordWarn ? styles.inputTitleWarn : ""
-            }`}
-          >
-            비밀번호
+          <div className={styles.inputContainer}>
+            <div
+              className={`${styles.inputTitle} ${
+                passwordWarn ? styles.inputTitleWarn : ""
+              }`}
+            >
+              비밀번호
+            </div>
+            <input
+              className={`${styles.input} ${styles.passwordInput} ${
+                passwordWarn ? styles.inputWarn : ""
+              }`}
+              value={loginData.password}
+              onChange={handlePasswordChange}
+              type="password"
+              maxLength={16}
+              disabled={isLoading}
+            />
+            <div
+              className={`${styles.inputBottom} ${
+                passwordWarn ? styles.inputBottomWarn : ""
+              }`}
+            >
+              {passwordWarn
+                ? "영문, 숫자, 특수문자를 조합해서 입력해주세요. (8-16자)"
+                : ""}
+            </div>
           </div>
-          <input
-            className={`${styles.input} ${styles.passwordInput} ${
-              passwordWarn ? styles.inputWarn : ""
-            }`}
-            value={loginData.password}
-            onChange={handlePasswordChange}
-            type="password"
-            maxLength={16}
-            disabled={isLoading}
-          />
-          <div
-            className={`${styles.inputBottom} ${
-              passwordWarn ? styles.inputBottomWarn : ""
-            }`}
-          >
-            {passwordWarn
-              ? "영문, 숫자, 특수문자를 조합해서 입력해주세요. (8-16자)"
-              : ""}
-          </div>
-        </div>
 
-        {/* 로딩 상태에 따른 버튼 렌더링 */}
-        {isLoading ? (
-          <LoadingButton />
-        ) : loginBtn ? (
-          <div onClick={handleAdminLoginFetch} className={styles.loginButton}>
-            관리자 로그인
-          </div>
-        ) : (
-          <div className={styles.loginButtonInactive}>관리자 로그인</div>
-        )}
+          {/* 로딩 상태에 따른 버튼 렌더링 */}
+          {isLoading ? (
+            <LoadingButton />
+          ) : loginBtn ? (
+            <button
+              type="submit"
+              className={styles.loginButton}
+              onClick={handleAdminLoginFetch}
+            >
+              관리자 로그인
+            </button>
+          ) : (
+            <div className={styles.loginButtonInactive}>관리자 로그인</div>
+          )}
+        </form>
 
         <div className={styles.categoryContainer}>
           <div
