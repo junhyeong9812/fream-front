@@ -125,7 +125,7 @@ export class ProductService {
    */
   static async getBrands(): Promise<BrandResponseDto[]> {
     const response = await apiClient.get(this.BRAND_URL);
-    return response.data;
+    return response.data.data || []; // ResponseDto에서 data 필드 추출
   }
 
   /**
@@ -133,7 +133,7 @@ export class ProductService {
    */
   static async getMainCategories(): Promise<CategoryResponseDto[]> {
     const response = await apiClient.get(`${this.CATEGORY_URL}/main`);
-    return response.data;
+    return response.data || []; // 직접 반환 (래핑 없음)
   }
 
   /**
@@ -145,7 +145,7 @@ export class ProductService {
     const response = await apiClient.get(
       `${this.CATEGORY_URL}/sub/${mainCategoryName}`
     );
-    return response.data;
+    return response.data || []; // 직접 반환 (래핑 없음)
   }
 
   /**
@@ -153,7 +153,7 @@ export class ProductService {
    */
   static async getCollections(): Promise<CollectionResponseDto[]> {
     const response = await apiClient.get(this.COLLECTION_URL);
-    return response.data;
+    return response.data.data || []; // ResponseDto에서 data 필드 추출
   }
 
   /**
