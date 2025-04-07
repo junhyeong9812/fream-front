@@ -24,7 +24,9 @@ const NoticeSearchBar: React.FC<NoticeSearchBarProps> = ({
 
   return (
     <div
-      className={`${styles.searchBar} ${theme === "dark" ? styles.dark : ""}`}
+      className={`${styles.searchBar} ${
+        theme === "dark" ? styles.darkSearchBar : ""
+      }`}
     >
       <form onSubmit={handleSubmit} className={styles.searchForm}>
         <input

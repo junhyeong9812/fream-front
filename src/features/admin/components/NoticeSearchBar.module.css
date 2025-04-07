@@ -9,6 +9,12 @@
   transition: all 0.3s ease;
 }
 
+.darkSearchBar {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid #3a3a3a;
+}
+
 .dark .searchBar {
   background-color: #2a2a2a;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
