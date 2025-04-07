@@ -13,6 +13,7 @@ import NoticeManagementPage from "../features/admin/pages/NoticeManagementPage";
 import FAQManagementPage from "../features/admin/pages/FAQManagementPage";
 import ProductManagementPage from "../features/admin/pages/ProductManagementPage";
 import BrandManagementPage from "../features/admin/pages/BrandManagementPage";
+import CollectionManagementPage from "../features/admin/pages/CollectionManagementPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -49,7 +50,7 @@ const AdminRoutes: React.FC = () => {
           <Route path="products/brands" element={<BrandManagementPage />} />
           <Route
             path="products/collections"
-            element={<div>컬렉션 관리 페이지</div>}
+            element={<CollectionManagementPage />}
           />
 
           {/* 주문/배송 관리 */}
