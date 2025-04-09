@@ -120,9 +120,18 @@ export interface ProductUpdateResponseDto {
 
 // 상품 색상 생성 요청 DTO
 export interface ProductColorCreateRequestDto {
-  colorName: string;
-  content: string;
-  sizes: string[];
+  colorName: string; // 색상명
+  content: string; // 상세 설명 (HTML)
+  sizes: string[]; // 사이즈 배열 (문자열만 포함)
+}
+
+// 상품 색상 수정 요청 DTO
+export interface ProductColorUpdateRequestDto {
+  colorName: string; // 색상명
+  content: string; // 상세 설명
+  existingImages: string[]; // 유지할 기존 이미지 URL 목록
+  existingDetailImages: string[]; // 유지할 기존 상세 이미지 URL 목록
+  sizes: string[]; // 사이즈 배열 (문자열만 포함)
 }
 
 // 필터 데이터 응답 DTO
@@ -132,4 +141,43 @@ export interface FilterDataResponseDto {
   collections: CollectionResponseDto[];
   colors: string[];
   sizes: string[];
+}
+
+// 상품 색상 상세 응답 DTO
+export interface ProductColorDetailResponseDto {
+  id: number;
+  colorName: string;
+  content: string;
+  thumbnailImageUrl: string;
+  images: ProductImageDto[];
+  detailImages: ProductDetailImageDto[];
+  sizes: string[]; // 사이즈 배열 (문자열만 포함)
+}
+
+// 상품 이미지 DTO
+export interface ProductImageDto {
+  id: number;
+  imageUrl: string;
+}
+
+// 상품 상세 이미지 DTO
+export interface ProductDetailImageDto {
+  id: number;
+  imageUrl: string;
+}
+
+// 상품 상세 응답 DTO
+export interface ProductDetailResponseDto {
+  id: number;
+  name: string;
+  englishName: string;
+  brandName: string;
+  categoryName: string;
+  mainCategoryName: string;
+  collectionName?: string;
+  releasePrice: number;
+  releaseDate: string;
+  modelNumber: string;
+  gender: GenderType;
+  colors: ProductColorDetailResponseDto[];
 }

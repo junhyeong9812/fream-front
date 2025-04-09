@@ -1,0 +1,485 @@
+.productColorPage {
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  min-height: calc(100vh - 120px);
+  transition: all 0.3s ease;
+}
+
+.productColorPage.dark {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.productName {
+  font-size: 1.2rem;
+  font-weight: normal;
+  color: #666;
+}
+
+.dark .pageTitle {
+  color: #f0f0f0;
+}
+
+.dark .productName {
+  color: #aaa;
+}
+
+.headerButtons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.backButton {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #5a6268;
+}
+
+.dark .backButton {
+  background-color: #495057;
+}
+
+.dark .backButton:hover {
+  background-color: #343a40;
+}
+
+.form {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.dark .form {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.productInfoSection {
+  padding: 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f5f9ff;
+}
+
+.dark .productInfoSection {
+  background-color: #2c3a5a;
+  border-bottom-color: #444;
+}
+
+.productBasicInfo h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.productBasicInfo h3 span {
+  font-weight: normal;
+  font-size: 1rem;
+  color: #666;
+  margin-left: 0.5rem;
+}
+
+.dark .productBasicInfo h3 {
+  color: #f0f0f0;
+}
+
+.dark .productBasicInfo h3 span {
+  color: #aaa;
+}
+
+.productBasicInfo p {
+  margin: 0.3rem 0;
+  color: #555;
+}
+
+.dark .productBasicInfo p {
+  color: #ccc;
+}
+
+.formSection {
+  padding: 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.dark .formSection {
+  border-bottom-color: #444;
+}
+
+.formSection:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.dark .sectionTitle {
+  color: #f0f0f0;
+}
+
+.subSectionTitle {
+  margin: 1rem 0 0.75rem 0;
+  font-size: 1.1rem;
+  color: #444;
+  font-weight: 500;
+}
+
+.dark .subSectionTitle {
+  color: #ddd;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.dark .label {
+  color: #ccc;
+}
+
+.required {
+  color: #dc3545;
+  margin-left: 2px;
+}
+
+.select {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: white;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.dark .select {
+  background-color: #333;
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+.select:focus {
+  border-color: #4a6fdc;
+  outline: none;
+}
+
+.dark .select:focus {
+  border-color: #5d82e5;
+}
+
+/* 썸네일 이미지 스타일 */
+.thumbnailContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.thumbnailPreview {
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dark .thumbnailPreview {
+  border-color: #555;
+}
+
+.thumbnailPreview img {
+  width: 100%;
+  display: block;
+}
+
+.removeThumbnailButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.removeThumbnailButton:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.thumbnailUpload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  background-color: #f9f9f9;
+  width: 100%;
+  max-width: 400px;
+  min-height: 200px;
+}
+
+.dark .thumbnailUpload {
+  border-color: #555;
+  background-color: #333;
+}
+
+.thumbnailUpload span {
+  margin-top: 1rem;
+  color: #666;
+}
+
+.dark .thumbnailUpload span {
+  color: #aaa;
+}
+
+.thumbnailUpload:hover {
+  border-color: #4a6fdc;
+  background-color: #f5f8ff;
+}
+
+.dark .thumbnailUpload:hover {
+  border-color: #5d82e5;
+  background-color: #2c3a5a;
+}
+
+/* 이미지 그리드 스타일 */
+.imagesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 992px) {
+  .imagesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .imagesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.imagePreview {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+
+.dark .imagePreview {
+  border-color: #555;
+}
+
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.removeImageButton:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.addImageButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  background-color: #f9f9f9;
+  aspect-ratio: 1 / 1;
+}
+
+.dark .addImageButton {
+  border-color: #555;
+  background-color: #333;
+}
+
+.addImageButton span {
+  margin-top: 0.5rem;
+  color: #666;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.dark .addImageButton span {
+  color: #aaa;
+}
+
+.addImageButton:hover {
+  border-color: #4a6fdc;
+  background-color: #f5f8ff;
+}
+
+.dark .addImageButton:hover {
+  border-color: #5d82e5;
+  background-color: #2c3a5a;
+}
+
+/* React Quill 에디터 스타일 */
+.editorContainer {
+  margin-top: 0.5rem;
+}
+
+.darkEditor :global(.ql-snow) {
+  border-color: #555 !important;
+}
+
+.darkEditor :global(.ql-toolbar.ql-snow) {
+  background-color: #333;
+}
+
+.darkEditor :global(.ql-container.ql-snow) {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+}
+
+.darkEditor :global(.ql-editor p),
+.darkEditor :global(.ql-editor li) {
+  color: #f0f0f0;
+}
+
+.darkEditor :global(.ql-formats button) {
+  color: #ddd;
+}
+
+.darkEditor :global(.ql-picker-label) {
+  color: #ddd !important;
+}
+
+.formActions {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #eaeaea;
+}
+
+.dark .formActions {
+  border-top-color: #444;
+}
+
+.submitButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.submitButton:hover {
+  background-color: #3b5cb8;
+}
+
+.dark .submitButton {
+  background-color: #5d82e5;
+}
+
+.dark .submitButton:hover {
+  background-color: #4a6fdc;
+}
+
+.submitButton:disabled {
+  background-color: #b3b3b3;
+  cursor: not-allowed;
+}
+
+.dark .submitButton:disabled {
+  background-color: #666;
+}

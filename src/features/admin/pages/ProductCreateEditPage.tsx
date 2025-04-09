@@ -12,6 +12,7 @@ import {
   GenderKoreanMap,
 } from "../types/productManagementTypes";
 import { ProductService } from "../services/productManagementService";
+import { AdminProductService } from "../services/adminProductService";
 import LoadingSpinner from "../../../global/components/common/LoadingSpinner";
 import ErrorMessage from "../../../global/components/common/ErrorMessage";
 import styles from "./ProductCreateEditPage.module.css";
@@ -26,7 +27,9 @@ const ProductCreateEditPage: React.FC = () => {
   const mode: PageMode = productId ? "edit" : "create";
 
   // 폼 상태
-  const [formData, setFormData] = useState<ProductCreateRequestDto | ProductUpdateRequestDto>({
+  const [formData, setFormData] = useState<
+    ProductCreateRequestDto | ProductUpdateRequestDto
+  >({
     name: "",
     englishName: "",
     releasePrice: 0,
@@ -41,7 +44,9 @@ const ProductCreateEditPage: React.FC = () => {
 
   // 드롭다운 옵션 상태
   const [brands, setBrands] = useState<BrandResponseDto[]>([]);
-  const [mainCategories, setMainCategories] = useState<CategoryResponseDto[]>([]);
+  const [mainCategories, setMainCategories] = useState<CategoryResponseDto[]>(
+    []
+  );
   const [subCategories, setSubCategories] = useState<CategoryResponseDto[]>([]);
   const [collections, setCollections] = useState<CollectionResponseDto[]>([]);
 
@@ -56,22 +61,24 @@ const ProductCreateEditPage: React.FC = () => {
       if (mode === "edit" && productId) {
         setIsLoading(true);
         try {
-          // 실제로는 여기서 상품 상세 정보를 API로 불러와 formData에 설정해야 합니다.
-          // const productData = await ProductService.getProductById(Number(productId));
-          // setFormData(productData);
-          
-          // 지금은 예시 데이터를 사용합니다
+          // 관리자용 API를 통해 상품 정보 로드
+          const productData =
+            await AdminProductService.getProductDetailForAdmin(
+              Number(productId)
+            );
+
+          // 상품 정보를 폼 데이터로 변환
           setFormData({
-            name: "예시 상품명",
-            englishName: "Example Product",
-            releasePrice: 150000,
-            modelNumber: "ABC-123",
-            releaseDate: "2025-01-01",
-            brandName: "Nike",
-            mainCategoryName: "신발",
-            categoryName: "스니커즈",
-            collectionName: "Air Force",
-            gender: GenderType.UNISEX,
+            name: productData.name,
+            englishName: productData.englishName,
+            releasePrice: productData.releasePrice,
+            modelNumber: productData.modelNumber,
+            releaseDate: productData.releaseDate,
+            brandName: productData.brandName,
+            mainCategoryName: productData.mainCategoryName,
+            categoryName: productData.categoryName,
+            collectionName: productData.collectionName || "",
+            gender: productData.gender,
           });
         } catch (err) {
           console.error("상품 정보 로드 실패:", err);
@@ -119,9 +126,11 @@ const ProductCreateEditPage: React.FC = () => {
     const loadSubCategories = async () => {
       if (formData.mainCategoryName) {
         try {
-          const subCategoriesList = await ProductService.getSubCategories(formData.mainCategoryName);
+          const subCategoriesList = await ProductService.getSubCategories(
+            formData.mainCategoryName
+          );
           setSubCategories(subCategoriesList);
-          
+
           // 메인 카테고리가 변경되면 서브 카테고리를 초기화합니다
           if (mode === "create") {
             setFormData((prev) => ({ ...prev, categoryName: "" }));
@@ -138,9 +147,13 @@ const ProductCreateEditPage: React.FC = () => {
   }, [formData.mainCategoryName, mode]);
 
   // 입력 변경 핸들러
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value } = e.target;
-    
+
     // 숫자 입력인 경우 형 변환
     if (name === "releasePrice") {
       setFormData((prev) => ({
@@ -164,19 +177,26 @@ const ProductCreateEditPage: React.FC = () => {
     try {
       if (mode === "create") {
         // 상품 생성 API 호출
-        const response = await ProductService.createProduct(formData as ProductCreateRequestDto);
+        const response = await AdminProductService.createProduct(
+          formData as ProductCreateRequestDto
+        );
         alert("상품이 성공적으로 등록되었습니다.");
         // 색상 등록 페이지로 이동
         navigate(`/admin/products/color/add/${response.id}`);
       } else if (mode === "edit" && productId) {
         // 상품 수정 API 호출
-        await ProductService.updateProduct(Number(productId), formData as ProductUpdateRequestDto);
+        await AdminProductService.updateProduct(
+          Number(productId),
+          formData as ProductUpdateRequestDto
+        );
         alert("상품 정보가 성공적으로 수정되었습니다.");
-        navigate(`/admin/products`);
+        navigate(`/admin/products/detail/${productId}`);
       }
     } catch (err) {
       console.error("폼 제출 실패:", err);
-      setError("상품 정보 저장 중 오류가 발생했습니다. 모든 필수 항목을 입력했는지 확인해주세요.");
+      setError(
+        "상품 정보 저장 중 오류가 발생했습니다. 모든 필수 항목을 입력했는지 확인해주세요."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -185,14 +205,18 @@ const ProductCreateEditPage: React.FC = () => {
   // 삭제 핸들러
   const handleDelete = async () => {
     if (!productId) return;
-    
-    if (!window.confirm("정말로 이 상품을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+
+    if (
+      !window.confirm(
+        "정말로 이 상품을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+      )
+    ) {
       return;
     }
 
     setIsLoading(true);
     try {
-      await ProductService.deleteProduct(Number(productId));
+      await AdminProductService.deleteProduct(Number(productId));
       alert("상품이 성공적으로 삭제되었습니다.");
       navigate("/admin/products");
     } catch (err) {
@@ -208,7 +232,11 @@ const ProductCreateEditPage: React.FC = () => {
   }
 
   return (
-    <div className={`${styles.productCreateEdit} ${theme === "dark" ? styles.dark : ""}`}>
+    <div
+      className={`${styles.productCreateEdit} ${
+        theme === "dark" ? styles.dark : ""
+      }`}
+    >
       <div className={styles.pageHeader}>
         <h1 className={styles.pageTitle}>
           {mode === "create" ? "상품 등록" : "상품 수정"}
@@ -216,10 +244,16 @@ const ProductCreateEditPage: React.FC = () => {
         <div className={styles.headerButtons}>
           <button
             className={styles.backButton}
-            onClick={() => navigate("/admin/products")}
-            title="목록으로 돌아가기"
+            onClick={() =>
+              navigate(
+                mode === "edit"
+                  ? `/admin/products/detail/${productId}`
+                  : "/admin/products"
+              )
+            }
+            title="뒤로 가기"
           >
-            <FiArrowLeft /> 목록으로
+            <FiArrowLeft /> {mode === "edit" ? "상세보기" : "목록으로"}
           </button>
           {mode === "edit" && (
             <button
@@ -437,7 +471,11 @@ const ProductCreateEditPage: React.FC = () => {
             disabled={isSubmitting}
           >
             <FiSave />
-            {isSubmitting ? "처리 중..." : mode === "create" ? "상품 등록" : "변경사항 저장"}
+            {isSubmitting
+              ? "처리 중..."
+              : mode === "create"
+              ? "상품 등록"
+              : "변경사항 저장"}
           </button>
         </div>
       </form>

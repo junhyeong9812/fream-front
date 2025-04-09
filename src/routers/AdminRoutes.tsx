@@ -14,6 +14,9 @@ import FAQManagementPage from "../features/admin/pages/FAQManagementPage";
 import ProductManagementPage from "../features/admin/pages/ProductManagementPage";
 import BrandManagementPage from "../features/admin/pages/BrandManagementPage";
 import CollectionManagementPage from "../features/admin/pages/CollectionManagementPage";
+import ProductCreateEditPage from "../features/admin/pages/ProductCreateEditPage";
+import ProductDetailPage from "../features/admin/pages/ProductDetailPage";
+import ProductColorPage from "../features/admin/pages/ProductColorPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -42,7 +45,24 @@ const AdminRoutes: React.FC = () => {
 
           {/* 상품 관리 */}
           <Route path="products" element={<ProductManagementPage />} />
-          <Route path="products/add" element={<div>상품 등록 페이지</div>} />
+          <Route path="products/add" element={<ProductCreateEditPage />} />
+          <Route
+            path="products/edit/:productId"
+            element={<ProductCreateEditPage />}
+          />
+          <Route
+            path="products/detail/:productId/:colorId"
+            element={<ProductDetailPage />}
+          />
+          <Route
+            path="products/color/add/:productId"
+            element={<ProductColorPage />}
+          />
+          <Route
+            path="products/color/edit/:productId/:colorId"
+            element={<ProductColorPage />}
+          />
+
           <Route
             path="products/categories"
             element={<div>카테고리 관리 페이지</div>}

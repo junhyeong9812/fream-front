@@ -1,0 +1,229 @@
+.sizeSelector {
+  position: relative;
+  width: 100%;
+}
+
+.sizeDisplay {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sizeDisplay:hover {
+  border-color: #aaa;
+}
+
+.sizeDisplay:after {
+  content: "▼";
+  font-size: 0.8rem;
+  color: #777;
+  margin-left: 0.5rem;
+}
+
+/* 모달 스타일 */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+}
+
+.sizesGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+  .sizesGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .sizesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.sizeItem {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sizeItem:hover {
+  border-color: #4a6fdc;
+  background-color: #f5f8ff;
+}
+
+.sizeItem.selected {
+  border-color: #4a6fdc;
+  background-color: #edf2ff;
+  color: #4a6fdc;
+  font-weight: 500;
+}
+
+.checkmark {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  color: #4a6fdc;
+  font-size: 0.8rem;
+}
+
+.modalFooter {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirmButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.confirmButton:hover {
+  background-color: #3b5cb8;
+}
+
+/* 다크 모드 지원 */
+:global(.dark-theme) .sizeDisplay {
+  background-color: #333;
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+:global(.dark-theme) .sizeDisplay:hover {
+  border-color: #777;
+}
+
+:global(.dark-theme) .modal {
+  background-color: #2a2a2a;
+}
+
+:global(.dark-theme) .modalHeader {
+  border-bottom-color: #444;
+}
+
+:global(.dark-theme) .modalHeader h3 {
+  color: #f0f0f0;
+}
+
+:global(.dark-theme) .actionButton {
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+:global(.dark-theme) .actionButton:hover {
+  background-color: #333;
+  border-color: #666;
+}
+
+:global(.dark-theme) .sizeItem {
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+:global(.dark-theme) .sizeItem:hover {
+  border-color: #5d82e5;
+  background-color: #2c3a5a;
+}
+
+:global(.dark-theme) .sizeItem.selected {
+  border-color: #5d82e5;
+  background-color: #2c3a5a;
+  color: #5d82e5;
+}
+
+:global(.dark-theme) .checkmark {
+  color: #5d82e5;
+}
+
+:global(.dark-theme) .modalFooter {
+  border-top-color: #444;
+}
+
+:global(.dark-theme) .confirmButton {
+  background-color: #5d82e5;
+}
+
+:global(.dark-theme) .confirmButton:hover {
+  background-color: #4a6fdc;
+}
