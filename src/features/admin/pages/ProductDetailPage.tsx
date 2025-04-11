@@ -381,7 +381,9 @@ const ProductDetailPage: React.FC = () => {
               <div className={styles.colorImages}>
                 <div className={styles.thumbnailContainer}>
                   <img
-                    src={selectedColor.thumbnailImage}
+                    src={
+                      "https://www.pinjun.xyz" + selectedColor.thumbnailImage
+                    }
                     alt={`${productInfo.name} - ${getColorKoreanName(
                       selectedColor.colorName
                     )} 썸네일`}
@@ -392,7 +394,7 @@ const ProductDetailPage: React.FC = () => {
                   {selectedColor.images.map((image: string, index: number) => (
                     <div key={index} className={styles.colorImageItem}>
                       <img
-                        src={image}
+                        src={"https://www.pinjun.xyz" + image}
                         alt={`${productInfo.name} - ${getColorKoreanName(
                           selectedColor.colorName
                         )} 이미지 ${index + 1}`}

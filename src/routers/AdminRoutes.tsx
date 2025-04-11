@@ -17,6 +17,7 @@ import CollectionManagementPage from "../features/admin/pages/CollectionManageme
 import ProductCreateEditPage from "../features/admin/pages/ProductCreateEditPage";
 import ProductDetailPage from "../features/admin/pages/ProductDetailPage";
 import ProductColorPage from "../features/admin/pages/ProductColorPage";
+import CategoryManagementPage from "../features/admin/pages/CategoryManagementPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -65,13 +66,17 @@ const AdminRoutes: React.FC = () => {
 
           <Route
             path="products/categories"
-            element={<div>카테고리 관리 페이지</div>}
+            element={<CategoryManagementPage />}
           />
           <Route path="products/brands" element={<BrandManagementPage />} />
           <Route
             path="products/collections"
             element={<CollectionManagementPage />}
           />
+
+          {/* 이벤트 관리 */}
+          <Route path="events" element={<div>이벤트 목록/수정 페이지</div>} />
+          <Route path="events/add" element={<div>이벤트 등록 페이지</div>} />
 
           {/* 주문/배송 관리 */}
           <Route path="orders" element={<div>주문 목록 페이지</div>} />

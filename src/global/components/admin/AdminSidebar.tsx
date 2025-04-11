@@ -15,6 +15,7 @@ import {
   FiHelpCircle,
   FiChevronLeft,
   FiChevronRight as FiChevronRightIcon,
+  FiCalendar,
 } from "react-icons/fi";
 import styles from "./AdminSidebar.module.css";
 import { ThemeContext } from "src/global/context/ThemeContext";
@@ -101,6 +102,23 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           id: "product-collections",
           title: "컬렉션 관리",
           link: "/admin/products/collections",
+        },
+      ],
+    },
+    {
+      id: "events",
+      title: "이벤트 관리",
+      icon: <FiCalendar />, // 이벤트에 적합한 아이콘 사용
+      submenus: [
+        {
+          id: "event-list",
+          title: "이벤트 목록/수정",
+          link: "/admin/events",
+        },
+        {
+          id: "event-add",
+          title: "이벤트 등록",
+          link: "/admin/events/add",
         },
       ],
     },
@@ -253,10 +271,40 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   // 현재 경로가 메뉴 아이템과 일치하는지 확인
   const isActive = (link: string) => {
-    if (link === "/admin" && location.pathname === "/admin") {
+    // 정확히 일치하는 경우 활성화
+    if (link === location.pathname) {
       return true;
     }
-    return location.pathname.startsWith(link) && link !== "/admin";
+
+    // 하위 메뉴가 있는 주요 섹션들
+    const sectionsWithSubmenus = [
+      "/admin/products",
+      "/admin/events",
+      "/admin/orders",
+      "/admin/styles",
+      "/admin/users",
+      "/admin/sales",
+      "/admin/customer-service",
+      "/admin/settings",
+    ];
+
+    // 하위 메뉴가 있는 섹션의 링크는 정확히 일치하는 경우만 활성화
+    if (sectionsWithSubmenus.includes(link)) {
+      return link === location.pathname;
+    }
+
+    // "/admin" 페이지는 정확히 일치하는 경우만 활성화
+    if (link === "/admin") {
+      return location.pathname === "/admin";
+    }
+
+    // 그 외 페이지는 경로 시작 부분 일치 확인 (모니터링, 도움말 등)
+    // 단, 하위 메뉴 경로는 제외해야 함
+    const isSubpath = sectionsWithSubmenus.some((section) =>
+      location.pathname.startsWith(section + "/")
+    );
+
+    return !isSubpath && location.pathname.startsWith(link);
   };
 
   // 축소 상태에서 하위 메뉴 토글 처리
