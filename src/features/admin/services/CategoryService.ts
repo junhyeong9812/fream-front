@@ -12,7 +12,8 @@ export class CategoryService {
    */
   static async getAllMainCategories(): Promise<CategoryResponseDto[]> {
     const response = await apiClient.get(`${this.CATEGORY_URL}/main`);
-    return response.data.data;
+    // API 응답이 직접 배열 형태로 오므로 response.data 사용
+    return response.data || [];
   }
 
   /**
@@ -20,7 +21,8 @@ export class CategoryService {
    */
   static async getSubCategoriesByMain(mainCategoryName: string): Promise<CategoryResponseDto[]> {
     const response = await apiClient.get(`${this.CATEGORY_URL}/sub/${mainCategoryName}`);
-    return response.data.data;
+    // API 응답이 직접 배열 형태로 오므로 response.data 사용
+    return response.data || [];
   }
 
   /**
@@ -28,7 +30,7 @@ export class CategoryService {
    */
   static async createCategory(request: CategoryRequestDto): Promise<CategoryResponseDto> {
     const response = await apiClient.post(this.CATEGORY_URL, request);
-    return response.data.data;
+    return response.data;
   }
 
   /**
@@ -36,7 +38,7 @@ export class CategoryService {
    */
   static async updateCategory(categoryId: number, request: CategoryRequestDto): Promise<CategoryResponseDto> {
     const response = await apiClient.put(`${this.CATEGORY_URL}/${categoryId}`, request);
-    return response.data.data;
+    return response.data;
   }
 
   /**
