@@ -1,0 +1,255 @@
+.eventListContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.dark .eventListContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.eventTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.eventTable th,
+.eventTable td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .eventTable th,
+.dark .eventTable td {
+  border-bottom-color: #333;
+}
+
+.eventTable th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #555;
+}
+
+.dark .eventTable th {
+  background-color: #222;
+  color: #ddd;
+}
+
+.eventTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.dark .eventTable tbody tr:hover {
+  background-color: #333;
+}
+
+.eventId {
+  width: 60px;
+  color: #777;
+}
+
+.dark .eventId {
+  color: #aaa;
+}
+
+.eventTitle {
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .eventTitle {
+  color: #f0f0f0;
+}
+
+.eventDate {
+  color: #666;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.dark .eventDate {
+  color: #bbb;
+}
+
+.eventBrand {
+  color: #4a6fdc;
+  font-weight: 500;
+}
+
+.dark .eventBrand {
+  color: #5d82e5;
+}
+
+.eventStatus {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  min-width: 80px;
+}
+
+.statusActive {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.dark .statusActive {
+  background-color: rgba(25, 118, 210, 0.2);
+  color: #64b5f6;
+}
+
+.statusInactive {
+  background-color: #ffebee;
+  color: #e53935;
+}
+
+.dark .statusInactive {
+  background-color: rgba(229, 57, 53, 0.2);
+  color: #ef5350;
+}
+
+.statusUpcoming {
+  background-color: #e8f5e9;
+  color: #43a047;
+}
+
+.dark .statusUpcoming {
+  background-color: rgba(67, 160, 71, 0.2);
+  color: #66bb6a;
+}
+
+.eventThumbnail {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.actionCell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  margin-left: 0.3rem;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #f0f0f0;
+}
+
+.dark .actionButton {
+  color: #bbb;
+}
+
+.dark .actionButton:hover {
+  background-color: #333;
+}
+
+.viewButton {
+  color: #4a6fdc;
+}
+
+.dark .viewButton {
+  color: #5d82e5;
+}
+
+.editButton {
+  color: #ff9800;
+}
+
+.dark .editButton {
+  color: #ffb74d;
+}
+
+.deleteButton {
+  color: #e53935;
+}
+
+.dark .deleteButton {
+  color: #ef5350;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 0;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+}
+
+.dark .paginationContainer {
+  background-color: #2a2a2a;
+  border-top-color: #333;
+}
+
+.paginationButton {
+  margin: 0 0.2rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginationButton:hover {
+  background-color: #f5f5f5;
+}
+
+.paginationButton.active {
+  background-color: #4a6fdc;
+  color: white;
+  border-color: #4a6fdc;
+}
+
+.dark .paginationButton {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #bbb;
+}
+
+.dark .paginationButton:hover {
+  background-color: #333;
+}
+
+.dark .paginationButton.active {
+  background-color: #5d82e5;
+  color: white;
+  border-color: #5d82e5;
+}
+
+.paginationInfo {
+  margin: 0 1rem;
+  font-size: 0.9rem;
+  color: #777;
+  display: flex;
+  align-items: center;
+}
+
+.dark .paginationInfo {
+  color: #aaa;
+}
+
+.noEvents {
+  padding: 3rem;
+  text-align: center;
+  color: #777;
+}
+
+.dark .noEvents {
+  color: #aaa;
+}

@@ -1,0 +1,54 @@
+.sortContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 0.8rem 1.2rem;
+}
+
+.dark .sortContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.resultCount {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dark .resultCount {
+  color: #aaa;
+}
+
+.sortOptions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.sortLabel {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dark .sortLabel {
+  color: #aaa;
+}
+
+.sortSelect {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #fff;
+}
+
+.dark .sortSelect {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}

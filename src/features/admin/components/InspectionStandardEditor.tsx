@@ -9,7 +9,7 @@ import {
 import { InspectionStandardService } from "../services/inspectionStandardService";
 import styles from "./InspectionStandardEditor.module.css";
 
-// HTML 에디터 라이브러리 사용 (React-Quill로 예시)
+
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 

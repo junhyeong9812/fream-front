@@ -1,0 +1,146 @@
+.filterContainer {
+  margin-bottom: 1.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 1.2rem;
+}
+
+.dark .filterContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filterTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .filterTitle {
+  color: #f0f0f0;
+}
+
+.filterToggleButton {
+  background: none;
+  border: none;
+  color: #4a6fdc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.dark .filterToggleButton {
+  color: #5d82e5;
+}
+
+.filterContent {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filterLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.dark .filterLabel {
+  color: #ccc;
+}
+
+.filterSelect,
+.filterInput {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.filterSelect:focus,
+.filterInput:focus {
+  outline: none;
+  border-color: #4a6fdc;
+}
+
+.dark .filterSelect,
+.dark .filterInput {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.dark .filterSelect:focus,
+.dark .filterInput:focus {
+  border-color: #5d82e5;
+}
+
+.filterButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.applyFilterButton,
+.resetFilterButton {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.applyFilterButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+}
+
+.applyFilterButton:hover {
+  background-color: #3b5cb8;
+}
+
+.dark .applyFilterButton {
+  background-color: #5d82e5;
+}
+
+.dark .applyFilterButton:hover {
+  background-color: #4a6fdc;
+}
+
+.resetFilterButton {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.resetFilterButton:hover {
+  background-color: #f0f0f0;
+}
+
+.dark .resetFilterButton {
+  color: #ccc;
+  border-color: #444;
+}
+
+.dark .resetFilterButton:hover {
+  background-color: #333;
+}
