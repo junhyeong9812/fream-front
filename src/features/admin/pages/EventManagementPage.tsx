@@ -10,7 +10,7 @@ import EventSort from "../components/EventSort";
 import EventList from "../components/EventList";
 import LoadingSpinner from "../../../global/components/common/LoadingSpinner";
 import ErrorMessage from "../../../global/components/common/ErrorMessage";
-import styles from "../styles/EventManagementPage.module.css";
+import styles from "./EventManagementPage.module.css";
 
 const EventManagementPage: React.FC = () => {
   const { theme } = useTheme();

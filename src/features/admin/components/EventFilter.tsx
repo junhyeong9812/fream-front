@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { BrandResponseDto } from "../types/brandCollectionTypes";
 import { EventSearchDto } from "../types/eventTypes";
-import styles from "../styles/EventFilter.module.css";
+import styles from "./EventFilter.module.css";
 import { BrandService } from "../services/BrandService";
 
 interface EventFilterProps {

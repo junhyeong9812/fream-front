@@ -1,7 +1,7 @@
 import React from "react";
 import { FiEye, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { EventListDto } from "../types/eventTypes";
-import styles from "../styles/EventList.module.css";
+import styles from "./EventList.module.css";
 
 interface EventListProps {
   events: EventListDto[];

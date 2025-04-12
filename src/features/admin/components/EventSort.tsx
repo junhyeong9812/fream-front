@@ -1,6 +1,6 @@
 import React from "react";
 import { SortOption } from "../types/eventTypes";
-import styles from "../styles/EventSort.module.css";
+import styles from "./EventSort.module.css";
 
 interface EventSortProps {
   onSort: (sortOption: SortOption) => void;

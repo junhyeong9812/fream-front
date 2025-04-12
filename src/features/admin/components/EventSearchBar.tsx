@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import styles from "../styles/EventSearchBar.module.css";
+import styles from "./EventSearchBar.module.css";
 
 interface EventSearchBarProps {
   onSearch: (keyword: string) => void;
