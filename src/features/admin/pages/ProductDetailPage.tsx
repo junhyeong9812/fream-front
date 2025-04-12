@@ -45,17 +45,10 @@ const ProductDetailPage: React.FC = () => {
               colorName: color.colorName,
               sizes: color.sizes,
               content: color.content,
-              thumbnailImage: color.thumbnailImageUrl
-                ? `/products/query/${productId}/images?imageName=${color.thumbnailImageUrl}`
-                : "/api/placeholder/400/300",
-              images: color.images.map(
-                (img: any) =>
-                  `/products/query/${productId}/images?imageName=${img.imageUrl}`
-              ),
-              detailImages: color.detailImages.map(
-                (img: any) =>
-                  `/products/query/${productId}/images?imageName=${img.imageUrl}`
-              ),
+              thumbnailImage:
+                color.thumbnailImageUrl || "/api/placeholder/400/300",
+              images: color.images.map((img: any) => img.imageUrl),
+              detailImages: color.detailImages.map((img: any) => img.imageUrl),
             }))
           );
 
@@ -381,9 +374,7 @@ const ProductDetailPage: React.FC = () => {
               <div className={styles.colorImages}>
                 <div className={styles.thumbnailContainer}>
                   <img
-                    src={
-                      "https://www.pinjun.xyz" + selectedColor.thumbnailImage
-                    }
+                    src={selectedColor.thumbnailImage}
                     alt={`${productInfo.name} - ${getColorKoreanName(
                       selectedColor.colorName
                     )} 썸네일`}
@@ -394,7 +385,7 @@ const ProductDetailPage: React.FC = () => {
                   {selectedColor.images.map((image: string, index: number) => (
                     <div key={index} className={styles.colorImageItem}>
                       <img
-                        src={"https://www.pinjun.xyz" + image}
+                        src={image}
                         alt={`${productInfo.name} - ${getColorKoreanName(
                           selectedColor.colorName
                         )} 이미지 ${index + 1}`}
