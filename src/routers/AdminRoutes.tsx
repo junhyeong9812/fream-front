@@ -18,6 +18,9 @@ import ProductCreateEditPage from "../features/admin/pages/ProductCreateEditPage
 import ProductDetailPage from "../features/admin/pages/ProductDetailPage";
 import ProductColorPage from "../features/admin/pages/ProductColorPage";
 import CategoryManagementPage from "../features/admin/pages/CategoryManagementPage";
+import EventManagementPage from "../features/admin/pages/EventManagementPage";
+import EventCreatePage from "../features/admin/pages/EventCreatePage";
+import EventDetailPage from "../features/admin/pages/EventDetailPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -41,9 +44,7 @@ const AdminRoutes: React.FC = () => {
           }
         >
           <Route index element={<AdminPage />} />
-
           <Route path="/admin/monitoring" element={<MonitoringPage />} />
-
           {/* 상품 관리 */}
           <Route path="products" element={<ProductManagementPage />} />
           <Route path="products/add" element={<ProductCreateEditPage />} />
@@ -63,7 +64,6 @@ const AdminRoutes: React.FC = () => {
             path="products/color/edit/:productId/:colorId"
             element={<ProductColorPage />}
           />
-
           <Route
             path="products/categories"
             element={<CategoryManagementPage />}
@@ -73,11 +73,17 @@ const AdminRoutes: React.FC = () => {
             path="products/collections"
             element={<CollectionManagementPage />}
           />
-
           {/* 이벤트 관리 */}
-          <Route path="events" element={<div>이벤트 목록/수정 페이지</div>} />
-          <Route path="events/add" element={<div>이벤트 등록 페이지</div>} />
-
+          {/* 이벤트 관리 */}
+          <Route path="events" element={<EventManagementPage />} />
+          <Route path="events/add" element={<EventCreatePage />} />
+          <Route
+            path="events/edit/:eventId"
+            element={<EventCreatePage />}
+          />{" "}
+          {/* 편집용 */}
+          <Route path="events/detail/:eventId" element={<EventDetailPage />} />
+          {/* 상세 페이지 */}
           {/* 주문/배송 관리 */}
           <Route path="orders" element={<div>주문 목록 페이지</div>} />
           <Route
@@ -86,7 +92,6 @@ const AdminRoutes: React.FC = () => {
           />
           <Route path="orders/pickup" element={<div>집화 관리 페이지</div>} />
           <Route path="orders/delivery" element={<div>배송 현황 페이지</div>} />
-
           {/* 스타일 관리 */}
           <Route path="styles" element={<div>스타일 게시물 관리 페이지</div>} />
           <Route
@@ -94,12 +99,10 @@ const AdminRoutes: React.FC = () => {
             element={<div>스타일 신고 관리 페이지</div>}
           />
           <Route path="styles/tags" element={<div>태그 관리 페이지</div>} />
-
           {/* 회원 관리 */}
           <Route path="users" element={<div>회원 목록 페이지</div>} />
           <Route path="users/grades" element={<div>등급 관리 페이지</div>} />
           <Route path="users/sanctions" element={<div>제재 관리 페이지</div>} />
-
           {/* 매출 관리 */}
           <Route path="sales" element={<div>매출 현황 페이지</div>} />
           <Route
@@ -110,7 +113,6 @@ const AdminRoutes: React.FC = () => {
             path="sales/by-category"
             element={<div>카테고리별 매출 페이지</div>}
           />
-
           {/* 고객 지원 */}
           <Route
             path="customer-service/inquiries"
@@ -126,7 +128,6 @@ const AdminRoutes: React.FC = () => {
             path="customer-service/inspection-standards"
             element={<InspectionManagement />}
           />
-
           {/* 설정 */}
           <Route path="settings/site" element={<div>사이트 설정 페이지</div>} />
           <Route
@@ -134,7 +135,6 @@ const AdminRoutes: React.FC = () => {
             element={<div>관리자 계정 페이지</div>}
           />
           <Route path="settings/roles" element={<div>권한 관리 페이지</div>} />
-
           {/* 도움말 */}
           <Route path="help" element={<div>도움말 페이지</div>} />
         </Route>
