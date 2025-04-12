@@ -6,7 +6,7 @@ import { EventService } from "../services/eventService";
 import { EventDetailDto } from "../types/eventTypes";
 import LoadingSpinner from "../../../global/components/common/LoadingSpinner";
 import ErrorMessage from "../../../global/components/common/ErrorMessage";
-import styles from "../styles/EventDetailPage.module.css";
+import styles from "./EventDetailPage.module.css";
 
 const EventDetailPage: React.FC = () => {
   const { eventId } = useParams<{ eventId: string }>();
