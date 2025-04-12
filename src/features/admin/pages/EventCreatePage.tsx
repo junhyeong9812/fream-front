@@ -7,8 +7,8 @@ import { BrandResponseDto } from "../types/brandCollectionTypes";
 import { CreateEventRequestDto } from "../types/eventTypes";
 import LoadingSpinner from "../../../global/components/common/LoadingSpinner";
 import ErrorMessage from "../../../global/components/common/ErrorMessage";
-import styles from "../styles/EventCreatePage.module.css";
-import pageStyles from "../styles/EventManagementPage.module.css";
+import styles from "./EventCreatePage.module.css";
+import pageStyles from "./EventManagementPage.module.css";
 import { BrandService } from "../services/BrandService";
 
 const EventCreatePage: React.FC = () => {
