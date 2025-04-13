@@ -1,0 +1,406 @@
+.sanctionListContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.dark.sanctionListContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.listHeader {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .listHeader {
+  border-bottom: 1px solid #333;
+}
+
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sortLabel {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dark .sortLabel {
+  color: #aaa;
+}
+
+.selectWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.sortSelect {
+  appearance: none;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.dark .sortSelect {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.sortSelect:focus {
+  outline: none;
+  border-color: #4a6fdc;
+}
+
+.dark .sortSelect:focus {
+  border-color: #5d82e5;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none;
+}
+
+.dark .selectIcon {
+  color: #aaa;
+}
+
+.sanctionTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sanctionTable th,
+.sanctionTable td {
+  padding: 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.sanctionTable th {
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+}
+
+.dark .sanctionTable th {
+  background-color: #333;
+  color: #f0f0f0;
+  border-bottom: 1px solid #444;
+}
+
+.sanctionTable td {
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.dark .sanctionTable td {
+  border-bottom: 1px solid #333;
+  color: #ddd;
+}
+
+.sanctionTable tr:last-child td {
+  border-bottom: none;
+}
+
+.sanctionTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.dark .sanctionTable tbody tr:hover {
+  background-color: #333;
+}
+
+.idColumn {
+  width: 6%;
+  color: #777;
+}
+
+.dark .idColumn {
+  color: #999;
+}
+
+.userColumn {
+  width: 20%;
+}
+
+.typeColumn {
+  width: 12%;
+}
+
+.reasonColumn {
+  width: 25%;
+}
+
+.periodColumn {
+  width: 15%;
+}
+
+.statusColumn {
+  width: 12%;
+}
+
+.actionsColumn {
+  width: 10%;
+  text-align: center !important;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.userEmail {
+  font-weight: 500;
+}
+
+.userName {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.dark .userName {
+  color: #aaa;
+}
+
+.typeBadge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.warningBadge {
+  background-color: #fff3e0;
+  color: #ff9800;
+}
+
+.dark .warningBadge {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #ffb74d;
+}
+
+.temporary_banBadge {
+  background-color: #e3f2fd;
+  color: #2196f3;
+}
+
+.dark .temporary_banBadge {
+  background-color: rgba(33, 150, 243, 0.2);
+  color: #64b5f6;
+}
+
+.permanent_banBadge {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.dark .permanent_banBadge {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #e57373;
+}
+
+.feature_restrictionBadge {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.dark .feature_restrictionBadge {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+}
+
+.reasonText {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3rem;
+}
+
+.endDate {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.dark .endDate {
+  color: #aaa;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.activeBadge {
+  background-color: #f8e9ec;
+  color: #dc3545;
+}
+
+.dark .activeBadge {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #e57373;
+}
+
+.expiredBadge {
+  background-color: #e7f7ed;
+  color: #28a745;
+}
+
+.dark .expiredBadge {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #81c784;
+}
+
+.pendingBadge {
+  background-color: #fff9e6;
+  color: #ffc107;
+}
+
+.dark .pendingBadge {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffd54f;
+}
+
+.rejectedBadge {
+  background-color: #f0f0f0;
+  color: #6c757d;
+}
+
+.dark .rejectedBadge {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #adb5bd;
+}
+
+.canceledBadge {
+  background-color: #f0f0f0;
+  color: #6c757d;
+}
+
+.dark .canceledBadge {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #adb5bd;
+}
+
+.viewButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: transparent;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewButton:hover {
+  background-color: #f5f5f5;
+  color: #4a6fdc;
+  border-color: #4a6fdc;
+}
+
+.dark .viewButton {
+  border-color: #444;
+  color: #aaa;
+}
+
+.dark .viewButton:hover {
+  background-color: #333;
+  color: #5d82e5;
+  border-color: #5d82e5;
+}
+
+.noData {
+  text-align: center;
+  padding: 2rem !important;
+  color: #888 !important;
+}
+
+.dark .noData {
+  color: #999 !important;
+}
+
+.paginationContainer {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #eee;
+}
+
+.dark .paginationContainer {
+  border-top: 1px solid #333;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.pageButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  border: none;
+  color: #555;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dark .pageButton {
+  background-color: #333;
+  color: #ccc;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.dark .pageButton:hover:not(:disabled) {
+  background-color: #444;
+  color: #f0f0f0;
+}
+
+.pageButton.activePage {
+  background-color: #4a6fdc;
+  color: white;
+  font-weight: 500;
+}
+
+.dark .pageButton.activePage {
+  background-color: #5d82e5;
+}

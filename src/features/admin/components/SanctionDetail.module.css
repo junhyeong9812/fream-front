@@ -1,0 +1,378 @@
+.sanctionDetailContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+.dark.sanctionDetailContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  color: #f0f0f0;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 2rem;
+}
+
+.backButton:hover {
+  background-color: #f5f5f5;
+}
+
+.dark .backButton {
+  border-color: #444;
+  color: #ccc;
+}
+
+.dark .backButton:hover {
+  background-color: #333;
+}
+
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .detailHeader {
+  border-bottom-color: #333;
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .detailTitle {
+  color: #f0f0f0;
+}
+
+.statusContainer {
+  display: flex;
+  align-items: center;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.activeBadge {
+  background-color: #f8e9ec;
+  color: #dc3545;
+}
+
+.dark .activeBadge {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #e57373;
+}
+
+.expiredBadge {
+  background-color: #e7f7ed;
+  color: #28a745;
+}
+
+.dark .expiredBadge {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #81c784;
+}
+
+.pendingBadge {
+  background-color: #fff9e6;
+  color: #ffc107;
+}
+
+.dark .pendingBadge {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffd54f;
+}
+
+.rejectedBadge {
+  background-color: #f0f0f0;
+  color: #6c757d;
+}
+
+.dark .rejectedBadge {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #adb5bd;
+}
+
+.canceledBadge {
+  background-color: #f0f0f0;
+  color: #6c757d;
+}
+
+.dark .canceledBadge {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #adb5bd;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.detailItem {
+  margin-bottom: 1rem;
+}
+
+.detailLabel {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 0.4rem;
+}
+
+.dark .detailLabel {
+  color: #aaa;
+}
+
+.detailValue {
+  font-size: 1rem;
+  color: #333;
+}
+
+.dark .detailValue {
+  color: #f0f0f0;
+}
+
+.typeBadge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.warningBadge {
+  background-color: #fff3e0;
+  color: #ff9800;
+}
+
+.dark .warningBadge {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #ffb74d;
+}
+
+.temporary_banBadge {
+  background-color: #e3f2fd;
+  color: #2196f3;
+}
+
+.dark .temporary_banBadge {
+  background-color: rgba(33, 150, 243, 0.2);
+  color: #64b5f6;
+}
+
+.permanent_banBadge {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.dark .permanent_banBadge {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #e57373;
+}
+
+.feature_restrictionBadge {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.dark .feature_restrictionBadge {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+}
+
+.userSection,
+.contentSection {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .sectionTitle {
+  color: #f0f0f0;
+  border-bottom-color: #333;
+}
+
+.detailContent {
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.dark .detailContent {
+  background-color: #333;
+}
+
+.actionSection {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.dark .actionSection {
+  border-top-color: #333;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+}
+
+.approveButton,
+.rejectButton,
+.cancelButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.approveButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.approveButton:hover {
+  background-color: #218838;
+}
+
+.rejectButton {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.rejectButton:hover {
+  background-color: #c82333;
+}
+
+.cancelButton {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.cancelButton:hover {
+  background-color: #5a6268;
+}
+
+.rejectForm {
+  width: 100%;
+}
+
+.rejectInput {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 1rem;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.dark .rejectInput {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.rejectInput:focus {
+  outline: none;
+  border-color: #4a6fdc;
+}
+
+.dark .rejectInput:focus {
+  border-color: #5d82e5;
+}
+
+.rejectFormActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancelRejectButton,
+.submitRejectButton {
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelRejectButton {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.cancelRejectButton:hover {
+  background-color: #f5f5f5;
+}
+
+.dark .cancelRejectButton {
+  color: #ccc;
+  border-color: #444;
+}
+
+.dark .cancelRejectButton:hover {
+  background-color: #333;
+}
+
+.submitRejectButton {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.submitRejectButton:hover {
+  background-color: #c82333;
+}
+
+.submitRejectButton:disabled {
+  background-color: #e9a4ab;
+  cursor: not-allowed;
+}
+
+.dark .submitRejectButton:disabled {
+  background-color: rgba(220, 53, 69, 0.5);
+}

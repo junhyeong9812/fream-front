@@ -1,0 +1,277 @@
+.userListContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.dark.userListContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.userTable th,
+.userTable td {
+  padding: 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.userTable th {
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+}
+
+.dark .userTable th {
+  background-color: #333;
+  color: #f0f0f0;
+  border-bottom: 1px solid #444;
+}
+
+.userTable td {
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.dark .userTable td {
+  border-bottom: 1px solid #333;
+  color: #ddd;
+}
+
+.userTable tr:last-child td {
+  border-bottom: none;
+}
+
+.userTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.dark .userTable tbody tr:hover {
+  background-color: #333;
+}
+
+.idColumn {
+  width: 8%;
+  color: #777;
+}
+
+.dark .idColumn {
+  color: #999;
+}
+
+.emailColumn {
+  width: 25%;
+}
+
+.profileColumn {
+  width: 20%;
+}
+
+.phoneColumn {
+  width: 15%;
+}
+
+.statusColumn {
+  width: 10%;
+}
+
+.registeredColumn {
+  width: 12%;
+}
+
+.actionsColumn {
+  width: 10%;
+  text-align: center !important;
+}
+
+.profileInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.profileImage,
+.profileImagePlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileImage {
+  object-fit: cover;
+}
+
+.profileImagePlaceholder {
+  background-color: #e0e0e0;
+  color: #777;
+  font-size: 1.2rem;
+}
+
+.dark .profileImagePlaceholder {
+  background-color: #444;
+  color: #ccc;
+}
+
+.adminBadge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  background-color: #4a6fdc;
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.dark .adminBadge {
+  background-color: #5d82e5;
+}
+
+.unverifiedBadge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  background-color: #f5b400;
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.activeBadge {
+  background-color: #e7f7ed;
+  color: #28a745;
+}
+
+.dark .activeBadge {
+  background-color: rgba(40, 167, 69, 0.2);
+}
+
+.inactiveBadge {
+  background-color: #f8e9ec;
+  color: #dc3545;
+}
+
+.dark .inactiveBadge {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+.viewButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: transparent;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewButton:hover {
+  background-color: #f5f5f5;
+  color: #4a6fdc;
+  border-color: #4a6fdc;
+}
+
+.dark .viewButton {
+  border-color: #444;
+  color: #aaa;
+}
+
+.dark .viewButton:hover {
+  background-color: #333;
+  color: #5d82e5;
+  border-color: #5d82e5;
+}
+
+.noData {
+  text-align: center;
+  padding: 2rem !important;
+  color: #888 !important;
+}
+
+.dark .noData {
+  color: #999 !important;
+}
+
+.paginationContainer {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #eee;
+}
+
+.dark .paginationContainer {
+  border-top: 1px solid #333;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.pageButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  border: none;
+  color: #555;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dark .pageButton {
+  background-color: #333;
+  color: #ccc;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.dark .pageButton:hover:not(:disabled) {
+  background-color: #444;
+  color: #f0f0f0;
+}
+
+.pageButton.activePage {
+  background-color: #4a6fdc;
+  color: white;
+  font-weight: 500;
+}
+
+.dark .pageButton.activePage {
+  background-color: #5d82e5;
+}

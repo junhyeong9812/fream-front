@@ -1,0 +1,69 @@
+.sortContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.sortContainer.dark {
+  color: #f0f0f0;
+}
+
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sortLabel {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dark .sortLabel {
+  color: #aaa;
+}
+
+.selectWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.sortSelect {
+  appearance: none;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.dark .sortSelect {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.sortSelect:focus {
+  outline: none;
+  border-color: #4a6fdc;
+}
+
+.dark .sortSelect:focus {
+  border-color: #5d82e5;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none;
+}
+
+.dark .selectIcon {
+  color: #aaa;
+}

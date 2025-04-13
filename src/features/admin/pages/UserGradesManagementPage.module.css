@@ -1,0 +1,163 @@
+.gradesManagement {
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  min-height: calc(100vh - 120px);
+  transition: all 0.3s ease;
+}
+
+.gradesManagement.dark {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+.pageTitle {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.75rem;
+}
+
+.dark .pageTitle {
+  color: #f0f0f0;
+  border-bottom-color: #3a3a3a;
+}
+
+.pageDescription {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.dark .pageDescription {
+  color: #aaa;
+}
+
+.headerControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.createButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.createButton:hover {
+  background-color: #3b5cb8;
+}
+
+.dark .createButton {
+  background-color: #5d82e5;
+}
+
+.dark .createButton:hover {
+  background-color: #4a6fdc;
+}
+
+.gradesContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.dark .gradesContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.gradesTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.gradesTable th {
+  padding: 1rem;
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+}
+
+.dark .gradesTable th {
+  background-color: #333;
+  color: #f0f0f0;
+  border-bottom: 1px solid #444;
+}
+
+.gradesTable td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.dark .gradesTable td {
+  border-bottom: 1px solid #333;
+  color: #ddd;
+}
+
+.gradesTable tr:last-child td {
+  border-bottom: none;
+}
+
+.gradesTable tr:hover td {
+  background-color: #f9f9f9;
+}
+
+.dark .gradesTable tr:hover td {
+  background-color: #333;
+}
+
+.editButton {
+  background-color: transparent;
+  color: #4a6fdc;
+  border: 1px solid #4a6fdc;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.editButton:hover {
+  background-color: #4a6fdc;
+  color: white;
+}
+
+.dark .editButton {
+  color: #5d82e5;
+  border: 1px solid #5d82e5;
+}
+
+.dark .editButton:hover {
+  background-color: #5d82e5;
+  color: #fff;
+}
+
+.noData {
+  text-align: center;
+  padding: 2rem !important;
+  color: #888 !important;
+}
+
+.dark .noData {
+  color: #aaa !important;
+}
