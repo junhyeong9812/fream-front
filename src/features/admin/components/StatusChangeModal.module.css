@@ -1,0 +1,258 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: modalOpen 0.3s ease-out;
+}
+
+.dark.modal {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes modalOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .modalHeader {
+  border-bottom-color: #444;
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .modalTitle {
+  color: #f0f0f0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #777;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.dark .closeButton {
+  color: #aaa;
+}
+
+.dark .closeButton:hover {
+  background-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+.modalContent {
+  padding: 1.5rem;
+}
+
+.modalDescription {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.dark .modalDescription {
+  color: #ccc;
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .formLabel {
+  color: #f0f0f0;
+}
+
+.required {
+  color: #dc3545;
+  margin-left: 0.25rem;
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 100px;
+  background-color: #fff;
+  color: #333;
+}
+
+.dark .formTextarea {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: #4a6fdc;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
+}
+
+.dark .formTextarea:focus {
+  border-color: #5d82e5;
+  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
+}
+
+.formError {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.dark .modalFooter {
+  border-top-color: #444;
+}
+
+.cancelButton,
+.confirmButton {
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.dark .cancelButton {
+  color: #ccc;
+  border-color: #444;
+}
+
+.cancelButton:hover {
+  background-color: #f5f5f5;
+}
+
+.dark .cancelButton:hover {
+  background-color: #333;
+}
+
+.confirmButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+}
+
+.confirmButton:hover {
+  background-color: #3b5cb8;
+}
+
+.dark .confirmButton {
+  background-color: #5d82e5;
+}
+
+.dark .confirmButton:hover {
+  background-color: #4a6fdc;
+}
+
+.activateButton {
+  background-color: #28a745;
+  color: white;
+}
+
+.activateButton:hover {
+  background-color: #218838;
+}
+
+.dark .activateButton {
+  background-color: #2ea44f;
+}
+
+.dark .activateButton:hover {
+  background-color: #28a745;
+}
+
+.deactivateButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.deactivateButton:hover {
+  background-color: #c82333;
+}
+
+.dark .deactivateButton {
+  background-color: #e4404e;
+}
+
+.dark .deactivateButton:hover {
+  background-color: #dc3545;
+}

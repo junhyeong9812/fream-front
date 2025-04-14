@@ -1,0 +1,457 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: modalOpen 0.3s ease-out;
+}
+
+.dark.modal {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes modalOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .modalHeader {
+  border-bottom-color: #444;
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .modalTitle {
+  color: #f0f0f0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #777;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.dark .closeButton {
+  color: #aaa;
+}
+
+.dark .closeButton:hover {
+  background-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+.modalContent {
+  padding: 1.5rem;
+}
+
+.currentPoints {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dark .currentPoints {
+  background-color: #333;
+}
+
+.pointsLabel {
+  font-weight: 500;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.dark .pointsLabel {
+  color: #ccc;
+}
+
+.pointsValue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4a6fdc;
+}
+
+.dark .pointsValue {
+  color: #5d82e5;
+}
+
+.pointsActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.actionButton {
+  flex: 1;
+  padding: 0.75rem;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  color: #555;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dark .actionButton {
+  background-color: #333;
+  border-color: #444;
+  color: #ccc;
+}
+
+.actionButton:hover {
+  background-color: #eaeaea;
+}
+
+.dark .actionButton:hover {
+  background-color: #3a3a3a;
+}
+
+.activeAction {
+  border-color: #4a6fdc;
+  color: #4a6fdc;
+  background-color: #f0f5ff;
+}
+
+.dark .activeAction {
+  border-color: #5d82e5;
+  color: #5d82e5;
+  background-color: rgba(93, 130, 229, 0.1);
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .formLabel {
+  color: #f0f0f0;
+}
+
+.required {
+  color: #dc3545;
+  margin-left: 0.25rem;
+}
+
+.amountInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: #333;
+}
+
+.dark .formInput {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #4a6fdc;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
+}
+
+.dark .formInput:focus {
+  border-color: #5d82e5;
+  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
+}
+
+.pointsUnit {
+  position: absolute;
+  right: 0.75rem;
+  color: #777;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.dark .pointsUnit {
+  color: #999;
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 80px;
+  background-color: #fff;
+  color: #333;
+}
+
+.dark .formTextarea {
+  background-color: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: #4a6fdc;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
+}
+
+.dark .formTextarea:focus {
+  border-color: #5d82e5;
+  box-shadow: 0 0 0 2px rgba(93, 130, 229, 0.2);
+}
+
+.formHint {
+  font-size: 0.85rem;
+  color: #777;
+  margin-top: 0.5rem;
+}
+
+.dark .formHint {
+  color: #999;
+}
+
+.formError {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.previewSection {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.dark .previewSection {
+  background-color: #333;
+}
+
+.previewTitle {
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.dark .previewTitle {
+  color: #ccc;
+}
+
+.previewContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.previewItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.previewLabel {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dark .previewLabel {
+  color: #aaa;
+}
+
+.previewValue {
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .previewValue {
+  color: #f0f0f0;
+}
+
+.positiveValue {
+  color: #28a745;
+}
+
+.negativeValue {
+  color: #dc3545;
+}
+
+.previewDivider {
+  height: 1px;
+  background-color: #ddd;
+  margin: 0.5rem 0;
+}
+
+.dark .previewDivider {
+  background-color: #444;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.dark .modalFooter {
+  border-top-color: #444;
+}
+
+.cancelButton,
+.confirmButton {
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.dark .cancelButton {
+  color: #ccc;
+  border-color: #444;
+}
+
+.cancelButton:hover {
+  background-color: #f5f5f5;
+}
+
+.dark .cancelButton:hover {
+  background-color: #333;
+}
+
+.confirmButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+}
+
+.confirmButton:hover {
+  background-color: #3b5cb8;
+}
+
+.dark .confirmButton {
+  background-color: #5d82e5;
+}
+
+.dark .confirmButton:hover {
+  background-color: #4a6fdc;
+}
+
+.addButton {
+  background-color: #28a745;
+}
+
+.addButton:hover {
+  background-color: #218838;
+}
+
+.dark .addButton {
+  background-color: #2ea44f;
+}
+
+.dark .addButton:hover {
+  background-color: #28a745;
+}
+
+.subtractButton {
+  background-color: #dc3545;
+}
+
+.subtractButton:hover {
+  background-color: #c82333;
+}
+
+.dark .subtractButton {
+  background-color: #e4404e;
+}
+
+.dark .subtractButton:hover {
+  background-color: #dc3545;
+}

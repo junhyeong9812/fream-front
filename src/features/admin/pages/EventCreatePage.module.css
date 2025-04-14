@@ -6,9 +6,47 @@
   margin-bottom: 1.5rem;
 }
 
+/* 동일 요소에 dark 클래스가 적용된 경우를 처리 */
+.formContainer.dark,
 .dark .formContainer {
   background-color: #2a2a2a;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 새로운 backArrow 클래스 추가 */
+.backArrow {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-right: 10px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  width: 24px;
+  height: 24px;
+  color: #555;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none;
+  position: relative;
+  top: 0;
+}
+
+.dark .backArrow {
+  color: #ccc;
+}
+
+.backArrow:hover {
+  color: #333;
+}
+
+.dark .backArrow:hover {
+  color: #fff;
 }
 
 .formTitle {
@@ -20,6 +58,8 @@
   border-bottom: 1px solid #eee;
 }
 
+/* 다른 모든 .dark .클래스명 선택자에도 동일하게 적용 */
+.formTitle.dark,
 .dark .formTitle {
   color: #f0f0f0;
   border-bottom-color: #333;
@@ -46,6 +86,7 @@
   color: #555;
 }
 
+.formLabel.dark,
 .dark .formLabel {
   color: #ccc;
 }
@@ -68,6 +109,9 @@
   border-color: #4a6fdc;
 }
 
+.formInput.dark,
+.formSelect.dark,
+.formTextarea.dark,
 .dark .formInput,
 .dark .formSelect,
 .dark .formTextarea {
@@ -76,6 +120,9 @@
   color: #f0f0f0;
 }
 
+.formInput.dark:focus,
+.formSelect.dark:focus,
+.formTextarea.dark:focus,
 .dark .formInput:focus,
 .dark .formSelect:focus,
 .dark .formTextarea:focus {
@@ -98,6 +145,7 @@
   margin-bottom: 0.5rem;
 }
 
+.imagePreviewTitle.dark,
 .dark .imagePreviewTitle {
   color: #ccc;
 }
@@ -115,6 +163,7 @@
   background-color: #f9f9f9;
 }
 
+.thumbnailPreview.dark,
 .dark .thumbnailPreview {
   border-color: #444;
   background-color: #222;
@@ -143,12 +192,14 @@
   background-color: #e8e8e8;
 }
 
+.imageUploadLabel.dark,
 .dark .imageUploadLabel {
   background-color: #333;
   border-color: #444;
   color: #ccc;
 }
 
+.imageUploadLabel.dark:hover,
 .dark .imageUploadLabel:hover {
   background-color: #3a3a3a;
 }
@@ -180,10 +231,12 @@
   background-color: #3b5cb8;
 }
 
+.submitButton.dark,
 .dark .submitButton {
   background-color: #5d82e5;
 }
 
+.submitButton.dark:hover,
 .dark .submitButton:hover {
   background-color: #4a6fdc;
 }
@@ -198,11 +251,13 @@
   background-color: #f0f0f0;
 }
 
+.cancelButton.dark,
 .dark .cancelButton {
   color: #ccc;
   border-color: #444;
 }
 
+.cancelButton.dark:hover,
 .dark .cancelButton:hover {
   background-color: #333;
 }
@@ -213,6 +268,7 @@
   margin-top: 0.3rem;
 }
 
+.errorMessage.dark,
 .dark .errorMessage {
   color: #ef5350;
 }
@@ -275,11 +331,13 @@
   background-color: #f5f5f5;
 }
 
+.imageUploadPlaceholder.dark,
 .dark .imageUploadPlaceholder {
   border-color: #444;
   color: #aaa;
 }
 
+.imageUploadPlaceholder.dark:hover,
 .dark .imageUploadPlaceholder:hover {
   background-color: #333;
 }

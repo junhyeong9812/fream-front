@@ -1,0 +1,785 @@
+.userDetail {
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  min-height: calc(100vh - 120px);
+  transition: all 0.3s ease;
+}
+
+.userDetail.dark {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.backArrow {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-right: 10px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  width: 24px;
+  height: 24px;
+  color: #555;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none;
+  position: relative;
+  top: 0;
+}
+
+.dark .backArrow {
+  color: #ccc;
+}
+
+.backArrow:hover {
+  color: #333;
+}
+
+.dark .backArrow:hover {
+  color: #fff;
+}
+
+.pageTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.dark .pageTitle {
+  color: #f0f0f0;
+}
+
+/* User Profile Card */
+.userProfileCard {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.dark .userProfileCard {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.userProfileHeader {
+  display: flex;
+  padding: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.profileImageContainer {
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+}
+
+.dark .profileImagePlaceholder {
+  background-color: #3a3a3a;
+  color: #777;
+}
+
+.userProfileInfo {
+  flex: 1;
+  min-width: 300px;
+}
+
+.profileName {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #333;
+}
+
+.dark .profileName {
+  color: #f0f0f0;
+}
+
+.adminBadge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  background-color: #4a6fdc;
+  color: white;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.dark .adminBadge {
+  background-color: #5d82e5;
+}
+
+.userBasicInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+}
+
+.dark .infoItem {
+  color: #aaa;
+}
+
+.unverifiedBadge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  background-color: #f5b400;
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.userStatus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.active {
+  background-color: #e7f7ed;
+  color: #28a745;
+}
+
+.dark .active {
+  background-color: rgba(40, 167, 69, 0.2);
+}
+
+.inactive {
+  background-color: #f8e9ec;
+  color: #dc3545;
+}
+
+.dark .inactive {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+.userStatusDate {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.dark .userStatusDate {
+  color: #999;
+}
+
+.userActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: auto;
+  margin-left: auto;
+}
+
+.actionButton {
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  color: #555;
+  transition: all 0.2s;
+}
+
+.dark .actionButton {
+  background-color: #333;
+  border-color: #444;
+  color: #ccc;
+}
+
+.actionButton:hover {
+  background-color: #eaeaea;
+}
+
+.dark .actionButton:hover {
+  background-color: #3a3a3a;
+}
+
+.deactivateButton {
+  background-color: #fff0f0;
+  border-color: #ffcccc;
+  color: #dc3545;
+}
+
+.dark .deactivateButton {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-color: rgba(220, 53, 69, 0.3);
+}
+
+.deactivateButton:hover {
+  background-color: #ffe5e5;
+}
+
+.dark .deactivateButton:hover {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+.activateButton {
+  background-color: #f0fff5;
+  border-color: #ccffcc;
+  color: #28a745;
+}
+
+.dark .activateButton {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+.activateButton:hover {
+  background-color: #e5ffe5;
+}
+
+.dark .activateButton:hover {
+  background-color: rgba(40, 167, 69, 0.2);
+}
+
+/* Detail Tabs and Cards */
+.detailTabs {
+  margin-top: 1.5rem;
+}
+
+.tabsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 1.5rem;
+}
+
+.detailCard {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.dark .detailCard {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .cardTitle {
+  color: #f0f0f0;
+  border-bottom-color: #444;
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+
+/* Info Grid Styles */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+}
+
+.infoLabel {
+  width: 140px;
+  min-width: 140px;
+  font-weight: 500;
+  color: #666;
+}
+
+.dark .infoLabel {
+  color: #aaa;
+}
+
+.infoValue {
+  flex: 1;
+  color: #333;
+}
+
+.dark .infoValue {
+  color: #f0f0f0;
+}
+
+.verifiedText {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.unverifiedText {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.bioRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bioText {
+  padding: 0.75rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  white-space: pre-wrap;
+}
+
+.dark .bioText {
+  background-color: #333;
+  border-color: #444;
+}
+
+.noProfileInfo,
+.noAddresses,
+.noBankInfo,
+.noSanctions,
+.noInterests {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.dark .noProfileInfo,
+.dark .noAddresses,
+.dark .noBankInfo,
+.dark .noSanctions,
+.dark .noInterests {
+  color: #999;
+}
+
+/* Points Styles */
+.pointsInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.pointsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.dark .pointsRow {
+  background-color: #333;
+}
+
+.pointsLabel {
+  font-weight: 500;
+  color: #666;
+}
+
+.dark .pointsLabel {
+  color: #aaa;
+}
+
+.pointsValue {
+  font-weight: 600;
+  color: #4a6fdc;
+  font-size: 1.1rem;
+}
+
+.dark .pointsValue {
+  color: #5d82e5;
+}
+
+/* 포인트 상세 내역 버튼 스타일 */
+.viewPointsButton {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.viewPointsButton:hover {
+  background-color: #e0e0e0;
+}
+
+.dark .viewPointsButton {
+  background-color: #333;
+  border-color: #444;
+  color: #ccc;
+}
+
+.dark .viewPointsButton:hover {
+  background-color: #3a3a3a;
+}
+
+/* Interests Styles */
+.interestsContainer {
+  margin-top: 1.5rem;
+}
+
+.interestsTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.dark .interestsTitle {
+  color: #f0f0f0;
+}
+
+.interestsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+}
+
+.interestItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.interestImageContainer {
+  width: 100%;
+  height: 100px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.interestImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.interestInfo {
+  font-size: 0.85rem;
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dark .interestInfo {
+  color: #ccc;
+}
+
+/* Address Styles */
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.addressItem {
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.dark .addressItem {
+  border-color: #444;
+  background-color: #333;
+}
+
+.addressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.addressName {
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .addressName {
+  color: #f0f0f0;
+}
+
+.defaultBadge {
+  padding: 0.2rem 0.5rem;
+  background-color: #4a6fdc;
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.dark .defaultBadge {
+  background-color: #5d82e5;
+}
+
+.addressInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.addressRecipient {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.dark .addressRecipient {
+  color: #ccc;
+}
+
+.addressText {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.dark .addressText {
+  color: #aaa;
+}
+
+/* Bank Info Styles */
+.bankInfo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Sanction Styles */
+.sanctionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sanctionItem {
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.dark .sanctionItem {
+  border-color: #444;
+  background-color: #333;
+}
+
+.sanctionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sanctionStatus {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.sanctionStatus.active {
+  background-color: #f8e9ec;
+  color: #dc3545;
+}
+
+.dark .sanctionStatus.active {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+.sanctionStatus.inactive {
+  background-color: #e7f7ed;
+  color: #28a745;
+}
+
+.dark .sanctionStatus.inactive {
+  background-color: rgba(40, 167, 69, 0.2);
+}
+
+.sanctionDate {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.dark .sanctionDate {
+  color: #999;
+}
+
+.sanctionType {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .sanctionType {
+  color: #f0f0f0;
+}
+
+.sanctionReason {
+  font-size: 0.9rem;
+  color: #666;
+  padding: 0.75rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.dark .sanctionReason {
+  color: #ccc;
+  background-color: #2a2a2a;
+}
+
+/* Consent Styles */
+.consentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.consentRow {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.dark .consentRow {
+  background-color: #333;
+}
+
+.consentLabel {
+  flex: 1;
+  font-weight: 500;
+  color: #555;
+}
+
+.dark .consentLabel {
+  color: #ccc;
+}
+
+.consentValue {
+  padding: 0.25rem 0.5rem;
+  background-color: #eee;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.dark .consentValue {
+  background-color: #444;
+  color: #ccc;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .userProfileHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .userProfileInfo {
+    min-width: 100%;
+  }
+
+  .userActions {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .tabsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .infoRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .infoLabel {
+    width: 100%;
+  }
+
+  .userStatus {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

@@ -1,0 +1,414 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: modalOpen 0.3s ease-out;
+}
+
+.dark.modal {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes modalOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .modalHeader {
+  border-bottom-color: #444;
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .modalTitle {
+  color: #f0f0f0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #777;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.dark .closeButton {
+  color: #aaa;
+}
+
+.dark .closeButton:hover {
+  background-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+.modalContent {
+  padding: 1.5rem;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.dark .modalFooter {
+  border-top-color: #444;
+}
+
+.modalFooter .closeButton {
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+  width: auto;
+  height: auto;
+  font-weight: 500;
+}
+
+.dark .modalFooter .closeButton {
+  color: #ccc;
+  border-color: #444;
+}
+
+.modalFooter .closeButton:hover {
+  background-color: #f5f5f5;
+}
+
+.dark .modalFooter .closeButton:hover {
+  background-color: #333;
+}
+
+.loading,
+.error,
+.noData {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+}
+
+.dark .loading,
+.dark .error,
+.dark .noData {
+  color: #aaa;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.dark .error {
+  color: #ef5350;
+}
+
+.pointsSummary {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.dark .pointsSummary {
+  background-color: #333;
+}
+
+.totalPoints {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.totalPointsLabel {
+  font-size: 1rem;
+  color: #666;
+}
+
+.dark .totalPointsLabel {
+  color: #aaa;
+}
+
+.totalPointsValue {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #4a6fdc;
+}
+
+.dark .totalPointsValue {
+  color: #5d82e5;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 1.5rem;
+}
+
+.dark .tabs {
+  border-bottom-color: #444;
+}
+
+.tab {
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.dark .tab {
+  color: #aaa;
+}
+
+.tab:hover {
+  color: #333;
+}
+
+.dark .tab:hover {
+  color: #f0f0f0;
+}
+
+.activeTab {
+  color: #4a6fdc;
+  font-weight: 600;
+}
+
+.activeTab:after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #4a6fdc;
+}
+
+.dark .activeTab {
+  color: #5d82e5;
+}
+
+.dark .activeTab:after {
+  background-color: #5d82e5;
+}
+
+.pointsListContainer {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.pointsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pointItem {
+  border-radius: 8px;
+  border: 1px solid #eee;
+  overflow: hidden;
+}
+
+.dark .pointItem {
+  border-color: #444;
+}
+
+.pointItem.available {
+  border-left: 4px solid #28a745;
+}
+
+.pointItem.used {
+  border-left: 4px solid #6c757d;
+}
+
+.pointItem.expired {
+  border-left: 4px solid #dc3545;
+}
+
+.pointHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f9f9f9;
+}
+
+.dark .pointHeader {
+  background-color: #333;
+}
+
+.pointAmount {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.dark .pointAmount {
+  color: #f0f0f0;
+}
+
+.available .pointAmount {
+  color: #28a745;
+}
+
+.used .pointAmount {
+  color: #6c757d;
+}
+
+.expired .pointAmount {
+  color: #dc3545;
+}
+
+.dark .available .pointAmount {
+  color: #40c463;
+}
+
+.dark .used .pointAmount {
+  color: #adb5bd;
+}
+
+.dark .expired .pointAmount {
+  color: #ef5350;
+}
+
+.pointStatus {
+  font-size: 0.85rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.dark .pointStatus {
+  background-color: #444;
+  color: #ccc;
+}
+
+.available .pointStatus {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+}
+
+.used .pointStatus {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #6c757d;
+}
+
+.expired .pointStatus {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+.dark .available .pointStatus {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #40c463;
+}
+
+.dark .used .pointStatus {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #adb5bd;
+}
+
+.dark .expired .pointStatus {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #ef5350;
+}
+
+.pointDetail {
+  padding: 1rem;
+}
+
+.pointReason {
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.dark .pointReason {
+  color: #f0f0f0;
+}
+
+.pointDates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.dark .pointDates {
+  color: #adb5bd;
+}
+
+.pointDate,
+.pointExpiration {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pointExpiration {
+  color: #dc3545;
+}
+
+.dark .pointExpiration {
+  color: #ef5350;
+}

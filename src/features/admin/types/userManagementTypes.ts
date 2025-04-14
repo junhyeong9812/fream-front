@@ -66,6 +66,7 @@ export interface UserDetailDto {
   gender?: string;
   shoeSize?: string;
   isVerified: boolean;
+  isActive: boolean;
   ci?: string;
   di?: string;
   role: string;

@@ -233,7 +233,7 @@ const EventCreatePage: React.FC = () => {
     >
       <div className={pageStyles.pageTitle}>
         <button
-          className={pageStyles.backButton}
+          className={styles.backArrow}
           onClick={() => navigate("/admin/events")}
           title="목록으로 돌아가기"
         >

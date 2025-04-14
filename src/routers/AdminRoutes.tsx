@@ -21,6 +21,10 @@ import CategoryManagementPage from "../features/admin/pages/CategoryManagementPa
 import EventManagementPage from "../features/admin/pages/EventManagementPage";
 import EventCreatePage from "../features/admin/pages/EventCreatePage";
 import EventDetailPage from "../features/admin/pages/EventDetailPage";
+import UserManagementPage from "../features/admin/pages/UserManagementPage";
+import UserSanctionsManagementPage from "../features/admin/pages/UserSanctionsManagementPage";
+import UserGradesManagementPage from "../features/admin/pages/UserGradesManagementPage";
+import UserDetailPage from "../features/admin/pages/UserDetailPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -100,9 +104,13 @@ const AdminRoutes: React.FC = () => {
           />
           <Route path="styles/tags" element={<div>태그 관리 페이지</div>} />
           {/* 회원 관리 */}
-          <Route path="users" element={<div>회원 목록 페이지</div>} />
-          <Route path="users/grades" element={<div>등급 관리 페이지</div>} />
-          <Route path="users/sanctions" element={<div>제재 관리 페이지</div>} />
+          <Route path="users" element={<UserManagementPage />} />
+          <Route path="users/detail/:userId" element={<UserDetailPage />} />
+          <Route path="users/grades" element={<UserGradesManagementPage />} />
+          <Route
+            path="users/sanctions"
+            element={<UserSanctionsManagementPage />}
+          />
           {/* 매출 관리 */}
           <Route path="sales" element={<div>매출 현황 페이지</div>} />
           <Route
