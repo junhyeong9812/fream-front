@@ -58,10 +58,8 @@ export class SanctionService {
 
     // Add sort option if provided
     if (searchDto.sortOption) {
-      params.append(
-        "sort",
-        `${searchDto.sortOption.field},${searchDto.sortOption.order}`
-      );
+      params.append("sort", searchDto.sortOption.field);
+      params.append("direction", searchDto.sortOption.order);
     }
 
     const response = await apiClient.get(
