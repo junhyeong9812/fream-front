@@ -165,6 +165,7 @@ export class EventService {
 
   /**
    * 이벤트 수정 (FormData 활용)
+   * 변경된 이미지만 처리하도록 개선
    */
   static async updateEvent(
     eventId: number,
@@ -179,6 +180,13 @@ export class EventService {
     formData.append("description", data.description);
     formData.append("startDate", data.startDate);
     formData.append("endDate", data.endDate);
+
+    // 유지할 이미지 파일명 추가
+    if (data.keepImageFileNames && data.keepImageFileNames.length > 0) {
+      data.keepImageFileNames.forEach((fileName) => {
+        formData.append("keepImageFileNames", fileName);
+      });
+    }
 
     // 파일 추가
     if (thumbnailFile) {

@@ -1,0 +1,372 @@
+.formContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* 동일 요소에 dark 클래스가 적용된 경우를 처리 */
+.formContainer.dark,
+.dark .formContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 새로운 backArrow 클래스 추가 */
+.backArrow {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-right: 10px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  width: 24px;
+  height: 24px;
+  color: #555;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none;
+  position: relative;
+  top: 0;
+}
+
+.dark .backArrow {
+  color: #ccc;
+}
+
+.backArrow:hover {
+  color: #333;
+}
+
+.dark .backArrow:hover {
+  color: #fff;
+}
+
+.formTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+/* 다른 모든 .dark .클래스명 선택자에도 동일하게 적용 */
+.formTitle.dark,
+.dark .formTitle {
+  color: #f0f0f0;
+  border-bottom-color: #333;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1.2rem;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.formLabel.dark,
+.dark .formLabel {
+  color: #ccc;
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  outline: none;
+  border-color: #4a6fdc;
+}
+
+.formInput.dark,
+.formSelect.dark,
+.formTextarea.dark,
+.dark .formInput,
+.dark .formSelect,
+.dark .formTextarea {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.formInput.dark:focus,
+.formSelect.dark:focus,
+.formTextarea.dark:focus,
+.dark .formInput:focus,
+.dark .formSelect:focus,
+.dark .formTextarea:focus {
+  border-color: #5d82e5;
+}
+
+.formTextarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.imagePreviewContainer {
+  margin-top: 1rem;
+}
+
+.imagePreviewTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.imagePreviewTitle.dark,
+.dark .imagePreviewTitle {
+  color: #ccc;
+}
+
+.thumbnailPreview {
+  margin-top: 0.5rem;
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+}
+
+.thumbnailPreview.dark,
+.dark .thumbnailPreview {
+  border-color: #444;
+  background-color: #222;
+}
+
+.thumbnailPreviewImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.imageUploadLabel {
+  display: block;
+  width: 100%;
+  padding: 0.7rem;
+  text-align: center;
+  background-color: #f5f5f5;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.imageUploadLabel:hover {
+  background-color: #e8e8e8;
+}
+
+.imageUploadLabel.dark,
+.dark .imageUploadLabel {
+  background-color: #333;
+  border-color: #444;
+  color: #ccc;
+}
+
+.imageUploadLabel.dark:hover,
+.dark .imageUploadLabel:hover {
+  background-color: #3a3a3a;
+}
+
+.formAction {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.submitButton,
+.cancelButton {
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submitButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+}
+
+.submitButton:hover {
+  background-color: #3b5cb8;
+}
+
+.submitButton.dark,
+.dark .submitButton {
+  background-color: #5d82e5;
+}
+
+.submitButton.dark:hover,
+.dark .submitButton:hover {
+  background-color: #4a6fdc;
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.cancelButton:hover {
+  background-color: #f0f0f0;
+}
+
+.cancelButton.dark,
+.dark .cancelButton {
+  color: #ccc;
+  border-color: #444;
+}
+
+.cancelButton.dark:hover,
+.dark .cancelButton:hover {
+  background-color: #333;
+}
+
+.errorMessage {
+  color: #e53935;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+.errorMessage.dark,
+.dark .errorMessage {
+  color: #ef5350;
+}
+
+.simpleImagePreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.simpleImageItem {
+  width: 150px;
+  height: 150px;
+  position: relative;
+}
+
+.simpleImageItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.removeImageButton:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.imageUploadPlaceholder {
+  width: 150px;
+  height: 150px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.imageUploadPlaceholder:hover {
+  background-color: #f5f5f5;
+}
+
+.imageUploadPlaceholder.dark,
+.dark .imageUploadPlaceholder {
+  border-color: #444;
+  color: #aaa;
+}
+
+.imageUploadPlaceholder.dark:hover,
+.dark .imageUploadPlaceholder:hover {
+  background-color: #333;
+}
+
+/* 기존 이미지 뱃지 스타일 */
+.existingImageBadge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: rgba(25, 118, 210, 0.8);
+  color: white;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.dark .existingImageBadge {
+  background-color: rgba(66, 165, 245, 0.8);
+}
+
+/* 도움말 텍스트 스타일 */
+.helperText {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.dark .helperText {
+  color: #aaa;
+}

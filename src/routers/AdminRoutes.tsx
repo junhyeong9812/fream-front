@@ -20,6 +20,7 @@ import ProductColorPage from "../features/admin/pages/ProductColorPage";
 import CategoryManagementPage from "../features/admin/pages/CategoryManagementPage";
 import EventManagementPage from "../features/admin/pages/EventManagementPage";
 import EventCreatePage from "../features/admin/pages/EventCreatePage";
+import EventEditPage from "../features/admin/pages/EventEditPage";
 import EventDetailPage from "../features/admin/pages/EventDetailPage";
 import UserManagementPage from "../features/admin/pages/UserManagementPage";
 import UserSanctionsManagementPage from "../features/admin/pages/UserSanctionsManagementPage";
@@ -78,16 +79,10 @@ const AdminRoutes: React.FC = () => {
             element={<CollectionManagementPage />}
           />
           {/* 이벤트 관리 */}
-          {/* 이벤트 관리 */}
           <Route path="events" element={<EventManagementPage />} />
           <Route path="events/add" element={<EventCreatePage />} />
-          <Route
-            path="events/edit/:eventId"
-            element={<EventCreatePage />}
-          />{" "}
-          {/* 편집용 */}
+          <Route path="events/edit/:eventId" element={<EventEditPage />} />
           <Route path="events/detail/:eventId" element={<EventDetailPage />} />
-          {/* 상세 페이지 */}
           {/* 주문/배송 관리 */}
           <Route path="orders" element={<div>주문 목록 페이지</div>} />
           <Route

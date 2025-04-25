@@ -47,6 +47,7 @@ export interface UpdateEventRequestDto {
   description: string;
   startDate: string;
   endDate: string;
+  keepImageFileNames: string[];
 }
 
 // 페이지네이션 이벤트 응답
