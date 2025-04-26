@@ -1,6 +1,6 @@
 import React from "react";
 import { FiEye, FiEdit2, FiTrash2 } from "react-icons/fi";
-import { EventListDto } from "../types/eventTypes";
+import { EventListDto, EventStatus } from "../types/eventTypes";
 import styles from "./EventList.module.css";
 
 interface EventListProps {
@@ -34,27 +34,17 @@ const EventList: React.FC<EventListProps> = ({
     });
   };
 
-  // 이벤트 상태에 따른 클래스와 텍스트 결정
-  const getStatusInfo = (event: EventListDto) => {
-    const now = new Date();
-    const startDate = new Date(event.startDate);
-    const endDate = new Date(event.endDate);
-
-    if (now < startDate) {
-      return {
-        className: `${styles.eventStatus} ${styles.statusUpcoming}`,
-        text: "예정",
-      };
-    } else if (now <= endDate) {
-      return {
-        className: `${styles.eventStatus} ${styles.statusActive}`,
-        text: "진행 중",
-      };
-    } else {
-      return {
-        className: `${styles.eventStatus} ${styles.statusInactive}`,
-        text: "종료",
-      };
+  // 이벤트 상태에 따른 클래스 결정
+  const getStatusClassName = (status: EventStatus) => {
+    switch (status) {
+      case EventStatus.UPCOMING:
+        return `${styles.eventStatus} ${styles.statusUpcoming}`;
+      case EventStatus.ACTIVE:
+        return `${styles.eventStatus} ${styles.statusActive}`;
+      case EventStatus.ENDED:
+        return `${styles.eventStatus} ${styles.statusInactive}`;
+      default:
+        return styles.eventStatus;
     }
   };
 
@@ -157,54 +147,51 @@ const EventList: React.FC<EventListProps> = ({
             </tr>
           </thead>
           <tbody>
-            {events.map((event) => {
-              const statusInfo = getStatusInfo(event);
-              return (
-                <tr key={event.id}>
-                  <td className={styles.eventId}>{event.id}</td>
-                  <td>
-                    <img
-                      src={event.thumbnailUrl || "/api/placeholder/80/45"}
-                      alt={event.title}
-                      className={styles.eventThumbnail}
-                    />
-                  </td>
-                  <td className={styles.eventTitle}>{event.title}</td>
-                  <td className={styles.eventBrand}>{event.brandName}</td>
-                  <td className={styles.eventDate}>
-                    {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
-                  </td>
-                  <td>
-                    <span className={statusInfo.className}>
-                      {statusInfo.text}
-                    </span>
-                  </td>
-                  <td className={styles.actionCell}>
-                    <button
-                      className={`${styles.actionButton} ${styles.viewButton}`}
-                      onClick={() => onViewEvent(event)}
-                      title="상세보기"
-                    >
-                      <FiEye />
-                    </button>
-                    <button
-                      className={`${styles.actionButton} ${styles.editButton}`}
-                      onClick={() => onEditEvent(event)}
-                      title="수정하기"
-                    >
-                      <FiEdit2 />
-                    </button>
-                    <button
-                      className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={() => onDeleteEvent(event.id)}
-                      title="삭제하기"
-                    >
-                      <FiTrash2 />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {events.map((event) => (
+              <tr key={event.id}>
+                <td className={styles.eventId}>{event.id}</td>
+                <td>
+                  <img
+                    src={event.thumbnailUrl || "/api/placeholder/80/45"}
+                    alt={event.title}
+                    className={styles.eventThumbnail}
+                  />
+                </td>
+                <td className={styles.eventTitle}>{event.title}</td>
+                <td className={styles.eventBrand}>{event.brandName}</td>
+                <td className={styles.eventDate}>
+                  {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
+                </td>
+                <td>
+                  <span className={getStatusClassName(event.status)}>
+                    {event.statusDisplayName}
+                  </span>
+                </td>
+                <td className={styles.actionCell}>
+                  <button
+                    className={`${styles.actionButton} ${styles.viewButton}`}
+                    onClick={() => onViewEvent(event)}
+                    title="상세보기"
+                  >
+                    <FiEye />
+                  </button>
+                  <button
+                    className={`${styles.actionButton} ${styles.editButton}`}
+                    onClick={() => onEditEvent(event)}
+                    title="수정하기"
+                  >
+                    <FiEdit2 />
+                  </button>
+                  <button
+                    className={`${styles.actionButton} ${styles.deleteButton}`}
+                    onClick={() => onDeleteEvent(event.id)}
+                    title="삭제하기"
+                  >
+                    <FiTrash2 />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
         {totalPages > 1 && renderPagination()}

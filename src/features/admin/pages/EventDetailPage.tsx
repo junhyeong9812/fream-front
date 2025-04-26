@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiArrowLeft, FiEdit2, FiTrash2, FiRefreshCw } from "react-icons/fi";
 import { useTheme } from "../../../global/context/ThemeContext";
 import { EventService } from "../services/eventService";
-import { EventDetailDto } from "../types/eventTypes";
+import { EventDetailDto, EventStatus } from "../types/eventTypes";
 import LoadingSpinner from "../../../global/components/common/LoadingSpinner";
 import ErrorMessage from "../../../global/components/common/ErrorMessage";
 import styles from "./EventDetailPage.module.css";
@@ -16,6 +16,8 @@ const EventDetailPage: React.FC = () => {
   const [eventDetail, setEventDetail] = useState<EventDetailDto | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [statusUpdateLoading, setStatusUpdateLoading] =
+    useState<boolean>(false);
 
   // 이벤트 상세 정보 조회
   useEffect(() => {
@@ -39,29 +41,17 @@ const EventDetailPage: React.FC = () => {
     fetchEventDetail();
   }, [eventId]);
 
-  // 이벤트 상태 텍스트와 스타일 클래스 결정
-  const getStatusInfo = () => {
-    if (!eventDetail) return { text: "", className: "" };
-
-    const now = new Date();
-    const startDate = new Date(eventDetail.startDate);
-    const endDate = new Date(eventDetail.endDate);
-
-    if (now < startDate) {
-      return {
-        text: "예정",
-        className: `${styles.statusBadge} ${styles.statusUpcoming}`,
-      };
-    } else if (now <= endDate) {
-      return {
-        text: "진행 중",
-        className: `${styles.statusBadge} ${styles.statusActive}`,
-      };
-    } else {
-      return {
-        text: "종료",
-        className: `${styles.statusBadge} ${styles.statusInactive}`,
-      };
+  // 이벤트 상태 클래스 결정
+  const getStatusClassName = (status: EventStatus) => {
+    switch (status) {
+      case EventStatus.UPCOMING:
+        return `${styles.statusBadge} ${styles.statusUpcoming}`;
+      case EventStatus.ACTIVE:
+        return `${styles.statusBadge} ${styles.statusActive}`;
+      case EventStatus.ENDED:
+        return `${styles.statusBadge} ${styles.statusInactive}`;
+      default:
+        return styles.statusBadge;
     }
   };
 
@@ -106,6 +96,42 @@ const EventDetailPage: React.FC = () => {
     }
   };
 
+  // 이벤트 상태 변경 - 새로 추가된 기능
+  const handleStatusChange = async (newStatus: EventStatus) => {
+    if (!eventId || !eventDetail || eventDetail.status === newStatus) return;
+
+    if (
+      !window.confirm(
+        `이벤트 상태를 '${eventDetail.statusDisplayName}'에서 '${
+          newStatus === EventStatus.UPCOMING
+            ? "예정"
+            : newStatus === EventStatus.ACTIVE
+            ? "진행 중"
+            : "종료"
+        }'로 변경하시겠습니까?`
+      )
+    ) {
+      return;
+    }
+
+    setStatusUpdateLoading(true);
+    try {
+      const updatedStatus = await EventService.updateEventStatus(
+        Number(eventId),
+        newStatus
+      );
+      // 상세 정보 다시 로드
+      const updatedEvent = await EventService.getEventDetail(Number(eventId));
+      setEventDetail(updatedEvent);
+      alert("이벤트 상태가 성공적으로 변경되었습니다.");
+    } catch (err) {
+      console.error("이벤트 상태 변경 실패:", err);
+      alert("이벤트 상태 변경 중 오류가 발생했습니다.");
+    } finally {
+      setStatusUpdateLoading(false);
+    }
+  };
+
   // 목록으로 돌아가기
   const handleGoBack = () => {
     navigate("/admin/events");
@@ -142,8 +168,6 @@ const EventDetailPage: React.FC = () => {
     );
   }
 
-  const statusInfo = getStatusInfo();
-
   return (
     <div
       className={`${styles.detailPage} ${theme === "dark" ? styles.dark : ""}`}
@@ -170,7 +194,33 @@ const EventDetailPage: React.FC = () => {
       <div className={styles.detailContainer}>
         <div className={styles.eventBasicInfo}>
           <h2 className={styles.eventTitle}>{eventDetail.title}</h2>
-          <span className={statusInfo.className}>{statusInfo.text}</span>
+          <span className={getStatusClassName(eventDetail.status)}>
+            {eventDetail.statusDisplayName}
+          </span>
+
+          {/* 상태 변경 드롭다운 추가 */}
+          <div className={styles.statusActions}>
+            <label>상태 변경:</label>
+            <select
+              className={styles.statusSelect}
+              value=""
+              onChange={(e) => {
+                if (e.target.value) {
+                  handleStatusChange(e.target.value as EventStatus);
+                  e.target.value = "";
+                }
+              }}
+              disabled={statusUpdateLoading}
+            >
+              <option value="">상태 선택...</option>
+              <option value={EventStatus.UPCOMING}>예정</option>
+              <option value={EventStatus.ACTIVE}>진행 중</option>
+              <option value={EventStatus.ENDED}>종료</option>
+            </select>
+            {statusUpdateLoading && (
+              <FiRefreshCw className={styles.statusLoading} />
+            )}
+          </div>
 
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>

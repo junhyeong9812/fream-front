@@ -7,6 +7,7 @@ import {
   PaginatedEventResponse,
   EventSearchDto,
   SortOption,
+  EventStatus,
 } from "../types/eventTypes";
 
 /**
@@ -62,6 +63,11 @@ export class EventService {
       params.append("isActive", searchDto.isActive.toString());
     }
 
+    // 상태 필드 추가
+    if (searchDto.status) {
+      params.append("status", searchDto.status);
+    }
+
     if (searchDto.startDate) {
       params.append("startDate", searchDto.startDate);
     }
@@ -96,6 +102,24 @@ export class EventService {
 
     const response = await apiClient.get(
       `${this.EVENT_URL}/active?${params.toString()}`
+    );
+    return response.data;
+  }
+
+  /**
+   * 상태별 이벤트 목록 조회
+   */
+  static async getEventsByStatus(
+    status: EventStatus,
+    page: number = 0,
+    size: number = 10
+  ): Promise<PaginatedEventResponse> {
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+    params.append("size", size.toString());
+
+    const response = await apiClient.get(
+      `${this.EVENT_URL}/status/${status}?${params.toString()}`
     );
     return response.data;
   }
@@ -217,5 +241,22 @@ export class EventService {
    */
   static async deleteEvent(eventId: number): Promise<void> {
     await apiClient.delete(`${this.EVENT_URL}/${eventId}`);
+  }
+
+  /**
+   * 이벤트 상태 직접 변경 (관리자용)
+   */
+  static async updateEventStatus(
+    eventId: number,
+    status: EventStatus
+  ): Promise<EventStatus> {
+    const params = new URLSearchParams();
+    params.append("status", status);
+
+    const response = await apiClient.patch(
+      `${this.EVENT_URL}/${eventId}/status?${params.toString()}`
+    );
+
+    return response.data;
   }
 }

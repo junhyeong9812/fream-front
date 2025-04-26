@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { BrandResponseDto } from "../types/brandCollectionTypes";
-import { EventSearchDto } from "../types/eventTypes";
+import { EventSearchDto, EventStatus } from "../types/eventTypes";
 import styles from "./EventFilter.module.css";
 import { BrandService } from "../services/BrandService";
 
@@ -50,6 +50,12 @@ const EventFilter: React.FC<EventFilterProps> = ({ onApplyFilter, theme }) => {
       const updatedFilter = { ...filter };
       delete updatedFilter[name as keyof EventSearchDto];
       setFilter(updatedFilter);
+    } else if (name === "status") {
+      // 상태 필드 처리
+      setFilter({
+        ...filter,
+        status: value as EventStatus,
+      });
     } else {
       setFilter({
         ...filter,
@@ -123,6 +129,21 @@ const EventFilter: React.FC<EventFilterProps> = ({ onApplyFilter, theme }) => {
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>상태</label>
               <select
+                name="status"
+                className={styles.filterSelect}
+                value={filter.status || ""}
+                onChange={handleFilterChange}
+              >
+                <option value="">모든 상태</option>
+                <option value={EventStatus.UPCOMING}>예정</option>
+                <option value={EventStatus.ACTIVE}>진행 중</option>
+                <option value={EventStatus.ENDED}>종료</option>
+              </select>
+            </div>
+
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>활성 상태</label>
+              <select
                 name="isActive"
                 className={styles.filterSelect}
                 value={
@@ -132,9 +153,9 @@ const EventFilter: React.FC<EventFilterProps> = ({ onApplyFilter, theme }) => {
                 }
                 onChange={handleFilterChange}
               >
-                <option value="">모든 상태</option>
-                <option value="true">진행 중</option>
-                <option value="false">종료/예정</option>
+                <option value="">모든 활성 상태</option>
+                <option value="true">활성</option>
+                <option value="false">비활성</option>
               </select>
             </div>
 

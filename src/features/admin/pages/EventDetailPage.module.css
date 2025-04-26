@@ -208,6 +208,64 @@
   color: #66bb6a;
 }
 
+/* 상태 변경 영역 스타일 */
+.statusActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  background-color: #f5f5f5;
+  padding: 0.8rem;
+  border-radius: 6px;
+}
+
+.dark .statusActions {
+  background-color: #333;
+}
+
+.statusActions label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.dark .statusActions label {
+  color: #bbb;
+}
+
+.statusSelect {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: #fff;
+  color: #333;
+}
+
+.dark .statusSelect {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.statusLoading {
+  animation: spin 1s linear infinite;
+  color: #555;
+}
+
+.dark .statusLoading {
+  color: #bbb;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .eventDescription {
   padding: 1.5rem;
   border-top: 1px solid #eee;

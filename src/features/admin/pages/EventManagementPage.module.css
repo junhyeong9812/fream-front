@@ -109,6 +109,69 @@
   color: #f0f0f0;
 }
 
+/* 상태별 통계 카드 스타일 */
+.statusStat {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statusStat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.dark .statusStat:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.upcomingStat .statTitle {
+  color: #43a047;
+}
+
+.upcomingStat .statValue {
+  color: #43a047;
+}
+
+.dark .upcomingStat .statTitle {
+  color: #66bb6a;
+}
+
+.dark .upcomingStat .statValue {
+  color: #66bb6a;
+}
+
+.activeStat .statTitle {
+  color: #1976d2;
+}
+
+.activeStat .statValue {
+  color: #1976d2;
+}
+
+.dark .activeStat .statTitle {
+  color: #64b5f6;
+}
+
+.dark .activeStat .statValue {
+  color: #64b5f6;
+}
+
+.endedStat .statTitle {
+  color: #e53935;
+}
+
+.endedStat .statValue {
+  color: #e53935;
+}
+
+.dark .endedStat .statTitle {
+  color: #ef5350;
+}
+
+.dark .endedStat .statValue {
+  color: #ef5350;
+}
+
 .backButton {
   margin-top: 1rem;
   background-color: #6c757d;

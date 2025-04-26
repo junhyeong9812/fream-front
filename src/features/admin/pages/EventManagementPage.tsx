@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 import { useTheme } from "../../../global/context/ThemeContext";
 import { EventService } from "../services/eventService";
-import { EventSearchDto, EventListDto, SortOption } from "../types/eventTypes";
+import {
+  EventSearchDto,
+  EventListDto,
+  SortOption,
+  EventStatus,
+} from "../types/eventTypes";
 import EventSearchBar from "../components/EventSearchBar";
 import EventFilter from "../components/EventFilter";
 import EventSort from "../components/EventSort";
@@ -33,10 +38,56 @@ const EventManagementPage: React.FC = () => {
   const [totalElements, setTotalElements] = useState<number>(0);
   const pageSize = 10;
 
+  // 상태별 이벤트 수 통계
+  const [statusStats, setStatusStats] = useState<{
+    upcoming: number;
+    active: number;
+    ended: number;
+  }>({
+    upcoming: 0,
+    active: 0,
+    ended: 0,
+  });
+
   // 초기 이벤트 데이터 로드
   useEffect(() => {
     loadEvents();
   }, [currentPage, currentSort]);
+
+  // 상태별 이벤트 수 로드
+  useEffect(() => {
+    loadStatusStats();
+  }, []);
+
+  // 상태별 이벤트 수 로드
+  const loadStatusStats = async () => {
+    try {
+      // 각 상태별로 별도 API 호출 (페이지 크기 1로 하여 총 개수만 가져옴)
+      const upcomingResponse = await EventService.getEventsByStatus(
+        EventStatus.UPCOMING,
+        0,
+        1
+      );
+      const activeResponse = await EventService.getEventsByStatus(
+        EventStatus.ACTIVE,
+        0,
+        1
+      );
+      const endedResponse = await EventService.getEventsByStatus(
+        EventStatus.ENDED,
+        0,
+        1
+      );
+
+      setStatusStats({
+        upcoming: upcomingResponse.totalElements,
+        active: activeResponse.totalElements,
+        ended: endedResponse.totalElements,
+      });
+    } catch (err) {
+      console.error("상태별 이벤트 통계 로드 실패:", err);
+    }
+  };
 
   // 이벤트 로드 함수
   const loadEvents = async () => {
@@ -167,6 +218,7 @@ const EventManagementPage: React.FC = () => {
       await EventService.deleteEvent(eventId);
       alert("이벤트가 성공적으로 삭제되었습니다.");
       loadEvents(); // 목록 다시 로드
+      loadStatusStats(); // 통계 다시 로드
     } catch (err) {
       console.error("이벤트 삭제 실패:", err);
       alert("이벤트 삭제 중 오류가 발생했습니다.");
@@ -178,6 +230,16 @@ const EventManagementPage: React.FC = () => {
   // 이벤트 등록 페이지로 이동
   const handleCreateEvent = () => {
     navigate("/admin/events/add");
+  };
+
+  // 상태별 이벤트 조회
+  const handleStatusClick = (status: EventStatus) => {
+    // 필터 설정
+    const newFilter: EventSearchDto = {
+      ...currentFilter,
+      status: status,
+    };
+    handleApplyFilter(newFilter);
   };
 
   return (
@@ -198,6 +260,43 @@ const EventManagementPage: React.FC = () => {
           <div className={styles.statTitle}>전체 이벤트 수</div>
           <div className={styles.statValue}>
             {totalElements.toLocaleString()}
+          </div>
+        </div>
+
+        {/* 상태별 이벤트 수 통계 */}
+        <div
+          className={`${styles.statCard} ${styles.statusStat} ${
+            styles.upcomingStat
+          } ${theme === "dark" ? styles.dark : ""}`}
+          onClick={() => handleStatusClick(EventStatus.UPCOMING)}
+        >
+          <div className={styles.statTitle}>예정 이벤트</div>
+          <div className={styles.statValue}>
+            {statusStats.upcoming.toLocaleString()}
+          </div>
+        </div>
+
+        <div
+          className={`${styles.statCard} ${styles.statusStat} ${
+            styles.activeStat
+          } ${theme === "dark" ? styles.dark : ""}`}
+          onClick={() => handleStatusClick(EventStatus.ACTIVE)}
+        >
+          <div className={styles.statTitle}>진행 중인 이벤트</div>
+          <div className={styles.statValue}>
+            {statusStats.active.toLocaleString()}
+          </div>
+        </div>
+
+        <div
+          className={`${styles.statCard} ${styles.statusStat} ${
+            styles.endedStat
+          } ${theme === "dark" ? styles.dark : ""}`}
+          onClick={() => handleStatusClick(EventStatus.ENDED)}
+        >
+          <div className={styles.statTitle}>종료된 이벤트</div>
+          <div className={styles.statValue}>
+            {statusStats.ended.toLocaleString()}
           </div>
         </div>
       </div>

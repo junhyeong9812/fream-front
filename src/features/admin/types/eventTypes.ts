@@ -4,6 +4,13 @@ export interface SortOption {
   order: "asc" | "desc";
 }
 
+// 이벤트 상태 열거형
+export enum EventStatus {
+  UPCOMING = "UPCOMING",
+  ACTIVE = "ACTIVE",
+  ENDED = "ENDED",
+}
+
 // 이벤트 목록 항목 DTO
 export interface EventListDto {
   id: number;
@@ -14,6 +21,8 @@ export interface EventListDto {
   brandId: number;
   brandName: string;
   isActive: boolean;
+  status: EventStatus; // 상태 필드 추가
+  statusDisplayName: string; // 상태 표시명 추가 ("예정", "진행 중", "종료")
 }
 
 // 이벤트 상세 정보 DTO
@@ -28,6 +37,8 @@ export interface EventDetailDto {
   brandId: number;
   brandName: string;
   isActive: boolean;
+  status: EventStatus; // 상태 필드 추가
+  statusDisplayName: string; // 상태 표시명 추가
   createdDate: string;
   modifiedDate: string;
 }
@@ -64,6 +75,7 @@ export interface EventSearchDto {
   keyword?: string;
   brandId?: number;
   isActive?: boolean;
+  status?: EventStatus; // 상태 필드 추가
   startDate?: string;
   endDate?: string;
   sortOption?: SortOption;
