@@ -40,7 +40,7 @@ const EventSort: React.FC<EventSortProps> = ({
       }`}
     >
       <div className={styles.resultCount}>
-        총 {totalElements.toLocaleString()}개의 이벤트
+        총 {(totalElements || 0).toLocaleString()}개의 이벤트
       </div>
 
       <div className={styles.sortOptions}>

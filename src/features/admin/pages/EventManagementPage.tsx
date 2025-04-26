@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiCalendar } from "react-icons/fi";
 import { useTheme } from "../../../global/context/ThemeContext";
 import { EventService } from "../services/eventService";
 import {
@@ -29,7 +29,7 @@ const EventManagementPage: React.FC = () => {
     field: "id",
     order: "desc",
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // 처음 로딩 시 true로 설정
   const [error, setError] = useState<string | null>(null);
 
   // 페이지네이션 상태
@@ -38,7 +38,7 @@ const EventManagementPage: React.FC = () => {
   const [totalElements, setTotalElements] = useState<number>(0);
   const pageSize = 10;
 
-  // 상태별 이벤트 수 통계
+  // 상태별 이벤트 수 통계 - 기본값을 0으로 초기화
   const [statusStats, setStatusStats] = useState<{
     upcoming: number;
     active: number;
@@ -59,7 +59,7 @@ const EventManagementPage: React.FC = () => {
     loadStatusStats();
   }, []);
 
-  // 상태별 이벤트 수 로드
+  // 상태별 이벤트 수 로드 함수
   const loadStatusStats = async () => {
     try {
       // 각 상태별로 별도 API 호출 (페이지 크기 1로 하여 총 개수만 가져옴)
@@ -80,12 +80,13 @@ const EventManagementPage: React.FC = () => {
       );
 
       setStatusStats({
-        upcoming: upcomingResponse.totalElements,
-        active: activeResponse.totalElements,
-        ended: endedResponse.totalElements,
+        upcoming: upcomingResponse.totalElements || 0,
+        active: activeResponse.totalElements || 0,
+        ended: endedResponse.totalElements || 0,
       });
     } catch (err) {
       console.error("상태별 이벤트 통계 로드 실패:", err);
+      // 오류 발생 시 기본값(0)을 유지
     }
   };
 
@@ -110,9 +111,9 @@ const EventManagementPage: React.FC = () => {
       );
 
       // 결과 처리
-      setEvents(response.content);
-      setTotalPages(response.totalPages);
-      setTotalElements(response.totalElements);
+      setEvents(response.content || []);
+      setTotalPages(response.totalPages || 0);
+      setTotalElements(response.totalElements || 0);
     } catch (err) {
       console.error("이벤트 로드 실패:", err);
       setError("이벤트를 불러오는 중 오류가 발생했습니다.");
@@ -138,9 +139,9 @@ const EventManagementPage: React.FC = () => {
 
     EventService.searchEvents(searchRequest, 0, pageSize)
       .then((response) => {
-        setEvents(response.content);
-        setTotalPages(response.totalPages);
-        setTotalElements(response.totalElements);
+        setEvents(response.content || []);
+        setTotalPages(response.totalPages || 0);
+        setTotalElements(response.totalElements || 0);
       })
       .catch((err) => {
         console.error("이벤트 검색 실패:", err);
@@ -168,9 +169,9 @@ const EventManagementPage: React.FC = () => {
 
     EventService.searchEvents(searchRequest, 0, pageSize)
       .then((response) => {
-        setEvents(response.content);
-        setTotalPages(response.totalPages);
-        setTotalElements(response.totalElements);
+        setEvents(response.content || []);
+        setTotalPages(response.totalPages || 0);
+        setTotalElements(response.totalElements || 0);
       })
       .catch((err) => {
         console.error("이벤트 필터링 실패:", err);
@@ -242,6 +243,24 @@ const EventManagementPage: React.FC = () => {
     handleApplyFilter(newFilter);
   };
 
+  // 빈 상태 UI 렌더링
+  const renderEmptyState = () => {
+    return (
+      <div className={styles.emptyStateContainer}>
+        <div className={styles.emptyStateIcon}>
+          <FiCalendar size={64} />
+        </div>
+        <h2 className={styles.emptyStateTitle}>등록된 이벤트가 없습니다</h2>
+        <p className={styles.emptyStateDescription}>
+          첫 번째 이벤트를 등록하여 시작해보세요!
+        </p>
+        <button className={styles.emptyStateButton} onClick={handleCreateEvent}>
+          <FiPlus /> 이벤트 등록하기
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div
       className={`${styles.eventManagement} ${
@@ -259,7 +278,7 @@ const EventManagementPage: React.FC = () => {
         >
           <div className={styles.statTitle}>전체 이벤트 수</div>
           <div className={styles.statValue}>
-            {totalElements.toLocaleString()}
+            {(totalElements || 0).toLocaleString()}
           </div>
         </div>
 
@@ -272,7 +291,7 @@ const EventManagementPage: React.FC = () => {
         >
           <div className={styles.statTitle}>예정 이벤트</div>
           <div className={styles.statValue}>
-            {statusStats.upcoming.toLocaleString()}
+            {(statusStats.upcoming || 0).toLocaleString()}
           </div>
         </div>
 
@@ -284,7 +303,7 @@ const EventManagementPage: React.FC = () => {
         >
           <div className={styles.statTitle}>진행 중인 이벤트</div>
           <div className={styles.statValue}>
-            {statusStats.active.toLocaleString()}
+            {(statusStats.active || 0).toLocaleString()}
           </div>
         </div>
 
@@ -296,7 +315,7 @@ const EventManagementPage: React.FC = () => {
         >
           <div className={styles.statTitle}>종료된 이벤트</div>
           <div className={styles.statValue}>
-            {statusStats.ended.toLocaleString()}
+            {(statusStats.ended || 0).toLocaleString()}
           </div>
         </div>
       </div>
@@ -315,20 +334,22 @@ const EventManagementPage: React.FC = () => {
       {/* 필터 영역 */}
       <EventFilter onApplyFilter={handleApplyFilter} theme={theme} />
 
-      {/* 정렬 영역 */}
-      <EventSort
-        onSort={handleSortChange}
-        currentSort={currentSort}
-        totalElements={totalElements}
-        theme={theme}
-      />
+      {/* 정렬 영역 - 이벤트가 있을 때만 표시 */}
+      {!isLoading && !error && totalElements > 0 && (
+        <EventSort
+          onSort={handleSortChange}
+          currentSort={currentSort}
+          totalElements={totalElements || 0}
+          theme={theme}
+        />
+      )}
 
       {/* 이벤트 목록 영역 */}
       {isLoading ? (
         <LoadingSpinner />
       ) : error ? (
         <ErrorMessage message={error} />
-      ) : (
+      ) : totalElements > 0 ? (
         <EventList
           events={events}
           currentPage={currentPage}
@@ -339,6 +360,9 @@ const EventManagementPage: React.FC = () => {
           onDeleteEvent={handleDeleteEvent}
           theme={theme}
         />
+      ) : (
+        // 이벤트가 없을 때 빈 상태 UI 표시
+        renderEmptyState()
       )}
     </div>
   );

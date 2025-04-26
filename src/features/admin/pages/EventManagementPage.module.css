@@ -194,3 +194,82 @@
 .dark .backButton:hover {
   background-color: #343a40;
 }
+
+/* 빈 상태 UI 스타일 */
+.emptyStateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 3rem 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.dark .emptyStateContainer {
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.emptyStateIcon {
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.dark .emptyStateIcon {
+  color: #666;
+}
+
+.emptyStateTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.dark .emptyStateTitle {
+  color: #ccc;
+}
+
+.emptyStateDescription {
+  color: #777;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.dark .emptyStateDescription {
+  color: #999;
+}
+
+.emptyStateButton {
+  background-color: #4a6fdc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emptyStateButton:hover {
+  background-color: #3b5cb8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .emptyStateButton {
+  background-color: #5d82e5;
+}
+
+.dark .emptyStateButton:hover {
+  background-color: #4a6fdc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
