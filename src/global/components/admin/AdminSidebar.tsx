@@ -16,6 +16,7 @@ import {
   FiChevronLeft,
   FiChevronRight as FiChevronRightIcon,
   FiCalendar,
+  FiMessageCircle,
 } from "react-icons/fi";
 import styles from "./AdminSidebar.module.css";
 import { ThemeContext } from "src/global/context/ThemeContext";
@@ -219,6 +220,28 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       ],
     },
     {
+      id: "chatquestion",
+      title: "채팅 질문 관리",
+      icon: <FiMessageCircle />, // 채팅에 적합한 아이콘
+      submenus: [
+        {
+          id: "chatquestion-stats",
+          title: "GPT 사용량 통계",
+          link: "/admin/chatquestion/stats",
+        },
+        {
+          id: "chatquestion-logs",
+          title: "GPT 사용량 로그",
+          link: "/admin/chatquestion/logs",
+        },
+        {
+          id: "chatquestion-history",
+          title: "채팅 기록 조회",
+          link: "/admin/chatquestion/history",
+        },
+      ],
+    },
+    {
       id: "monitoring",
       title: "모니터링",
       icon: <FiAlertCircle />,
@@ -286,6 +309,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       "/admin/sales",
       "/admin/customer-service",
       "/admin/settings",
+      "/admin/chatquestion",
     ];
 
     // 하위 메뉴가 있는 섹션의 링크는 정확히 일치하는 경우만 활성화

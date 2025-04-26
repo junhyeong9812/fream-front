@@ -26,6 +26,10 @@ import UserManagementPage from "../features/admin/pages/UserManagementPage";
 import UserSanctionsManagementPage from "../features/admin/pages/UserSanctionsManagementPage";
 import UserGradesManagementPage from "../features/admin/pages/UserGradesManagementPage";
 import UserDetailPage from "../features/admin/pages/UserDetailPage";
+// ChatQuestion 관련 페이지 imports
+import GPTUsageStatsPage from "../features/admin/pages/GPTUsageStatsPage";
+import GPTUsageLogsPage from "../features/admin/pages/GPTUsageLogsPage";
+import ChatHistoryPage from "../features/admin/pages/ChatHistoryPage";
 
 const AdminRoutes: React.FC = () => {
   return (
@@ -83,6 +87,10 @@ const AdminRoutes: React.FC = () => {
           <Route path="events/add" element={<EventCreatePage />} />
           <Route path="events/edit/:eventId" element={<EventEditPage />} />
           <Route path="events/detail/:eventId" element={<EventDetailPage />} />
+          {/* 채팅 질문 관리 - 새로 추가된 부분 */}
+          <Route path="chatquestion/stats" element={<GPTUsageStatsPage />} />
+          <Route path="chatquestion/logs" element={<GPTUsageLogsPage />} />
+          <Route path="chatquestion/history" element={<ChatHistoryPage />} />
           {/* 주문/배송 관리 */}
           <Route path="orders" element={<div>주문 목록 페이지</div>} />
           <Route
