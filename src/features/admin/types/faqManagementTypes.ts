@@ -21,8 +21,8 @@ export interface FAQResponseDto {
   question: string;
   answer: string;
   imageUrls: string[];
-  createdDate?: string;
-  updatedDate?: string;
+  createdDate: string;
+  modifiedDate: string;
 }
 
 // FAQ 생성 요청 DTO
@@ -38,7 +38,7 @@ export interface FAQUpdateRequestDto {
   category: FAQCategory;
   question: string;
   answer: string;
-  existingImageUrls?: string[];
+  retainedImageUrls?: string[];
   newFiles?: File[];
 }
 

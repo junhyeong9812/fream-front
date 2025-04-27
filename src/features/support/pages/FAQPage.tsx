@@ -6,9 +6,7 @@ import SearchBar from "../components/notice/SearchBar";
 import CategoryTabs from "../components/notice/CategoryTabs";
 import { FAQResponseDto } from "../types/supportTypes";
 import faqService from "../services/FAQService";
-import { faqDummyData } from "../services/dummyData";
 import FAQList from "../components/FaqList";
-import { toast } from "react-toastify";
 
 // 스타일 정의
 const Container = styled.div`
@@ -120,7 +118,6 @@ const FAQPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [usingDummyData, setUsingDummyData] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -130,10 +127,8 @@ const FAQPage: React.FC = () => {
 
   // 데이터 가져오기
   const fetchFaqs = async () => {
-    console.log("fetchFaqs 함수 호출됨");
     setLoading(true);
     setError(null);
-    setUsingDummyData(false);
 
     try {
       let response;
@@ -208,31 +203,7 @@ const FAQPage: React.FC = () => {
     }
   };
 
-  // 더미 데이터 사용 (API 실패 시 대체 데이터)
-  const useDummyData = () => {
-    console.log("더미 데이터를 사용합니다.");
-    setUsingDummyData(true);
-    toast.warning("서버 연결에 실패하여 임시 데이터를 표시합니다.");
-
-    // 더미 데이터 필터링
-    const filtered = faqDummyData.content.filter((faq) => {
-      if (keyword) return faq.question.includes(keyword as string);
-      if (category) {
-        const categoryValue = category === "전체" ? null : category;
-        return !categoryValue || faq.category === categoryValue;
-      }
-      return true;
-    });
-
-    // 더미 데이터에서 페이징 적용
-    const startIndex = (currentPage - 1) * faqsPerPage;
-    const endIndex = startIndex + faqsPerPage;
-    setFaqs(filtered.slice(startIndex, endIndex));
-    setTotalPages(Math.ceil(filtered.length / faqsPerPage));
-  };
-
   useEffect(() => {
-    console.log("useEffect 호출됨");
     fetchFaqs();
   }, [keyword, category, currentPage]);
 
@@ -298,7 +269,7 @@ const FAQPage: React.FC = () => {
             <LoadingContainer>
               <p>데이터를 불러오는 중입니다...</p>
             </LoadingContainer>
-          ) : error && !usingDummyData ? (
+          ) : error ? (
             <ErrorContainer>
               <ErrorMessage>{error}</ErrorMessage>
               <RetryButton onClick={handleRetry}>다시 시도</RetryButton>
@@ -309,17 +280,6 @@ const FAQPage: React.FC = () => {
             </NoDataContainer>
           ) : (
             <>
-              {usingDummyData && (
-                <div
-                  style={{
-                    margin: "10px 0",
-                    color: "#ff9800",
-                    textAlign: "center",
-                  }}
-                >
-                  임시 데이터를 표시하고 있습니다.
-                </div>
-              )}
               <FAQList faqs={faqs} />
               <Pagination>
                 <button

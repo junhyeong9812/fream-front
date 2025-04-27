@@ -32,6 +32,7 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  padding: 15px 10px;
 `;
 
 const Category = styled.strong`
@@ -66,11 +67,16 @@ const DropdownContent = styled.div`
   display: none;
   font-size: 14px;
   padding: 30px 30px 28px;
-  max-width: 640px;
+  max-width: 100%;
   word-break: break-word;
 
   &.open {
     display: block;
+    width: 100%;
+  }
+
+  .content {
+    line-height: 1.6;
   }
 `;
 
@@ -84,6 +90,16 @@ const FAQList: React.FC<FAQListProps> = ({ faqs }) => {
 
   const handleToggle = (id: number) => {
     setOpenId((prev) => (prev === id ? null : id));
+  };
+
+  // 날짜 포맷 함수
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
   };
 
   return (
@@ -103,10 +119,36 @@ const FAQList: React.FC<FAQListProps> = ({ faqs }) => {
             className={openId === faq.id ? "open" : ""}
             onClick={(e) => e.stopPropagation()} // 클릭 시 토글 방지
           >
-            <div className="content">
-              {faq.answer.split("\n").map((line, index) => (
-                <p key={index}>{line}</p>
-              ))}
+            <div
+              className="content"
+              dangerouslySetInnerHTML={{ __html: faq.answer }}
+            />
+
+            {/* 이미지가 있는 경우 이미지 표시 */}
+            {faq.imageUrls && faq.imageUrls.length > 0 && (
+              <div className="images" style={{ marginTop: "20px" }}>
+                {faq.imageUrls.map((url, index) => (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`FAQ 이미지 ${index + 1}`}
+                    style={{ maxWidth: "100%", marginBottom: "10px" }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* 작성일/수정일 표시 */}
+            <div
+              className="dates"
+              style={{ marginTop: "15px", fontSize: "12px", color: "#999" }}
+            >
+              <p>
+                작성일: {formatDate(faq.createdDate)}
+                {faq.modifiedDate &&
+                  faq.createdDate !== faq.modifiedDate &&
+                  ` / 수정일: ${formatDate(faq.modifiedDate)}`}
+              </p>
             </div>
           </DropdownContent>
         </li>

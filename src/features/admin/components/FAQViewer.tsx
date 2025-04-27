@@ -23,6 +23,7 @@ const FAQViewer: React.FC<FAQViewerProps> = ({
 }) => {
   // 날짜 포맷 함수
   const formatDate = (dateString: string) => {
+    if (!dateString) return "-";
     const date = new Date(dateString);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
       2,
@@ -64,8 +65,8 @@ const FAQViewer: React.FC<FAQViewerProps> = ({
         <div className={styles.meta}>
           <span className={styles.category}>{categoryDisplay}</span>
           <span className={styles.date}>
-            등록일: {faq.createdDate ? formatDate(faq.createdDate) : "-"}
-            {faq.updatedDate && ` (수정일: ${formatDate(faq.updatedDate)})`}
+            등록일: {formatDate(faq.createdDate)}
+            {faq.modifiedDate && ` (수정일: ${formatDate(faq.modifiedDate)})`}
           </span>
         </div>
       </div>

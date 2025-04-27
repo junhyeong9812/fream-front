@@ -1,4 +1,4 @@
-import apiClient from "src/global/services/ApiClient";
+import apiClient from "../../../global/services/ApiClient";
 import {
   FAQResponseDto,
   FAQCreateRequestDto,
@@ -8,7 +8,7 @@ import {
 } from "../types/faqManagementTypes";
 
 export class FAQService {
-  private static FAQ_URL = "/faq";
+  private static FAQ_URL = "/api/faq";
 
   /**
    * FAQ 목록 조회
@@ -99,9 +99,9 @@ export class FAQService {
     formData.append("answer", data.answer);
 
     // 기존 이미지 URL 추가
-    if (data.existingImageUrls && data.existingImageUrls.length > 0) {
-      data.existingImageUrls.forEach((url) => {
-        formData.append("existingImageUrls", url);
+    if (data.retainedImageUrls && data.retainedImageUrls.length > 0) {
+      data.retainedImageUrls.forEach((url) => {
+        formData.append("retainedImageUrls", url);
       });
     }
 

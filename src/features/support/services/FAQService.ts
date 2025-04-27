@@ -2,7 +2,7 @@ import apiClient from "src/global/services/ApiClient";
 import { AxiosError, AxiosResponse } from "axios";
 import { FAQPageResponse, FAQResponseDto } from "../types/supportTypes";
 import { ApiError } from "src/global/types/errors";
-import { ErrorHandler } from "src/global/services//errorHandler";
+import { ErrorHandler } from "src/global/services/errorHandler";
 import { toast } from "react-toastify";
 
 // FAQ 서비스 응답 타입
@@ -79,7 +79,7 @@ const faqService: FAQService = {
   // FAQ 목록 조회
   getFAQs: async (page, size) => {
     try {
-      const response = await apiClient.get<FAQPageResponse>("/faq", {
+      const response = await apiClient.get<FAQPageResponse>("/api/faq", {
         params: { page, size },
       });
       return {
@@ -102,7 +102,7 @@ const faqService: FAQService = {
   // 단일 FAQ 조회
   getFAQ: async (id) => {
     try {
-      const response = await apiClient.get<FAQResponseDto>(`/faq/${id}`);
+      const response = await apiClient.get<FAQResponseDto>(`/api/faq/${id}`);
       return {
         data: extractResponseData<FAQResponseDto>(response),
         success: true,
@@ -123,7 +123,7 @@ const faqService: FAQService = {
   // FAQ 검색
   searchFAQs: async (keyword, page, size) => {
     try {
-      const response = await apiClient.get<FAQPageResponse>("/faq/search", {
+      const response = await apiClient.get<FAQPageResponse>("/api/faq/search", {
         params: { keyword, page, size },
       });
       return {
@@ -146,7 +146,7 @@ const faqService: FAQService = {
   // 카테고리별 FAQ 조회
   getFAQsByCategory: async (category, page, size) => {
     try {
-      const response = await apiClient.get<FAQPageResponse>("/faq", {
+      const response = await apiClient.get<FAQPageResponse>("/api/faq", {
         params: { category, page, size },
       });
       return {

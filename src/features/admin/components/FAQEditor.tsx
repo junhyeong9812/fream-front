@@ -45,7 +45,7 @@ const FAQEditor: React.FC<FAQEditorProps> = ({
       : FAQCategory.GENERAL
   );
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [existingImageUrls, setExistingImageUrls] = useState<string[]>(
+  const [retainedImageUrls, setRetainedImageUrls] = useState<string[]>(
     initialFAQ?.imageUrls || []
   );
   const [loading, setLoading] = useState<boolean>(false);
@@ -84,7 +84,7 @@ const FAQEditor: React.FC<FAQEditorProps> = ({
 
   // 기존 이미지 제거 핸들러
   const handleRemoveExistingImage = (index: number) => {
-    setExistingImageUrls((prev) => prev.filter((_, i) => i !== index));
+    setRetainedImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   // 파일 선택 트리거
@@ -130,7 +130,7 @@ const FAQEditor: React.FC<FAQEditorProps> = ({
           question,
           answer,
           category,
-          existingImageUrls,
+          retainedImageUrls,
           newFiles: uploadedFiles,
         };
 
@@ -297,11 +297,11 @@ const FAQEditor: React.FC<FAQEditorProps> = ({
       )}
 
       {/* 기존 이미지 파일 목록 (수정 모드) */}
-      {mode === "edit" && existingImageUrls.length > 0 && (
+      {mode === "edit" && retainedImageUrls.length > 0 && (
         <div className={styles.fileList}>
           <h3 className={styles.fileListTitle}>기존 첨부 파일</h3>
           <ul>
-            {existingImageUrls.map((url, index) => {
+            {retainedImageUrls.map((url, index) => {
               // URL에서 파일명만 추출
               const fileName = url.split("/").pop() || url;
               return (

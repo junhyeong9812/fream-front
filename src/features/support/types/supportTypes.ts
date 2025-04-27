@@ -3,6 +3,7 @@ export interface SupportItem {
   title: string;
   content: string;
 }
+
 export interface Notice {
   id: number;
   category: string;
@@ -89,15 +90,15 @@ export const inspectionCategoryMapping: Record<string, string> = {
   "프리미엄 가방": "PREMIUM_BAG",
 };
 
-// FAQ 응답 DTO 형식
+// FAQ 응답 DTO 형식 - 백엔드 API와 일치하도록 수정
 export interface FAQResponseDto {
   id: number;
   category: string; // FAQ 카테고리
   question: string; // 질문
   answer: string; // 답변
-  imageUrls?: string[]; // 이미지 URL 배열 (옵션)
-  createdAt: string; // 생성 날짜 (ISO 8601 형식)
-  updatedAt: string; // 수정 날짜 (ISO 8601 형식)
+  imageUrls: string[]; // 이미지 URL 배열
+  createdDate: string; // 생성 날짜 (ISO 8601 형식)
+  modifiedDate: string; // 수정 날짜 (ISO 8601 형식)
 }
 
 // FAQ 페이징 응답 형식

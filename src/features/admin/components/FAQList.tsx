@@ -25,6 +25,7 @@ const FAQList: React.FC<FAQListProps> = ({
 }) => {
   // 날짜 포맷 함수
   const formatDate = (dateString: string) => {
+    if (!dateString) return "-";
     const date = new Date(dateString);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
       2,
