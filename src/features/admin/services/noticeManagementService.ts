@@ -52,6 +52,31 @@ export class NoticeService {
   }
 
   /**
+   * 카테고리와 키워드로 공지사항 검색 (새로 추가)
+   */
+  static async searchNoticesByCategoryAndKeyword(
+    category: NoticeCategory | null,
+    keyword: string,
+    page: number = 0,
+    size: number = 20
+  ): Promise<PaginatedNoticeResponse> {
+    const params: any = { page, size };
+
+    if (keyword) {
+      params.keyword = keyword;
+    }
+
+    if (category) {
+      params.category = category;
+    }
+
+    const response = await apiClient.get(`${this.NOTICE_URL}/search`, {
+      params,
+    });
+    return response.data;
+  }
+
+  /**
    * 단일 공지사항 조회
    */
   static async getNotice(noticeId: number): Promise<NoticeResponseDto> {

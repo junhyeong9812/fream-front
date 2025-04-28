@@ -1,4 +1,3 @@
-// CategoryTabs 컴포넌트
 import React from "react";
 import styled from "styled-components";
 
@@ -100,7 +99,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
                   }
                   onClick={() => onCategoryChange(category)}
                 >
-                  <CategoryLink href="#">
+                  <CategoryLink href="#" onClick={(e) => e.preventDefault()}>
                     <CategoryText>{category}</CategoryText>
                   </CategoryLink>
                 </td>

@@ -11,7 +11,7 @@ export interface Notice {
   content: string;
   createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
   modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
-  files?: string[]; // 첨부 파일 URL 배열 (옵션)
+  imageUrls?: string[]; // 첨부 파일 URL 배열 (옵션)
 }
 
 // API 응답에서 사용될 공지사항 데이터 형식
@@ -20,9 +20,9 @@ export interface NoticeResponseDto {
   title: string;
   content: string;
   category: string;
-  createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
-  modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
-  files?: string[]; // 첨부 파일 URL 배열 (옵션)
+  createdDate: string; // BaseTimeEntity와 일치
+  modifiedDate: string; // BaseTimeEntity와 일치
+  imageUrls?: string[]; // 첨부 파일 URL 배열 (옵션)
 }
 
 // 공통 페이징 응답 형식
@@ -46,6 +46,7 @@ export interface DummyData {
   content: Notice[];
 }
 
+// 한글 카테고리명 -> 백엔드 Enum 값 매핑
 export const categoryMapping: Record<string, string> = {
   전체: "ALL",
   공지: "ANNOUNCEMENT",
@@ -54,14 +55,22 @@ export const categoryMapping: Record<string, string> = {
   기타: "OTHERS",
 };
 
+// 백엔드 Enum 값 -> 한글 카테고리명 매핑
+export const backendCategoryToKorean: Record<string, string> = {
+  ANNOUNCEMENT: "공지",
+  EVENT: "이벤트",
+  SERVICE: "서비스 안내",
+  OTHERS: "기타",
+};
+
 // Inspection 관련 타입
 export interface Inspection {
   id: number;
   category: string; // 검수 기준 카테고리
   content: string; // 검수 기준 내용
   imageUrls: string[]; // 이미지 URL 배열
-  createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
-  modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
+  createdDate: string; // BaseTimeEntity와 일치
+  modifiedDate: string; // BaseTimeEntity와 일치
 }
 
 // Inspection 응답 DTO 형식
@@ -70,8 +79,8 @@ export interface InspectionResponseDto {
   category: string;
   content: string;
   imageUrls: string[];
-  createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
-  modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
+  createdDate: string; // BaseTimeEntity와 일치
+  modifiedDate: string; // BaseTimeEntity와 일치
 }
 
 // 공통 페이징 응답 형식에 Inspection 추가

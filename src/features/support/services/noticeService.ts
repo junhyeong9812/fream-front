@@ -29,6 +29,14 @@ interface NoticeService {
     page: number,
     size: number
   ) => Promise<AxiosResponse<PageResponse<NoticeResponseDto>>>;
+
+  // 카테고리와 키워드로 공지사항 검색 (새 메서드)
+  searchNoticesByCategoryAndKeyword: (
+    category: string,
+    keyword: string,
+    page: number,
+    size: number
+  ) => Promise<AxiosResponse<PageResponse<NoticeResponseDto>>>;
 }
 
 const noticeService: NoticeService = {
@@ -48,15 +56,34 @@ const noticeService: NoticeService = {
     }),
 
   // 카테고리별 공지사항 조회
-  // getNoticesByCategory: (category, page, size) =>
-  //   apiClient.get<PageResponse<NoticeResponseDto>>(`/notices`, {
-  //     params: { category, page, size },
-  //   }),
   getNoticesByCategory: (category, page, size) => {
     // 한글 카테고리를 Enum 값으로 변환
     const mappedCategory = categoryMapping[category] || "ALL";
+
+    // ALL인 경우 카테고리 파라미터 제거
+    const params =
+      mappedCategory === "ALL"
+        ? { page, size }
+        : { category: mappedCategory, page, size };
+
     return apiClient.get<PageResponse<NoticeResponseDto>>(`/notices`, {
-      params: { category: mappedCategory, page, size },
+      params,
+    });
+  },
+
+  // 카테고리와 키워드로 공지사항 검색
+  searchNoticesByCategoryAndKeyword: (category, keyword, page, size) => {
+    // 한글 카테고리를 Enum 값으로 변환
+    const mappedCategory = categoryMapping[category] || "ALL";
+
+    // ALL인 경우 카테고리 파라미터 제거
+    const params =
+      mappedCategory === "ALL"
+        ? { keyword, page, size }
+        : { category: mappedCategory, keyword, page, size };
+
+    return apiClient.get<PageResponse<NoticeResponseDto>>(`/notices/search`, {
+      params,
     });
   },
 };

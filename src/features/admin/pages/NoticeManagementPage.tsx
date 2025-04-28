@@ -52,7 +52,15 @@ const NoticeManagementPage: React.FC = () => {
     try {
       let response;
 
-      if (keyword) {
+      if (keyword && category) {
+        // 카테고리와 키워드로 검색
+        response = await NoticeService.searchNoticesByCategoryAndKeyword(
+          category,
+          keyword,
+          page,
+          pageSize
+        );
+      } else if (keyword) {
         // 검색 API 호출
         response = await NoticeService.searchNotices(keyword, page, pageSize);
       } else if (category) {
@@ -88,14 +96,15 @@ const NoticeManagementPage: React.FC = () => {
   const handleSearch = (keyword: string) => {
     setSearchKeyword(keyword);
     setCurrentPage(0); // 검색 시 첫 페이지로 리셋
-    loadNotices(0, null, keyword);
+    loadNotices(0, currentCategory, keyword);
   };
 
   // 카테고리 필터 핸들러
   const handleCategoryFilter = (category: NoticeCategory | null) => {
     setCurrentCategory(category);
     setCurrentPage(0); // 필터 변경 시 첫 페이지로 리셋
-    setSearchKeyword(""); // 필터 변경 시 검색어 초기화
+    // 검색어가 있는 경우 검색어와 함께 필터링
+    loadNotices(0, category, searchKeyword);
   };
 
   // 페이지 변경 핸들러

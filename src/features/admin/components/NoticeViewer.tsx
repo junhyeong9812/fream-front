@@ -65,8 +65,8 @@ const NoticeViewer: React.FC<NoticeViewerProps> = ({
           <span className={styles.category}>{categoryDisplay}</span>
           <span className={styles.date}>
             등록일: {formatDate(notice.createdDate)}
-            {notice.updatedDate &&
-              ` (수정일: ${formatDate(notice.updatedDate)})`}
+            {notice.modifiedDate &&
+              ` (수정일: ${formatDate(notice.modifiedDate)})`}
           </span>
         </div>
       </div>

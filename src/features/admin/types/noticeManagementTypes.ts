@@ -21,7 +21,7 @@ export interface NoticeResponseDto {
   content: string;
   category: string;
   createdDate: string;
-  updatedDate?: string;
+  modifiedDate?: string; // updatedDate에서 modifiedDate로 변경
   imageUrls: string[];
 }
 

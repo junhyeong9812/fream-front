@@ -1,4 +1,3 @@
-// SearchBar 컴포넌트
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FaTimes } from "react-icons/fa";
