@@ -6,7 +6,6 @@ import SearchBar from "../components/notice/SearchBar";
 import CategoryTabs from "../components/notice/CategoryTabs";
 import SupportList from "../components/notice/SupportList";
 import PaginationComponent from "../components/notice/PaginationComponent";
-import dummyData from "../services/dummyData";
 import { NoticeResponseDto } from "../types/supportTypes";
 import noticeService from "src/features/support/services/noticeService";
 
@@ -113,20 +112,8 @@ const NoticePage: React.FC = () => {
     } catch (error) {
       console.error("API 요청 실패:", error);
       setError("공지사항을 불러오는 중 오류가 발생했습니다.");
-
-      // 개발 중 폴백으로 더미 데이터 사용
-      const filtered = dummyData.content.filter((notice) => {
-        if (keyword) return notice.title.includes(keyword as string);
-        if (category)
-          return category === "전체" || notice.category === category;
-        return true;
-      });
-
-      // 더미 데이터에서 페이징 적용
-      const startIndex = (currentPage - 1) * noticesPerPage;
-      const endIndex = startIndex + noticesPerPage;
-      setNotices(filtered.slice(startIndex, endIndex));
-      setTotalPages(Math.ceil(filtered.length / noticesPerPage));
+      setNotices([]);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
