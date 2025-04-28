@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import inspectionService from "../services/InspectionService";
-import { inspectionDummyData } from "../services/dummyData";
 
 // 스타일 정의
 const Container = styled.div`
@@ -95,14 +94,33 @@ const ContentContainer = styled.div`
       }
     }
   }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .error-message {
+    color: #e53935;
+    padding: 20px;
+    background-color: #ffebee;
+    border-radius: 4px;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 30px;
+    color: #757575;
+  }
 `;
 
-// 데이터 배열
+// 데이터 배열 - 백엔드 카테고리와 일치하도록 구성
 const categories = [
   ["신발", "아우터 · 상의 · 하의", "가방 · 시계 · 지갑 · 패션잡화"],
   ["테크", "뷰티 · 컬렉터블 · 캠핑 · 가구/리빙", "프리미엄 시계"],
   ["프리미엄 가방"],
 ];
+
 // 한글 → 영어 매핑 객체
 const categoryMapping: Record<string, string> = {
   신발: "SHOES",
@@ -117,17 +135,22 @@ const categoryMapping: Record<string, string> = {
 const InspectionPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("신발"); // 기본값: "신발"
   const [inspectionData, setInspectionData] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
   // 카테고리 변경 핸들러
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    navigate(`?category=${category}`);
+    navigate(`?category=${encodeURIComponent(category)}`);
   };
 
   // 데이터 가져오기
   const fetchData = async (category: string) => {
+    setIsLoading(true);
+    setError(null);
+
     try {
       const mappedCategory = categoryMapping[category] || "SHOES"; // 한글 → 영어 매핑
       const response = await inspectionService.getInspectionsByCategory(
@@ -135,11 +158,23 @@ const InspectionPage: React.FC = () => {
         0, // 첫 번째 페이지
         10 // 페이지 크기
       );
-      const content = response.data.content[0]?.content || ""; // 첫 번째 데이터의 콘텐츠
-      setInspectionData(content);
+
+      if (response.data.content && response.data.content.length > 0) {
+        const content = response.data.content[0]?.content || "";
+        setInspectionData(content);
+      } else {
+        setInspectionData(
+          "<p>해당 카테고리의 검수 기준이 아직 등록되지 않았습니다.</p>"
+        );
+      }
     } catch (error) {
       console.error("API 요청 실패:", error);
-      setInspectionData(inspectionDummyData[category] || ""); // 더미 데이터 사용
+      setError(
+        "데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+      );
+      setInspectionData(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -183,13 +218,23 @@ const InspectionPage: React.FC = () => {
         </Table>
       </CategoryContainer>
       <ContentContainer>
-        {/* HTML 콘텐츠 렌더링 */}
-        <div
-          className="description_wrap"
-          dangerouslySetInnerHTML={{
-            __html: inspectionData || "데이터를 불러오는 중입니다.",
-          }}
-        />
+        {isLoading ? (
+          <div className="description_wrap loading">
+            데이터를 불러오는 중입니다...
+          </div>
+        ) : error ? (
+          <div className="description_wrap">
+            <p className="error-message">{error}</p>
+          </div>
+        ) : (
+          // HTML 콘텐츠 렌더링
+          <div
+            className="description_wrap"
+            dangerouslySetInnerHTML={{
+              __html: inspectionData || "데이터를 불러오는 중입니다.",
+            }}
+          />
+        )}
       </ContentContainer>
     </Container>
   );

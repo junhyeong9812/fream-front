@@ -9,8 +9,8 @@ export interface Notice {
   category: string;
   title: string;
   content: string;
-  createdAt: string; // 생성 날짜 (ISO 8601 형식)
-  updatedAt: string; // 수정 날짜 (ISO 8601 형식)
+  createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
+  modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
   files?: string[]; // 첨부 파일 URL 배열 (옵션)
 }
 
@@ -20,8 +20,8 @@ export interface NoticeResponseDto {
   title: string;
   content: string;
   category: string;
-  createdAt: string; // 생성 날짜 (ISO 8601 형식)
-  updatedAt: string; // 수정 날짜 (ISO 8601 형식)
+  createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
+  modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
   files?: string[]; // 첨부 파일 URL 배열 (옵션)
 }
 
@@ -60,8 +60,8 @@ export interface Inspection {
   category: string; // 검수 기준 카테고리
   content: string; // 검수 기준 내용
   imageUrls: string[]; // 이미지 URL 배열
-  createdAt: string; // 생성 날짜 (ISO 8601 형식)
-  updatedAt: string; // 수정 날짜 (ISO 8601 형식)
+  createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
+  modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
 }
 
 // Inspection 응답 DTO 형식
@@ -70,27 +70,25 @@ export interface InspectionResponseDto {
   category: string;
   content: string;
   imageUrls: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdDate: string; // BaseTimeEntity와 일치하도록 변경: createdAt → createdDate
+  modifiedDate: string; // BaseTimeEntity와 일치하도록 변경: updatedAt → modifiedDate
 }
 
 // 공통 페이징 응답 형식에 Inspection 추가
 export type InspectionPageResponse = PageResponse<InspectionResponseDto>;
 
-// InspectionCategory Enum과 매핑
+// InspectionCategory Enum과 매핑 - 백엔드와 정확히 일치하도록 수정
 export const inspectionCategoryMapping: Record<string, string> = {
   신발: "SHOES",
-  아우터: "OUTER",
-  상의: "TOP",
-  하의: "BOTTOM",
-  가방: "BAG",
+  "아우터 · 상의 · 하의": "OUTER", // 통합된 카테고리로 수정
+  "가방 · 시계 · 지갑 · 패션잡화": "BAG", // 통합된 카테고리로 수정
   테크: "TECH",
-  뷰티: "BEAUTY",
+  "뷰티 · 컬렉터블 · 캠핑 · 가구/리빙": "BEAUTY", // 통합된 카테고리로 수정
   "프리미엄 시계": "PREMIUM_WATCH",
   "프리미엄 가방": "PREMIUM_BAG",
 };
 
-// FAQ 응답 DTO 형식 - 백엔드 API와 일치하도록 수정
+// FAQ 응답 DTO 형식 - 백엔드 API와 일치
 export interface FAQResponseDto {
   id: number;
   category: string; // FAQ 카테고리

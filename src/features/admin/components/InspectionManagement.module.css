@@ -107,9 +107,20 @@
 }
 
 .standardId {
-  display: block;
+  display: inline-block;
   font-size: 0.875rem;
   color: #888;
+  margin-right: 0.5rem;
+}
+
+/* 날짜 표시 추가 */
+.standardDate {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #888;
+  background-color: #f5f5f5;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
 }
 
 .noData {
@@ -275,6 +286,11 @@
 
 .dark .standardId {
   color: #d1d5db;
+}
+
+.dark .standardDate {
+  color: #d1d5db;
+  background-color: #374151;
 }
 
 .dark .noData {

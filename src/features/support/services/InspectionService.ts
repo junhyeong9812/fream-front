@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import {
   InspectionPageResponse,
   InspectionResponseDto,
+  inspectionCategoryMapping,
 } from "../types/supportTypes";
 
 // InspectionService 인터페이스 정의 및 구현
@@ -30,10 +31,8 @@ const inspectionService = {
     page: number,
     size: number
   ): Promise<AxiosResponse<InspectionPageResponse>> => {
-    // 한글 카테고리를 백엔드 Enum 값으로 변환
-
     return apiClient.get<InspectionPageResponse>("/inspections", {
-      params: { category: category, page, size },
+      params: { category, page, size },
     });
   },
 };

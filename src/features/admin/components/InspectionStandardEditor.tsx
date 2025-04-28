@@ -9,7 +9,6 @@ import {
 import { InspectionStandardService } from "../services/inspectionStandardService";
 import styles from "./InspectionStandardEditor.module.css";
 
-
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 

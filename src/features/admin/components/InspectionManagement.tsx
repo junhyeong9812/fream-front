@@ -11,7 +11,6 @@ import { InspectionStandardViewer } from "./InspectionStandardViewer";
 import styles from "./InspectionManagement.module.css";
 import { ThemeContext } from "src/global/context/ThemeContext";
 
-
 // 컴포넌트 Props 정의
 interface InspectionManagementProps {
   // 필요시 추가 Props 정의
@@ -159,6 +158,17 @@ const InspectionManagement: React.FC<InspectionManagementProps> = () => {
     setPage(newPage);
   };
 
+  // 날짜 형식 변환 함수
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
   return (
     <div
       className={`${styles.inspectionManagement} ${
@@ -235,6 +245,9 @@ const InspectionManagement: React.FC<InspectionManagementProps> = () => {
                         }
                       </span>
                       <span className={styles.standardId}>#{standard.id}</span>
+                      <span className={styles.standardDate}>
+                        {formatDate(standard.createdDate)}
+                      </span>
                     </li>
                   ))}
                 </ul>

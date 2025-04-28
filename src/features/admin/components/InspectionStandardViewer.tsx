@@ -18,11 +18,35 @@ export const InspectionStandardViewer: React.FC<
     CategoryKoreanMap[standard.category as InspectionCategory] ||
     standard.category;
 
+  // 날짜 형식 변환 함수
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className={`${styles.viewer} ${theme === "dark" ? styles.dark : ""}`}>
       <div className={styles.header}>
         <h2 className={styles.category}>{categoryDisplay} 검수 기준</h2>
         <span className={styles.id}>ID: {standard.id}</span>
+      </div>
+
+      <div className={styles.dateInfo}>
+        <span className={styles.dateItem}>
+          <strong>생성일:</strong> {formatDate(standard.createdDate)}
+        </span>
+        {standard.modifiedDate && (
+          <span className={styles.dateItem}>
+            <strong>수정일:</strong> {formatDate(standard.modifiedDate)}
+          </span>
+        )}
       </div>
 
       <div
