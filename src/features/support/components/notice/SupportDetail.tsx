@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import dummyData from "../../services/dummyData";
+// import dummyData from "../../services/dummyData";
 import {
   NoticeResponseDto,
   backendCategoryToKorean,
@@ -127,10 +127,10 @@ const NoticeDetail: React.FC = () => {
         setError("공지사항을 불러오는 중 오류가 발생했습니다.");
 
         // 개발 중 폴백으로 더미 데이터 사용
-        const fallback = dummyData.content.find(
-          (item) => item.id === Number(id)
-        );
-        setNotice(fallback || null);
+        // const fallback = dummyData.content.find(
+        //   (item) => item.id === Number(id)
+        // );
+        setNotice(null);
       } finally {
         setLoading(false);
       }
