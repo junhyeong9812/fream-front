@@ -110,7 +110,9 @@ const Sale: React.FC = () => {
   const loadCounts = async () => {
     try {
       const countData = await saleBidService.getSaleBidStatusCounts();
-      setCounts(countData);
+      if (countData) {
+        setCounts(countData);
+      }
     } catch (error) {
       console.error("상태별 개수 로드 실패:", error);
     }
@@ -141,10 +143,11 @@ const Sale: React.FC = () => {
 
       const response = await saleBidService.getSaleBids(bidStatus, saleStatus);
 
-      let filteredSales = response.content;
+      // 안전하게 response 처리
+      let filteredSales = response?.content || [];
 
       // 정렬 적용
-      if (sortField) {
+      if (sortField && filteredSales.length > 0) {
         filteredSales = sortDirection
           ? [...filteredSales].sort((a, b) => {
               // createdDate 필드는 날짜 비교
@@ -210,7 +213,7 @@ const Sale: React.FC = () => {
   // SalesBox 컴포넌트에 사용할 탭 데이터
   const salesBoxTabs = tabMapping.map((tab, index) => ({
     title: tab.title,
-    count: tab.getCount(counts),
+    count: isNaN(tab.getCount(counts)) ? 0 : tab.getCount(counts),
     isTotal: activeTabIndex === index,
     href: tab.href,
   }));
@@ -247,7 +250,7 @@ const Sale: React.FC = () => {
           <LoadingIndicator>로딩 중...</LoadingIndicator>
         ) : sales.length === 0 ? (
           <EmptyPage>
-            <EmptyText>KREAM을 통해 상품을 판매해 보세요.</EmptyText>
+            <EmptyText>Fream을 통해 상품을 판매해 보세요.</EmptyText>
             <SellButton href="/sell">판매하기</SellButton>
           </EmptyPage>
         ) : (
