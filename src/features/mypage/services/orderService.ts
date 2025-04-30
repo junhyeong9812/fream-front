@@ -29,21 +29,68 @@ export const orderBidService = {
     if (bidStatus) params.bidStatus = bidStatus;
     if (orderStatus) params.orderStatus = orderStatus;
 
-    const response = await apiClient.get<PageResponse<OrderBidResponseDto>>(
+    // ResponseDto 구조를 처리하기 위해 응답 타입을 변경
+    const response = await apiClient.get<{ data: PageResponse<OrderBidResponseDto>, success: boolean, message: string }>(
       "/order-bids",
       { params }
     );
-    return response.data;
+    
+    // data 필드에서 실제 페이징 데이터를 추출
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+    
+    // 응답 구조가 예상과 다른 경우 기본값 반환
+    return {
+      content: [],
+      pageable: {
+        pageNumber: 0,
+        pageSize: 0,
+        sort: {
+          empty: true,
+          sorted: false,
+          unsorted: true,
+        },
+        offset: 0,
+        unpaged: false,
+        paged: true,
+      },
+      last: true,
+      totalElements: 0,
+      totalPages: 0,
+      size: 0,
+      number: 0,
+      sort: {
+        empty: true,
+        sorted: false,
+        unsorted: true,
+      },
+      first: true,
+      numberOfElements: 0,
+      empty: true,
+    };
   },
 
   /**
    * 주문 입찰 상태별 개수 조회
    */
   getOrderBidStatusCounts: async (): Promise<OrderBidStatusCountDto> => {
-    const response = await apiClient.get<OrderBidStatusCountDto>(
+    // ResponseDto 구조를 처리하기 위해 응답 타입을 변경
+    const response = await apiClient.get<{ data: OrderBidStatusCountDto, success: boolean, message: string }>(
       "/order-bids/count"
     );
-    return response.data;
+    
+    // data 필드에서 실제 카운트 데이터를 추출
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+    
+    // 응답 구조가 예상과 다른 경우 기본값 반환
+    return {
+      pendingCount: 0,
+      matchedCount: 0,
+      cancelledOrCompletedCount: 0,
+    };
   },
 
   /**
@@ -52,10 +99,22 @@ export const orderBidService = {
    */
   getOrderBidDetail: async (
     orderBidId: number
-  ): Promise<OrderBidResponseDto> => {
-    const response = await apiClient.get<OrderBidResponseDto>(
-      `/order-bids/${orderBidId}`
-    );
-    return response.data;
+  ): Promise<OrderBidResponseDto | null> => {
+    try {
+      // ResponseDto 구조를 처리하기 위해 응답 타입을 변경
+      const response = await apiClient.get<{ data: OrderBidResponseDto, success: boolean, message: string }>(
+        `/order-bids/${orderBidId}`
+      );
+      
+      // data 필드에서 실제 상세 데이터를 추출
+      if (response.data && response.data.data) {
+        return response.data.data;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error(`Failed to get order bid detail for ID ${orderBidId}:`, error);
+      return null;
+    }
   },
 };

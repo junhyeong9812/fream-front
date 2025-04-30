@@ -1,7 +1,6 @@
+// src/components/listBoxComponents.tsx
 import React from "react";
 import styled from "styled-components";
-
-
 
 // 여백 스타일
 const Spacer = styled.div`
@@ -36,7 +35,6 @@ const ButtonContainer = styled.div`
   width: 100%;
   gap: 8px;
 `;
-
 
 // 버튼 스타일 수정
 const Button = styled.a`
@@ -74,17 +72,54 @@ const Title = styled.h3`
   font-weight: bold;
 `;
 
-interface Props {
-  title: "판매내역" | "보관판매내역";
-  tabs: { title: string; count: number; isTotal?: boolean; href: string }[];
+// props 타입 정의
+interface ListBoxProps {
+  title: string; // "판매내역" | "보관판매내역" | "구매내역"
+  tabs?: Array<{
+    title: string;
+    count: number;
+    isTotal?: boolean;
+    href: string;
+  }>;
+  onTabClick?: (href: string) => void;
 }
 
-const ListBoxComponent: React.FC<Props> = ({ title, tabs }) => {
-  const isSales = title === "판매내역";
-  const text = isSales
-    ? "Fream을 통해 판매해보세요"
-    : "한번에 신청하고 한번에 발송하세요";
-  const buttonText = isSales ? "판매하기" : "보관 판매하기";
+const ListBoxComponent: React.FC<ListBoxProps> = ({
+  title,
+  tabs = [],
+  onTabClick,
+}) => {
+  // 타이틀 기반 설정 (구매내역 추가)
+  const getConfig = () => {
+    switch (title) {
+      case "판매내역":
+        return {
+          text: "Fream을 통해 판매해보세요",
+          buttonText: "판매하기",
+          href: "/sell",
+        };
+      case "보관판매내역":
+        return {
+          text: "한번에 신청하고 한번에 발송하세요",
+          buttonText: "보관 판매하기",
+          href: "/store",
+        };
+      case "구매내역":
+        return {
+          text: "Fream을 통해 구매해보세요",
+          buttonText: "쇼핑하기",
+          href: "/search",
+        };
+      default:
+        return {
+          text: "Fream과 함께하세요",
+          buttonText: "쇼핑하기",
+          href: "/search",
+        };
+    }
+  };
+
+  const config = getConfig();
 
   return (
     <>
@@ -94,11 +129,11 @@ const ListBoxComponent: React.FC<Props> = ({ title, tabs }) => {
       </TitleContainer>
       <Container>
         {/* 텍스트 */}
-        <TextBody>{text}</TextBody>
+        <TextBody>{config.text}</TextBody>
 
         {/* 버튼 */}
         <ButtonContainer>
-          <Button href={isSales ? "/sell" : "/store"}>{buttonText}</Button>
+          <Button href={config.href}>{config.buttonText}</Button>
         </ButtonContainer>
       </Container>
     </>

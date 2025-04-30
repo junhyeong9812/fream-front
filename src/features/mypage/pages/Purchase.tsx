@@ -1,3 +1,4 @@
+// src/pages/Purchase.tsx
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
@@ -196,7 +197,7 @@ const Purchase: React.FC = () => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const [filter, setFilter] = useState<string>("전체");
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [orders, setOrders] = useState<OrderBidResponseDto[]>([]);
+  const [orders, setOrders] = useState<OrderBidResponseDto[]>([]); // 기본값을 빈 배열로 설정
   const [counts, setCounts] = useState<OrderBidStatusCountDto>({
     pendingCount: 0,
     matchedCount: 0,
@@ -232,7 +233,9 @@ const Purchase: React.FC = () => {
   const loadCounts = async () => {
     try {
       const countData = await orderBidService.getOrderBidStatusCounts();
-      setCounts(countData);
+      if (countData) {
+        setCounts(countData);
+      }
     } catch (error) {
       console.error("상태별 개수 로드 실패:", error);
     }
@@ -266,7 +269,16 @@ const Purchase: React.FC = () => {
         orderStatus
       );
 
-      setOrders(response.content);
+      // 안전하게 응답 처리
+      if (response && response.content) {
+        setOrders(response.content);
+      } else {
+        setOrders([]);
+        console.warn(
+          "주문 목록을 불러왔으나 예상하지 못한 응답 형식입니다:",
+          response
+        );
+      }
     } catch (error) {
       console.error("주문 목록 로드 실패:", error);
       setOrders([]);

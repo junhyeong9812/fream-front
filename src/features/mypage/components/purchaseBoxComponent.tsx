@@ -1,3 +1,4 @@
+// src/components/purchaseBoxComponent.tsx
 import React from "react";
 import styled from "styled-components";
 
@@ -107,6 +108,9 @@ const PurchaseBoxComponent: React.FC<PurchaseBoxProps> = ({
   tabs,
   onTabClick,
 }) => {
+  // 안전 처리: tabs가 undefined인 경우 빈 배열로 처리
+  const safeTabs = tabs || [];
+
   // 탭 클릭 핸들러
   const handleTabClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -125,7 +129,7 @@ const PurchaseBoxComponent: React.FC<PurchaseBoxProps> = ({
         <Title>{title}</Title> {/* 동적으로 타이틀 표시 */}
       </TitleContainer>
       <PurchaseListTab>
-        {tabs.map((tab, index) => (
+        {safeTabs.map((tab, index) => (
           <TabItem key={index} className={tab.isTotal ? "total" : ""}>
             <TabLink
               className="tab-link"
@@ -135,7 +139,8 @@ const PurchaseBoxComponent: React.FC<PurchaseBoxProps> = ({
               <dl>
                 <TabTitle className="title">{tab.title}</TabTitle>
                 <TabCount className="count" isTotal={tab.isTotal}>
-                  {tab.count}
+                  {/* 안전 처리: count가 NaN인 경우 0으로 표시 */}
+                  {isNaN(tab.count) ? 0 : tab.count}
                 </TabCount>
               </dl>
             </TabLink>

@@ -1,3 +1,4 @@
+// src/pages/MyHomePage.tsx
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ShortcutGridComponent from "../components/shortcutGridComponent";
@@ -8,39 +9,28 @@ import {
   createTabsData,
   getOrderBidCounts,
   getSaleBidCounts,
+  OrderBidStatusCountDto,
+  SaleBidStatusCountDto,
 } from "../services/MyHomePageService";
 import { ProfileData } from "../types/profile";
 import { getProfileInfo } from "../services/ProfileService";
 
+// 탭 인터페이스 정의
+interface Tab {
+  title: string;
+  count: number;
+  isTotal: boolean;
+  href: string;
+}
+
+// 탭 데이터 인터페이스 정의
+interface TabData {
+  tabs: Tab[];
+  empty: boolean;
+}
+
 // 더미 데이터
 const dummyData = {
-  purchase: {
-    tabs: [
-      { title: "전체", count: 3, isTotal: true, href: "/purchase/all" },
-      { title: "입찰 중", count: 1, isTotal: false, href: "/purchase/bidding" },
-      {
-        title: "진행 중",
-        count: 2,
-        isTotal: false,
-        href: "/purchase/progress",
-      },
-      { title: "종료", count: 0, isTotal: false, href: "/purchase/complete" },
-    ],
-    get empty() {
-      return this.tabs[0].count === 0; // "전체"의 count가 0이면 empty
-    },
-  },
-  sales: {
-    tabs: [
-      { title: "전체", count: 3, isTotal: true, href: "/sales/all" },
-      { title: "입찰 중", count: 1, isTotal: false, href: "/sales/bidding" },
-      { title: "진행 중", count: 1, isTotal: false, href: "/sales/progress" },
-      { title: "종료", count: 1, isTotal: false, href: "/sales/complete" },
-    ],
-    get empty() {
-      return this.tabs[0].count === 0; // "전체"의 count가 0이면 empty
-    },
-  },
   store: {
     tabs: [
       { title: "전체", count: 0, isTotal: true, href: "/store/all" },
@@ -238,17 +228,8 @@ const Button = styled.a`
 const Spacer = styled.div`
   height: 28px; /* 지정된 여백 */
 `;
-interface Tab {
-  title: string;
-  count: number;
-  isTotal: boolean;
-  href: string;
-}
 
-interface TabData {
-  tabs: Tab[];
-  empty: boolean;
-}
+// 초기 탭 데이터 생성 함수
 const createInitialTabData = (
   type: "purchase" | "sales" | "store"
 ): TabData => {
@@ -270,13 +251,34 @@ const createInitialTabData = (
           },
           { title: "종료", count: 0, isTotal: false, href: "/store/complete" },
         ]
-      : [];
+      : [
+          { title: "전체", count: 0, isTotal: true, href: `/${type}/all` },
+          {
+            title: "입찰 중",
+            count: 0,
+            isTotal: false,
+            href: `/${type}/bidding`,
+          },
+          {
+            title: "진행 중",
+            count: 0,
+            isTotal: false,
+            href: `/${type}/progress`,
+          },
+          {
+            title: "종료",
+            count: 0,
+            isTotal: false,
+            href: `/${type}/complete`,
+          },
+        ];
 
   return {
     tabs: initialTabs,
     empty: true,
   };
 };
+
 // MyHomePage 컴포넌트
 const MyHomePage: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileData>({
@@ -293,50 +295,78 @@ const MyHomePage: React.FC = () => {
     createInitialTabData("sales")
   );
   const [storeData] = useState<TabData>(createInitialTabData("store"));
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // API 데이터 가져오기
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const data = await getProfileInfo();
-        console.log("이미지경로:", data.profileImage);
-        setProfileData({
-          profileId: data.profileId,
-          profileImage: `https://www.pinjun.xyz/api/profiles/${data.profileId}/image`,
-          profileName: data.profileName,
-          realName: data.realName,
-          email: data.email,
-        });
+        if (data) {
+          console.log("이미지경로:", data.profileImage);
+          setProfileData({
+            profileId: data.profileId,
+            profileImage: `https://www.pinjun.xyz/api/profiles/${data.profileId}/image`,
+            profileName: data.profileName,
+            realName: data.realName,
+            email: data.email,
+          });
+        }
       } catch (error) {
         console.error("Failed to fetch profile data:", error);
       }
     };
+
     const fetchData = async () => {
+      setIsLoading(true);
       try {
+        // 병렬로 데이터 요청
         const [orderCounts, saleCounts] = await Promise.all([
           getOrderBidCounts(),
           getSaleBidCounts(),
         ]);
 
+        // 주문 입찰 데이터 처리
         if (orderCounts) {
           const tabs = createTabsData(orderCounts, "purchase");
+          const totalCount =
+            orderCounts.pendingCount +
+            orderCounts.matchedCount +
+            orderCounts.cancelledOrCompletedCount;
           setPurchaseData({
             tabs,
-            empty: tabs[0]?.count === 0,
+            empty: totalCount === 0,
           });
+        } else {
+          // 응답이 없을 경우 빈 상태 설정
+          setPurchaseData(createInitialTabData("purchase"));
         }
 
+        // 판매 입찰 데이터 처리
         if (saleCounts) {
           const tabs = createTabsData(saleCounts, "sales");
+          const totalCount =
+            saleCounts.pendingCount +
+            saleCounts.matchedCount +
+            saleCounts.cancelledOrCompletedCount;
           setSalesData({
             tabs,
-            empty: tabs[0]?.count === 0,
+            empty: totalCount === 0,
           });
+        } else {
+          // 응답이 없을 경우 빈 상태 설정
+          setSalesData(createInitialTabData("sales"));
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
+        // 오류 발생 시 기본 상태로 설정
+        setPurchaseData(createInitialTabData("purchase"));
+        setSalesData(createInitialTabData("sales"));
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchProfileData();
     fetchData();
   }, []);
@@ -348,7 +378,12 @@ const MyHomePage: React.FC = () => {
           <UserDetail>
             {/* 사용자 썸네일 */}
             <UserThumb>
-              <ThumbImg src={profileData.profileImage} alt="User Thumbnail" />
+              <ThumbImg
+                src={
+                  profileData.profileImage || "https://via.placeholder.com/60"
+                }
+                alt="User Thumbnail"
+              />
             </UserThumb>
 
             {/* 사용자 정보 */}
@@ -371,30 +406,34 @@ const MyHomePage: React.FC = () => {
         {/* 숏컷 그리드 섹션 */}
         <ShortcutGridComponent />
         {/* 구매내역 */}
-        <PurchaseBoxComponent title="구매내역" tabs={purchaseData.tabs} />
-        {/* 판매내역 */}
-        {dummyData.sales.empty ? (
-          <ListBoxComponent title="판매내역" tabs={salesData.tabs} />
+        {isLoading ? (
+          <div>로딩 중...</div>
         ) : (
-          <PurchaseBoxComponent title="판매내역" tabs={salesData.tabs} />
+          <>
+            {/* 구매내역 */}
+            {purchaseData.empty ? (
+              <ListBoxComponent title="구매내역" tabs={purchaseData.tabs} />
+            ) : (
+              <PurchaseBoxComponent title="구매내역" tabs={purchaseData.tabs} />
+            )}
+
+            {/* 판매내역 */}
+            {salesData.empty ? (
+              <ListBoxComponent title="판매내역" tabs={salesData.tabs} />
+            ) : (
+              <PurchaseBoxComponent title="판매내역" tabs={salesData.tabs} />
+            )}
+
+            {/* 보관 판매 내역 */}
+            <ListBoxComponent
+              title="보관판매내역"
+              tabs={dummyData.store.tabs}
+            />
+            <AdditionalText>
+              보관 판매는 앱, 데스크탑에서 이용 가능합니다.
+            </AdditionalText>
+          </>
         )}
-        {/* 보관 판매 내역 */}
-        {dummyData.store.empty ? (
-          <ListBoxComponent title="보관판매내역" tabs={dummyData.store.tabs} />
-        ) : (
-          <PurchaseBoxComponent
-            title="보관판매내역"
-            tabs={dummyData.store.tabs}
-          />
-        )}
-        {/* {storeData.empty ? (
-          <ListBoxComponent title="보관판매내역" tabs={storeData.tabs} />
-        ) : (
-          <PurchaseBoxComponent title="보관판매내역" tabs={storeData.tabs} />
-        )} */}
-        <AdditionalText>
-          보관 판매는 앱, 데스크탑에서 이용 가능합니다.
-        </AdditionalText>
         <div style={{ height: "60px" }} /> {/* 공간 확보 div 추가 */}
         {/* 관심 상품 컴포넌트 */}
         <InterestProduct products={dummyData.interestProducts} />
