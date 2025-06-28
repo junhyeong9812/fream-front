@@ -1,66 +1,66 @@
-name: Front CI/CD
+# name: Front CI/CD
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     branches: ["main"]
 
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-      # 1) 체크아웃
-      - name: Checkout
-        uses: actions/checkout@v3
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     steps:
+#       # 1) 체크아웃
+#       - name: Checkout
+#         uses: actions/checkout@v3
 
-      # 2) Node 환경 세팅 (테스트/린트용)
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+#       # 2) Node 환경 세팅 (테스트/린트용)
+#       - name: Setup Node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 18
 
-      # (옵션) 로컬에서 npm install & test, lint 등을 미리 수행할 수도 있음
-      - name: NPM Install/Build (Optional for test)
-        run: |
-          npm install
-          CI=false npm run build
-          # npm run build
+#       # (옵션) 로컬에서 npm install & test, lint 등을 미리 수행할 수도 있음
+#       - name: NPM Install/Build (Optional for test)
+#         run: |
+#           npm install
+#           CI=false npm run build
+#           # npm run build
 
-      # 3) GHCR 로그인
-      - name: Docker Login GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+#       # 3) GHCR 로그인
+#       - name: Docker Login GHCR
+#         run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
 
-      # 4) Docker Build (빌드 아규먼트로 시크릿값 주입)
-      - name: Build Docker Image
-        run: |
-          docker build \
-            --build-arg REACT_APP_IMP_CHANNEL_KEY=${{ secrets.REACT_APP_IMP_CHANNEL_KEY }} \
-            --build-arg REACT_APP_NICE_CHANNEL_KEY=${{ secrets.REACT_APP_NICE_CHANNEL_KEY }} \
-            --build-arg REACT_APP_PORTONE_CHANNEL_KEY=${{ secrets.REACT_APP_PORTONE_CHANNEL_KEY }} \
-            --build-arg REACT_APP_INICIS_CHANNEL_KEY=${{ secrets.REACT_APP_INICIS_CHANNEL_KEY }} \
-            --build-arg REACT_APP_IMP_STOREID=${{ secrets.REACT_APP_IMP_STOREID }} \
-            -t ghcr.io/junhyeong9812/fream-front:latest .
+#       # 4) Docker Build (빌드 아규먼트로 시크릿값 주입)
+#       - name: Build Docker Image
+#         run: |
+#           docker build \
+#             --build-arg REACT_APP_IMP_CHANNEL_KEY=${{ secrets.REACT_APP_IMP_CHANNEL_KEY }} \
+#             --build-arg REACT_APP_NICE_CHANNEL_KEY=${{ secrets.REACT_APP_NICE_CHANNEL_KEY }} \
+#             --build-arg REACT_APP_PORTONE_CHANNEL_KEY=${{ secrets.REACT_APP_PORTONE_CHANNEL_KEY }} \
+#             --build-arg REACT_APP_INICIS_CHANNEL_KEY=${{ secrets.REACT_APP_INICIS_CHANNEL_KEY }} \
+#             --build-arg REACT_APP_IMP_STOREID=${{ secrets.REACT_APP_IMP_STOREID }} \
+#             -t ghcr.io/junhyeong9812/fream-front:latest .
 
-      # 5) Docker Push
-      - name: Push Docker Image
-        run: |
-          docker push ghcr.io/junhyeong9812/fream-front:latest
+#       # 5) Docker Push
+#       - name: Push Docker Image
+#         run: |
+#           docker push ghcr.io/junhyeong9812/fream-front:latest
 
-  deploy:
-    needs: [build-and-push]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: SSH into EC2
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # 서버에서 docker-compose pull + up
-            cd /home/ubuntu/fream-back/docker/prod
-            docker-compose -f docker-compose.prod.yml pull front
-            docker-compose -f docker-compose.prod.yml up -d front
-            docker image prune -f
+#   deploy:
+#     # needs: [build-and-push]
+#     # runs-on: ubuntu-latest
+#     # if: github.ref == 'refs/heads/main'
+#     # steps:
+#     #   - name: SSH into EC2
+#     #     uses: appleboy/ssh-action@v0.1.8
+#     #     with:
+#     #       host: ${{ secrets.EC2_HOST }}
+#     #       username: ${{ secrets.EC2_USER }}
+#     #       key: ${{ secrets.EC2_SSH_KEY }}
+#     #       script: |
+#     #         # 서버에서 docker-compose pull + up
+#     #         cd /home/ubuntu/fream-back/docker/prod
+#     #         docker-compose -f docker-compose.prod.yml pull front
+#     #         docker-compose -f docker-compose.prod.yml up -d front
+#     #         docker image prune -f
