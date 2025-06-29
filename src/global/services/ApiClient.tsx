@@ -2,8 +2,27 @@ import axios, { AxiosError } from "axios";
 import { ApiError, ApiErrorResponse } from "../types/errors";
 import { ErrorHandler } from "./errorHandler";
 
+// const apiClient = axios.create({
+//   baseURL: "https://www.pinjun.xyz/api",
+//   withCredentials: true,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+const getBaseURL = () => {
+  const { hostname } = window.location;
+  
+  // 로컬 개발 환경 (localhost 또는 내부 IP)
+  if (hostname === 'localhost' || hostname.startsWith('192.168.') || hostname.startsWith('10.')) {
+    return `https://${hostname}/api`;
+  }
+  
+  // 프로덕션 환경
+  return "https://www.pinjun.xyz/api";
+};
+
 const apiClient = axios.create({
-  baseURL: "https://www.pinjun.xyz/api",
+  baseURL: getBaseURL(),
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
